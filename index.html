@@ -5,100 +5,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LMS KELAS 5</title>
     <style>
-        body { font-family: sans-serif; background: #1a233b; color: white; margin: 0; padding: 20px; text-align: center; }
-        .card { background: white; color: #333; padding: 25px; border-radius: 20px; max-width: 500px; margin: 20px auto; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; }
-        button { background: #34d399; color: white; border: none; font-weight: bold; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; background: #f9fafb; color: #333; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #1a233b; color: white; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: auto; text-align: center; }
+        .card { background: white; color: #333; padding: 25px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); margin-bottom: 20px; }
+        input, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; }
+        button { background: #34d399; color: white; border: none; font-weight: bold; cursor: pointer; font-size: 16px; }
+        .btn-guru { background: #64748b; margin-top: 30px; font-size: 12px; width: auto; padding: 10px 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #f9fafb; border-radius: 10px; overflow: hidden; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; color: #333; font-size: 14px; }
         th { background: #e5e7eb; }
-        .btn-guru { background: #2563eb; margin-top: 20px; font-size: 12px; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h1 style="margin-top:0; color:#1a233b;">LMS Kelas 5</h1>
-        <h2 id="topikTugas">Memuat Tugas...</h2>
-        <a id="linkTugas" href="#" target="_blank" style="color:#2563eb; font-weight:bold; text-decoration:none;">KLIK DI SINI UNTUK MATERI</a>
+<div class="container">
+    <div id="sectionSiswa">
+        <div class="card">
+            <h1 style="margin-top:0; color:#1e293b;">LMS Kelas 5</h1>
+            <h2 id="topikTugas" style="color:#2563eb;">Memuat Judul...</h2>
+            <p><a id="linkTugas" href="#" target="_blank" style="font-weight:bold; color:#ef4444; text-decoration:none;">[ KLIK LIHAT TUGAS / MATERI ]</a></p>
+            
+            <hr style="margin:25px 0; border:0; border-top:1px solid #eee;">
+            
+            <h4 style="margin-bottom:5px;">Kirim Tugas Kamu:</h4>
+            <input type="text" id="namaSiswa" placeholder="Tulis Nama Lengkap">
+            <input type="file" id="fileSiswa">
+            <button onclick="kirimTugas()">KIRIM SEKARANG</button>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top:0;">Daftar Siswa Sudah Mengumpul</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="50">No</th>
+                        <th>Nama Siswa</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelSiswa">
+                    <tr><td colspan="3" style="text-align:center">Memuat data...</td></tr>
+                </tbody>
+            </table>
+        </div>
         
-        <hr style="margin:25px 0">
-        
-        <h3>Kumpul Tugas Siswa</h3>
-        <input type="text" id="namaSiswa" placeholder="Nama Lengkap Kamu">
-        <input type="file" id="fileSiswa">
-        <button onclick="kirimTugas()">KIRIM SEKARANG</button>
-
-        <hr style="margin:25px 0">
-
-        <h3>Daftar Siswa Sudah Mengumpul</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Nama Siswa</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="tabelSiswa">
-                <tr><td colspan="3" style="text-align:center">Memuat data siswa...</td></tr>
-            </tbody>
-        </table>
-
-        <button class="btn-guru" onclick="menuGuru()">Ganti Judul Tugas (Guru)</button>
+        <button class="btn-guru" onclick="bukaLogin()">LOG IN GURU</button>
     </div>
 
-    <script>
-        // MASUKKAN LINK EXEC TERBARU BAPAK DI SINI
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxjE06Y6gs58Vq9TQ4dpGiTQ3rV_o2L4WacbfJi-P2xm4B-2blIpAvvrne6jsL0TQRWKg/exec';
+    <div id="sectionGuru" class="hidden">
+        <div class="card">
+            <h2 style="margin-top:0;">Update Judul Tugas</h2>
+            <input type="text" id="newTopik" placeholder="Judul Tugas Baru">
+            <input type="text" id="newLink" placeholder="Link Materi Baru">
+            <button style="background:#2563eb;" onclick="simpanSetting()">UPDATE KE LAPTOP</button>
+            <button style="background:#ef4444; margin-top:10px;" onclick="location.reload()">KEMBALI</button>
+        </div>
+    </div>
+</div>
 
-        function muatData() {
-            fetch(scriptURL)
-            .then(r => r.json())
-            .then(res => {
-                document.getElementById('topikTugas').innerText = res.config.topik;
-                document.getElementById('linkTugas').href = res.config.link;
-                
-                let h = "";
-                if (res.data.length === 0) {
-                    h = "<tr><td colspan='3' style='text-align:center'>Belum ada siswa yang mengumpul</td></tr>";
-                } else {
-                    res.data.forEach((r, i) => {
-                        h += `<tr><td>${i+1}</td><td>${r[0]}</td><td style="color:green; font-weight:bold;">Selesai</td></tr>`;
-                    });
-                }
-                document.getElementById('tabelSiswa').innerHTML = h;
-            })
-            .catch(err => {
-                document.getElementById('tabelSiswa').innerHTML = "<tr><td colspan='3' style='text-align:center; color:red;'>Gagal mengambil data siswa</td></tr>";
-            });
-        }
+<script>
+    // GANTI DENGAN LINK EXEC BAPAK YANG BARU
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbx4QmgLy6cnXdNNg_2pn-U82jxZtwWZ683JzaAyQtgsw6KGart-P09ohg94b_RX-KIihA/exec';
 
-        function kirimTugas() {
-            const n = document.getElementById('namaSiswa').value;
-            const f = document.getElementById('fileSiswa').files[0];
-            if(!n || !f) return alert("Tolong isi Nama dan pilih File!");
+    function muatData() {
+        fetch(scriptURL)
+        .then(r => r.json())
+        .then(res => {
+            document.getElementById('topikTugas').innerText = res.config.topik;
+            document.getElementById('linkTugas').href = res.config.link;
+            
+            let html = "";
+            if (res.data.length === 0) {
+                html = "<tr><td colspan='3' style='text-align:center'>Belum ada siswa mengumpul</td></tr>";
+            } else {
+                res.data.forEach((r, i) => {
+                    html += `<tr><td>${i+1}</td><td>${r[0]}</td><td style="color:green; font-weight:bold;">✔ Terkirim</td></tr>`;
+                });
+            }
+            document.getElementById('tabelSiswa').innerHTML = html;
+        });
+    }
 
-            const r = new FileReader();
-            r.readAsDataURL(f);
-            r.onload = function() {
-                fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({type: "upload", nama: n, filename: f.name, fileData: r.result}) })
-                .then(() => { alert("Tugas Berhasil Terkirim!"); location.reload(); });
-            };
-        }
+    function kirimTugas() {
+        const n = document.getElementById('namaSiswa').value;
+        const f = document.getElementById('fileSiswa').files[0];
+        if(!n || !f) return alert("Lengkapi Nama dan File!");
+        const reader = new FileReader();
+        reader.readAsDataURL(f);
+        reader.onload = function() {
+            fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({type: "upload", nama: n, filename: f.name, fileData: reader.result}) })
+            .then(() => { alert("Berhasil Terkirim!"); location.reload(); });
+        };
+    }
 
-        function menuGuru() {
-            if(prompt("Masukkan Password Guru:") === "1234") {
-                const t = prompt("Masukkan Judul Tugas Baru:");
-                const l = prompt("Masukkan Link Materi Baru:");
-                if(t && l) {
-                    fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({type: "updateSettings", topik: t, link: l}) })
-                    .then(() => { alert("Judul Berhasil Diupdate!"); location.reload(); });
-                }
-            } else { alert("Password Salah!"); }
-        }
+    function bukaLogin() {
+        if(prompt("Masukkan Password Guru:") === "1234") {
+            document.getElementById('sectionSiswa').classList.add('hidden');
+            document.getElementById('sectionGuru').classList.remove('hidden');
+        } else { alert("Password Salah!"); }
+    }
 
-        muatData();
-    </script>
+    function simpanSetting() {
+        const t = document.getElementById('newTopik').value;
+        const l = document.getElementById('newLink').value;
+        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({type: "updateSettings", topik: t, link: l}) })
+        .then(() => { alert("Berhasil Diupdate!"); location.reload(); });
+    }
+
+    muatData();
+</script>
 </body>
 </html>
