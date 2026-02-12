@@ -5,86 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LMS KELAS 5</title>
     <style>
-        body { font-family: sans-serif; background: #0f172a; color: white; padding: 15px; text-align: center; }
-        .card { background: white; color: #333; padding: 20px; border-radius: 15px; max-width: 450px; margin: 15px auto; }
-        input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
-        button { background: #3b82f6; color: white; border: none; font-weight: bold; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
-        th, td { border: 1px solid #eee; padding: 10px; text-align: left; }
-        .hidden { display: none; }
+        body { font-family: sans-serif; background: #1a233b; color: white; margin: 0; padding: 20px; text-align: center; }
+        .card { background: white; color: #333; padding: 25px; border-radius: 20px; max-width: 500px; margin: 20px auto; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; }
+        button { background: #34d399; color: white; border: none; font-weight: bold; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; background: #f9fafb; color: #333; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #e5e7eb; }
+        .btn-guru { background: #2563eb; margin-top: 20px; font-size: 12px; }
     </style>
 </head>
 <body>
 
-    <button onclick="bukaGuru()" id="btnGuru" style="position:fixed; top:10px; right:10px; width:auto; padding:5px 10px; font-size:11px;">Menu Guru</button>
+    <div class="card">
+        <h1 style="margin-top:0; color:#1a233b;">LMS Kelas 5</h1>
+        <h2 id="topikTugas">Memuat Tugas...</h2>
+        <a id="linkTugas" href="#" target="_blank" style="color:#2563eb; font-weight:bold; text-decoration:none;">KLIK DI SINI UNTUK MATERI</a>
+        
+        <hr style="margin:25px 0">
+        
+        <h3>Kumpul Tugas Siswa</h3>
+        <input type="text" id="namaSiswa" placeholder="Nama Lengkap Kamu">
+        <input type="file" id="fileSiswa">
+        <button onclick="kirimTugas()">KIRIM SEKARANG</button>
 
-    <div id="halamanSiswa">
-        <div class="card">
-            <h1 style="color:#0f172a">LMS Kelas 5</h1>
-            <h2 id="topikTugas">Memuat...</h2>
-            <a id="linkTugas" href="#" target="_blank" style="color:blue; font-weight:bold;">KLIK DI SINI UNTUK MATERI</a>
-            <hr>
-            <input type="text" id="namaSiswa" placeholder="Nama Lengkap">
-            <input type="file" id="fileSiswa">
-            <button onclick="kirimTugas()" style="background:#22c55e">KIRIM TUGAS</button>
-        </div>
-    </div>
+        <hr style="margin:25px 0">
 
-    <div id="halamanGuru" class="hidden">
-        <div class="card">
-            <h2>Dashboard Guru</h2>
-            <input type="text" id="setTopik" placeholder="Judul Tugas Baru">
-            <input type="text" id="setLink" placeholder="Link Materi Baru">
-            <button onclick="updateGuru()">Simpan & Perbarui Tugas</button>
-            <hr>
-            <h4>Progres Pengiriman Siswa:</h4>
-            <table>
-                <thead><tr><th>No</th><th>Nama</th><th>File</th></tr></thead>
-                <tbody id="tabelSiswa"></tbody>
-            </table>
-            <button onclick="location.reload()" style="background:red; margin-top:10px;">Keluar</button>
-        </div>
+        <h3>Daftar Siswa Sudah Mengumpul</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Siswa</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="tabelSiswa">
+                <tr><td colspan="3" style="text-align:center">Memuat data siswa...</td></tr>
+            </tbody>
+        </table>
+
+        <button class="btn-guru" onclick="menuGuru()">Ganti Judul Tugas (Guru)</button>
     </div>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxjE06Y6gs58Vq9TQ4dpGiTQ3rV_o2L4WacbfJi-P2xm4B-2blIpAvvrne6jsL0TQRWKg/exec'; // GANTI DENGAN LINK BARU
+        // MASUKKAN LINK EXEC TERBARU BAPAK DI SINI
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxjE06Y6gs58Vq9TQ4dpGiTQ3rV_o2L4WacbfJi-P2xm4B-2blIpAvvrne6jsL0TQRWKg/exec';
 
         function muatData() {
-            fetch(scriptURL).then(r => r.json()).then(res => {
+            fetch(scriptURL)
+            .then(r => r.json())
+            .then(res => {
                 document.getElementById('topikTugas').innerText = res.config.topik;
                 document.getElementById('linkTugas').href = res.config.link;
-                let html = "";
-                res.data.forEach((r, i) => {
-                    html += `<tr><td>${i+1}</td><td>${r[0]}</td><td><a href="${r[1]}" target="_blank">Lihat</a></td></tr>`;
-                });
-                document.getElementById('tabelSiswa').innerHTML = html || "<tr><td colspan='3'>Belum ada data</td></tr>";
+                
+                let h = "";
+                if (res.data.length === 0) {
+                    h = "<tr><td colspan='3' style='text-align:center'>Belum ada siswa yang mengumpul</td></tr>";
+                } else {
+                    res.data.forEach((r, i) => {
+                        h += `<tr><td>${i+1}</td><td>${r[0]}</td><td style="color:green; font-weight:bold;">Selesai</td></tr>`;
+                    });
+                }
+                document.getElementById('tabelSiswa').innerHTML = h;
+            })
+            .catch(err => {
+                document.getElementById('tabelSiswa').innerHTML = "<tr><td colspan='3' style='text-align:center; color:red;'>Gagal mengambil data siswa</td></tr>";
             });
-        }
-
-        function bukaGuru() {
-            if(prompt("Password:") === "1234") { // Password Guru
-                document.getElementById('halamanSiswa').classList.add('hidden');
-                document.getElementById('halamanGuru').classList.remove('hidden');
-                document.getElementById('btnGuru').classList.add('hidden');
-            }
-        }
-
-        function updateGuru() {
-            const t = document.getElementById('setTopik').value;
-            const l = document.getElementById('setLink').value;
-            fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({type: "updateSettings", topik: t, link: l}) })
-            .then(() => { alert("Berhasil!"); location.reload(); });
         }
 
         function kirimTugas() {
             const n = document.getElementById('namaSiswa').value;
             const f = document.getElementById('fileSiswa').files[0];
+            if(!n || !f) return alert("Tolong isi Nama dan pilih File!");
+
             const r = new FileReader();
             r.readAsDataURL(f);
             r.onload = function() {
                 fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({type: "upload", nama: n, filename: f.name, fileData: r.result}) })
-                .then(() => { alert("Terkirim!"); location.reload(); });
+                .then(() => { alert("Tugas Berhasil Terkirim!"); location.reload(); });
             };
+        }
+
+        function menuGuru() {
+            if(prompt("Masukkan Password Guru:") === "1234") {
+                const t = prompt("Masukkan Judul Tugas Baru:");
+                const l = prompt("Masukkan Link Materi Baru:");
+                if(t && l) {
+                    fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({type: "updateSettings", topik: t, link: l}) })
+                    .then(() => { alert("Judul Berhasil Diupdate!"); location.reload(); });
+                }
+            } else { alert("Password Salah!"); }
         }
 
         muatData();
