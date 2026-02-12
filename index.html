@@ -1,209 +1,88 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LMS KELAS 5 - SDN PENGKOL</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    /* CSS UNTUK TAMPILAN MODERN */
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-    body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; padding: 20px; color: #f8fafc; }
-    .container { max-width: 1000px; margin: 0 auto; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-    .student-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px); }
-    .student-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.1); border-color: #38bdf8; }
-    .avatar { width: 50px; height: 50px; background: #38bdf8; color: #0f172a; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold; font-size: 1.2rem; }
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-    .modal { background: #1e293b; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; border: 1px solid rgba(255,255,255,0.1); }
-    .active { display: flex; }
-    .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; margin-top: 10px; }
-    .btn-primary { background: #38bdf8; color: #0f172a; }
-    .btn-kuis { background: #f59e0b; color: #000; margin-bottom: 15px; text-decoration: none; display: block; text-align: center; }
-    .btn-guru { background: transparent; border: 1px solid #38bdf8; color: #38bdf8; width: auto; padding: 8px 15px; }
-    .guru-panel { background: #ffffff; color: #1e293b; border-radius: 20px; padding: 25px; display: none; margin-top: 20px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.85rem; color: #333; }
-    th, td { padding: 12px; border-bottom: 1px solid #e2e8f0; text-align: left; }
-    .status-ok { color: #10b981; font-weight: bold; }
-    .status-no { color: #ef4444; font-weight: bold; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS KELAS 5</title>
+    <style>
+        body { font-family: Arial; background: #f4f4f4; padding: 15px; text-align: center; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 500px; margin: 10px auto; }
+        input, button { width: 100%; padding: 10px; margin: 5px 0; box-sizing: border-box; }
+        button { background: #28a745; color: white; border: none; font-weight: bold; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #f2f2f2; }
+    </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="header">
-    <h1>LMS Kelas 5</h1>
-    <button class="btn btn-guru" onclick="bukaSandi()">Menu Guru</button>
-  </div>
+    <div class="card">
+        <h2 id="topikTugas">Memuat Tugas...</h2>
+        <a id="linkTugas" href="#" target="_blank" style="color: blue; font-weight: bold;">BUKA MATERI CANVA</a>
+        <hr>
+        <input type="text" id="namaSiswa" placeholder="Nama Lengkap">
+        <input type="file" id="fileSiswa">
+        <button onclick="kirimTugas()">KIRIM TUGAS</button>
+    </div>
 
-  <div id="studentView">
-    <div style="text-align: center; margin-bottom: 25px; background: rgba(56,189,248,0.1); padding: 15px; border-radius: 15px;">
-        <p style="font-size: 0.9rem; color: #38bdf8;">Tugas Aktif saat ini:</p>
-        <h2 id="displayTopik">Memuat...</h2>
-    </div>
-    <div class="cards-grid" id="cardsGrid"></div>
-  </div>
-
-  <div id="guruView" class="guru-panel">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2>Dashboard Guru</h2>
-        <button class="btn btn-guru" style="border-color:#ccc; color:#666" onclick="location.reload()">Keluar</button>
-    </div>
-    <hr style="margin: 15px 0;">
-    <div style="display: grid; gap: 10px;">
-        <label><b>1. Nama Tugas (Cut-Off):</b></label>
-        <input type="text" id="setTopik" placeholder="Contoh: Pecahan Senilai" style="padding:10px; border-radius:8px; border:1px solid #ddd;">
-        <label><b>2. Link Kuis Canva/Materi:</b></label>
-        <input type="text" id="setLink" placeholder="Tempel Link Canva di sini" style="padding:10px; border-radius:8px; border:1px solid #ddd;">
-        <button class="btn btn-primary" onclick="simpanPengaturan()">Simpan & Perbarui Tugas</button>
-    </div>
-    <div style="overflow-x: auto;">
-        <table id="rekapTable">
-            <thead>
-                <tr><th>No</th><th>Nama Siswa</th><th>Status</th><th>Aksi</th></tr>
-            </thead>
-            <tbody id="rekapBody"></tbody>
+    <div class="card" style="border-top: 4px solid #007bff;">
+        <h3>Dashboard Guru</h3>
+        <input type="text" id="setTopik" placeholder="Judul Tugas Baru">
+        <input type="text" id="setLink" placeholder="Link Materi Baru">
+        <button onclick="updateGuru()" style="background:#007bff">UPDATE JUDUL DI LAPTOP</button>
+        
+        <h4>Status Pengiriman Siswa:</h4>
+        <table>
+            <thead><tr><th>No</th><th>Nama Siswa</th><th>Link File</th></tr></thead>
+            <tbody id="tabelSiswa"></tbody>
         </table>
     </div>
-  </div>
-</div>
 
-<div class="modal-overlay" id="uploadModal">
-  <div class="modal">
-    <h3 id="modalSiswa">Nama Siswa</h3>
-    <hr style="margin: 10px 0; opacity: 0.2;">
-    <p style="margin-bottom: 10px; font-size: 0.9rem;">Langkah 1: Kerjakan Tugas/Kuis</p>
-    <a href="#" id="linkKuisSiswa" target="_blank" class="btn btn-kuis">🚀 MULAI KERJAKAN</a>
-    
-    <p style="margin-bottom: 10px; font-size: 0.9rem;">Langkah 2: Upload Bukti (Bisa banyak foto)</p>
-    <input type="file" id="fileInput" multiple style="margin-bottom: 15px; color: white;">
-    
-    <button class="btn btn-primary" id="btnKirim" onclick="prosesUpload()">KIRIM JAWABAN</button>
-    <button class="btn" style="background:transparent; color:white;" onclick="tutupModal()">Batal</button>
-  </div>
-</div>
+    <script>
+        // GANTI LINK DI BAWAH INI DENGAN LINK URL DARI GOOGLE SCRIPT BAPAK
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwJUDfKkYrtopi5QpCXocpp6tGwbDtk4ZZDr1fJbBojtOj-r8s7-Ez4Ep_yN2_OUrEJFQ/exec';
 
-<div class="modal-overlay" id="sandiModal">
-  <div class="modal" style="max-width: 300px;">
-    <h3>Sandi Guru</h3>
-    <input type="password" id="passInput" style="width:100%; padding:10px; margin:15px 0; border-radius:8px;">
-    <button class="btn btn-primary" onclick="cekSandi()">Masuk</button>
-    <button class="btn" style="background:transparent; color:white;" onclick="tutupSandi()">Batal</button>
-  </div>
-</div>
+        // 1. Ambil Data saat halaman dibuka
+        fetch(scriptURL)
+            .then(res => res.json())
+            .then(res => {
+                document.getElementById('topikTugas').innerText = res.config.topik;
+                document.getElementById('linkTugas').href = res.config.link;
+                
+                let html = "";
+                res.data.forEach((r, i) => {
+                    html += `<tr><td>${i+1}</td><td>${r[0]}</td><td><a href="${r[1]}" target="_blank">Lihat</a></td></tr>`;
+                });
+                document.getElementById('tabelSiswa').innerHTML = html;
+            });
 
-<script>
-  // LINK APPS SCRIPT BAPAK SUDAH SAYA PASANG DI SINI
-  const scriptURL = "https://script.google.com/macros/s/AKfycbxzqNZxAzv91F77th0fBDubd2k1UoRGFZ8LGhlViD5iByyHOp7nfrsQYX4zmfA9qPdiUQ/exec";
+        // 2. Fungsi Update Judul (Menu Guru)
+        function updateGuru() {
+            const t = document.getElementById('setTopik').value;
+            const l = document.getElementById('setLink').value;
+            if(!t || !l) return alert("Lengkapi data!");
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({type: "updateSettings", topik: t, link: l})
+            }).then(() => { alert("Berhasil Diupdate!"); location.reload(); });
+        }
 
-  const SISWA = ["Alvaro Adnan Aji Pambudi", "Anantha Yudha Diztira", "Arifah Yhuan Nur Azizah", "Aurelia Gieni Lindria Putri", "Dhafitha Nizza Nur Azizah", "Dhian Rahmawati", "Dimas Rasyid Faristia", "Erfin Denu Setiawan", "Marsya Anindya Kiera", "Mikayla Ayuningtyas", "Muhammad Ozil Ramadhan", "Rhevan Nabil Yudanta", "Ridho Wicaksono", "Rizky Syam Dani", "Tanca Al Verosa"];
-  
-  let topikAktif = localStorage.getItem("topikLMS") || "Tugas Belum Diatur";
-  let linkAktif = localStorage.getItem("linkLMS") || "#";
-  let siswaTerpilih = "";
-
-  document.getElementById('displayTopik').innerText = topikAktif;
-  document.getElementById('setTopik').value = topikAktif;
-  document.getElementById('setLink').value = linkAktif;
-
-  const grid = document.getElementById('cardsGrid');
-  SISWA.forEach(s => {
-    grid.innerHTML += `<div class="student-card" onclick="bukaUpload('${s}')"><div class="avatar">${s[0]}</div><div style="font-size:0.8rem">${s}</div></div>`;
-  });
-
-  function bukaUpload(nama) {
-    siswaTerpilih = nama;
-    document.getElementById('modalSiswa').innerText = nama;
-    document.getElementById('linkKuisSiswa').href = linkAktif;
-    document.getElementById('uploadModal').classList.add('active');
-  }
-
-  function tutupModal() { document.getElementById('uploadModal').classList.remove('active'); }
-  function bukaSandi() { document.getElementById('sandiModal').classList.add('active'); }
-  function tutupSandi() { document.getElementById('sandiModal').classList.remove('active'); }
-
-  function cekSandi() {
-    if(document.getElementById('passInput').value === "guru123") {
-        tutupSandi();
-        document.getElementById('studentView').style.display = "none";
-        document.getElementById('guruView').style.display = "block";
-        muatRekap();
-    } else { alert("Sandi Salah!"); }
-  }
-
-  function simpanPengaturan() {
-    topikAktif = document.getElementById('setTopik').value;
-    linkAktif = document.getElementById('setLink').value;
-    localStorage.setItem("topikLMS", topikAktif);
-    localStorage.setItem("linkLMS", linkAktif);
-    alert("Pengaturan Berhasil Disimpan!");
-    location.reload();
-  }
-
-  async function prosesUpload() {
-    const files = document.getElementById('fileInput').files;
-    if(files.length === 0) return alert("Pilih file bukti dulu!");
-    const btn = document.getElementById('btnKirim');
-    btn.innerText = "Mengirim..."; btn.disabled = true;
-
-    let filePromises = Array.from(files).map(file => {
-      return new Promise((resolve) => {
-        let fr = new FileReader();
-        fr.readAsDataURL(file);
-        fr.onload = (e) => resolve({
-          base64: e.target.result.split(",")[1],
-          type: file.type,
-          name: siswaTerpilih + " - " + file.name
-        });
-      });
-    });
-
-    const allFiles = await Promise.all(filePromises);
-
-    fetch(scriptURL, {
-      method: "POST",
-      body: JSON.stringify({
-        siswa: siswaTerpilih,
-        topik: topikAktif,
-        files: allFiles
-      })
-    })
-    .then(() => {
-      alert("Tugas Berhasil Terkirim!");
-      tutupModal();
-    })
-    .catch(() => alert("Gagal mengirim"))
-    .finally(() => {
-      btn.innerText = "KIRIM JAWABAN";
-      btn.disabled = false;
-    });
-  }
-
-  function muatRekap() {
-    const tbody = document.getElementById('rekapBody');
-    tbody.innerHTML = "<tr><td colspan='4'>Memuat data...</td></tr>";
-    
-    fetch(scriptURL).then(r => r.json()).then(data => {
-      tbody.innerHTML = "";
-      SISWA.forEach((s, i) => {
-        const kiriman = data.filter(d => d[1] === s && d[4] === topikAktif);
-        const sudah = kiriman.length > 0;
-        tbody.innerHTML += `<tr>
-          <td>${i+1}</td>
-          <td>${s}</td>
-          <td class="${sudah ? 'status-ok' : 'status-no'}">${sudah ? 'Sudah Kirim ('+kiriman.length+')' : 'Belum'}</td>
-          <td>${sudah ? `<a href="https://drive.google.com/open?id=${kiriman[0][3]}" target="_blank">Lihat File</a>` : '-'}</td>
-        </tr>`;
-      });
-    });
-  }
-</script>
+        // 3. Fungsi Kirim Tugas (Siswa)
+        function kirimTugas() {
+            const n = document.getElementById('namaSiswa').value;
+            const f = document.getElementById('fileSiswa').files[0];
+            if(!n || !f) return alert("Nama dan File wajib ada!");
+            const reader = new FileReader();
+            reader.readAsDataURL(f);
+            reader.onload = function() {
+                fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({type: "upload", nama: n, filename: f.name, fileData: reader.result})
+                }).then(() => { alert("Tugas Terkirim!"); location.reload(); });
+            };
+        }
+    </script>
 </body>
 </html>
-
-
-
-
-
-
