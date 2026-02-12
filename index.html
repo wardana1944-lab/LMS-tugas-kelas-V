@@ -50,8 +50,8 @@
         <button class="btn btn-guru" style="border-color:#ccc; color:#666" onclick="location.reload()">Keluar</button>
     </div>
     <div style="margin: 15px 0; display: grid; gap: 10px;">
-        <input type="text" id="setTopik" placeholder="Nama Tugas" style="padding:10px; border-radius:8px; border:1px solid #ddd;">
-        <input type="text" id="setLink" placeholder="Link Materi" style="padding:10px; border-radius:8px; border:1px solid #ddd;">
+        <input type="text" id="setTopik" placeholder="Nama Tugas">
+        <input type="text" id="setLink" placeholder="Link Canva / Materi">
         <button class="btn btn-primary" onclick="simpanPengaturan()">Simpan & Perbarui</button>
     </div>
     <div style="overflow-x: auto;">
@@ -84,8 +84,8 @@
 </div>
 
 <script>
-  // PENTING: GANTI DENGAN URL APPS SCRIPT BAPAK
-  const scriptURL = "https://script.google.com/macros/s/AKfycbwlFW0TWWHm3p39MPUJ4o9ASJUv8M-6Enosp-CmatfISUn92SY_Ji_vrK13TnKpyKD_FQ/exec"; 
+  // URL WEB APP TERBARU BAPAK
+  const scriptURL = "https://script.google.com/macros/s/AKfycbwOmqMl7B1wngv2LO2Gv9HI4x5w_ZufyYuqsp3FSOfpcBMjj_2m8OlxQT4NCRIiXU6Mkg/exec"; 
 
   const SISWA = ["Alvaro Adnan Aji Pambudi", "Anantha Yudha Diztira", "Arifah Yhuan Nur Azizah", "Aurelia Gieni Lindria Putri", "Dhafitha Nizza Nur Azizah", "Dhian Rahmawati", "Dimas Rasyid Faristia", "Erfin Denu Setiawan", "Marsya Anindya Kiera", "Mikayla Ayuningtyas", "Muhammad Ozil Ramadhan", "Rhevan Nabil Yudanta", "Ridho Wicaksono", "Rizky Syam Dani", "Tanca Al Verosa"];
   
@@ -125,13 +125,13 @@
   function simpanPengaturan() {
     localStorage.setItem("topikLMS", document.getElementById('setTopik').value);
     localStorage.setItem("linkLMS", document.getElementById('setLink').value);
-    alert("Berhasil Diperbarui!");
+    alert("Berhasil!");
     location.reload();
   }
 
   async function prosesUpload() {
     const files = document.getElementById('fileInput').files;
-    if(files.length === 0) return alert("Pilih file bukti!");
+    if(files.length === 0) return alert("Pilih file!");
     const btn = document.getElementById('btnKirim');
     btn.innerText = "Mengirim..."; btn.disabled = true;
 
@@ -156,7 +156,7 @@
 
   function muatRekap() {
     const tbody = document.getElementById('rekapBody');
-    tbody.innerHTML = "Memuat data...";
+    tbody.innerHTML = "Memuat...";
     fetch(scriptURL).then(r => r.json()).then(data => {
       tbody.innerHTML = "";
       SISWA.forEach((s, i) => {
