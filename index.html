@@ -5,74 +5,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LMS KELAS 5</title>
     <style>
-        body { font-family: Arial; background: #f4f4f4; padding: 15px; text-align: center; }
-        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 500px; margin: 10px auto; }
-        input, button { width: 100%; padding: 10px; margin: 5px 0; box-sizing: border-box; }
+        body { font-family: sans-serif; background: #f0f2f5; padding: 15px; text-align: center; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 500px; margin: 15px auto; }
+        input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
         button { background: #28a745; color: white; border: none; font-weight: bold; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background: #f2f2f2; }
+        .btn-update { background: #007bff; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; font-size: 13px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #f8f9fa; }
+        .status-ok { color: green; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="card">
         <h2 id="topikTugas">Memuat Tugas...</h2>
-        <a id="linkTugas" href="#" target="_blank" style="color: blue; font-weight: bold;">BUKA MATERI CANVA</a>
-        <hr>
-        <input type="text" id="namaSiswa" placeholder="Nama Lengkap">
+        <a id="linkTugas" href="#" target="_blank" style="color:#007bff; font-weight:bold;">KLIK DI SINI UNTUK MATERI</a>
+        <hr style="margin:20px 0">
+        <h4>Kumpul Tugas</h4>
+        <input type="text" id="namaSiswa" placeholder="Nama Lengkap Siswa">
         <input type="file" id="fileSiswa">
         <button onclick="kirimTugas()">KIRIM TUGAS</button>
     </div>
 
-    <div class="card" style="border-top: 4px solid #007bff;">
-        <h3>Dashboard Guru</h3>
+    <div class="card" style="border-top: 5px solid #007bff;">
+        <h3>Dashboard Guru (HP)</h3>
+        <p style="font-size:12px; color:gray">Ganti judul tugas di laptop dari sini:</p>
         <input type="text" id="setTopik" placeholder="Judul Tugas Baru">
         <input type="text" id="setLink" placeholder="Link Materi Baru">
-        <button onclick="updateGuru()" style="background:#007bff">UPDATE JUDUL DI LAPTOP</button>
+        <button class="btn-update" onclick="updateGuru()">UPDATE JUDUL & MATERI</button>
         
-        <h4>Status Pengiriman Siswa:</h4>
+        <hr>
+        <h4>Rekapitulasi Tugas Siswa</h4>
         <table>
-            <thead><tr><th>No</th><th>Nama Siswa</th><th>Link File</th></tr></thead>
-            <tbody id="tabelSiswa"></tbody>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Siswa</th>
+                    <th>Link File</th>
+                </tr>
+            </thead>
+            <tbody id="tabelSiswa">
+                <tr><td colspan="3" style="text-align:center">Memuat data...</td></tr>
+            </tbody>
         </table>
     </div>
 
     <script>
-        // GANTI LINK DI BAWAH INI DENGAN LINK URL DARI GOOGLE SCRIPT BAPAK
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwJUDfKkYrtopi5QpCXocpp6tGwbDtk4ZZDr1fJbBojtOj-r8s7-Ez4Ep_yN2_OUrEJFQ/exec';
+        // PENTING: GANTI LINK DI BAWAH INI DENGAN LINK EXEC BAPAK
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzLHCB26R7AhcWe7ABv3yxASY9Bkuiofgo0cAYE_aC690k-iM3lC6RckTiE7a_Wsp1c1Q/exec';
 
-        // 1. Ambil Data saat halaman dibuka
-        fetch(scriptURL)
+        // Fungsi Ambil Data Otomatis
+        function muatData() {
+            fetch(scriptURL)
             .then(res => res.json())
             .then(res => {
+                // Update Judul & Link
                 document.getElementById('topikTugas').innerText = res.config.topik;
                 document.getElementById('linkTugas').href = res.config.link;
                 
-                let html = "";
-                res.data.forEach((r, i) => {
-                    html += `<tr><td>${i+1}</td><td>${r[0]}</td><td><a href="${r[1]}" target="_blank">Lihat</a></td></tr>`;
-                });
-                document.getElementById('tabelSiswa').innerHTML = html;
+                // Update Tabel Siswa
+                let baris = "";
+                if (res.data.length === 0) {
+                    baris = "<tr><td colspan='3' style='text-align:center'>Belum ada siswa mengumpul</td></tr>";
+                } else {
+                    res.data.forEach((r, i) => {
+                        baris += `<tr>
+                            <td>${i+1}</td>
+                            <td>${r[0]}</td>
+                            <td><a href="${r[1]}" target="_blank" style="color:blue">Lihat File</a></td>
+                        </tr>`;
+                    });
+                }
+                document.getElementById('tabelSiswa').innerHTML = baris;
+            })
+            .catch(err => {
+                document.getElementById('tabelSiswa').innerHTML = "<tr><td colspan='3'>Gagal memuat data</td></tr>";
             });
+        }
 
-        // 2. Fungsi Update Judul (Menu Guru)
+        // Jalankan saat pertama buka
+        muatData();
+
         function updateGuru() {
             const t = document.getElementById('setTopik').value;
             const l = document.getElementById('setLink').value;
-            if(!t || !l) return alert("Lengkapi data!");
+            if(!t || !l) return alert("Isi Judul & Link!");
             fetch(scriptURL, {
                 method: 'POST',
                 mode: 'no-cors',
                 body: JSON.stringify({type: "updateSettings", topik: t, link: l})
-            }).then(() => { alert("Berhasil Diupdate!"); location.reload(); });
+            }).then(() => { 
+                alert("Berhasil! Dashboard Laptop akan terupdate."); 
+                location.reload(); 
+            });
         }
 
-        // 3. Fungsi Kirim Tugas (Siswa)
         function kirimTugas() {
             const n = document.getElementById('namaSiswa').value;
             const f = document.getElementById('fileSiswa').files[0];
-            if(!n || !f) return alert("Nama dan File wajib ada!");
+            if(!n || !f) return alert("Nama & File wajib diisi!");
             const reader = new FileReader();
             reader.readAsDataURL(f);
             reader.onload = function() {
@@ -80,7 +112,10 @@
                     method: 'POST',
                     mode: 'no-cors',
                     body: JSON.stringify({type: "upload", nama: n, filename: f.name, fileData: reader.result})
-                }).then(() => { alert("Tugas Terkirim!"); location.reload(); });
+                }).then(() => { 
+                    alert("Tugas Terkirim!"); 
+                    location.reload(); 
+                });
             };
         }
     </script>
