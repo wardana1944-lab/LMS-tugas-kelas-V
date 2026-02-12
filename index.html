@@ -26,6 +26,7 @@
     th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
     .status-ok { color: #10b981; font-weight: bold; }
     .status-no { color: #ef4444; font-weight: bold; }
+    input[type="text"] { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -39,20 +40,20 @@
   <div id="studentView">
     <div style="text-align: center; margin-bottom: 25px; background: rgba(56,189,248,0.1); padding: 15px; border-radius: 15px;">
         <p style="color: #38bdf8; font-size: 0.8rem;">Tugas Aktif:</p>
-        <h2 id="displayTopik">Memuat Judul...</h2>
+        <h2 id="displayTopik">Menghubungkan...</h2>
     </div>
     <div class="cards-grid" id="cardsGrid"></div>
   </div>
 
   <div id="guruView" class="guru-panel">
-    <div style="display: flex; justify-content: space-between;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2>Dashboard Guru</h2>
         <button class="btn btn-guru" style="border-color:#ccc; color:#666" onclick="location.reload()">Keluar</button>
     </div>
-    <div style="margin: 15px 0; display: grid; gap: 10px;">
-        <input type="text" id="setTopik" placeholder="Nama Tugas">
-        <input type="text" id="setLink" placeholder="Link Canva / Materi">
-        <button class="btn btn-primary" onclick="simpanPengaturan()">Simpan & Perbarui</button>
+    <div style="margin: 15px 0;">
+        <input type="text" id="setTopik" placeholder="Nama Tugas Baru">
+        <input type="text" id="setLink" placeholder="Link Materi Baru">
+        <button class="btn btn-primary" onclick="simpanPengaturan()">SIMPAN & UPDATE SEMUA HP</button>
     </div>
     <div style="overflow-x: auto;">
         <table>
@@ -84,18 +85,26 @@
 </div>
 
 <script>
-  // URL WEB APP TERBARU BAPAK
-  const scriptURL = "https://script.google.com/macros/s/AKfycbwOmqMl7B1wngv2LO2Gv9HI4x5w_ZufyYuqsp3FSOfpcBMjj_2m8OlxQT4NCRIiXU6Mkg/exec"; 
+  // URL WEB APP BAPAK YANG TERBARU
+  const scriptURL = "https://script.google.com/macros/s/AKfycbzMn1SBnS_K0P_DXVVWugsbAdCBq98iNAj4Bnungihi1HYDHm11x_np5meayW9o4Nhs3g/exec"; 
 
   const SISWA = ["Alvaro Adnan Aji Pambudi", "Anantha Yudha Diztira", "Arifah Yhuan Nur Azizah", "Aurelia Gieni Lindria Putri", "Dhafitha Nizza Nur Azizah", "Dhian Rahmawati", "Dimas Rasyid Faristia", "Erfin Denu Setiawan", "Marsya Anindya Kiera", "Mikayla Ayuningtyas", "Muhammad Ozil Ramadhan", "Rhevan Nabil Yudanta", "Ridho Wicaksono", "Rizky Syam Dani", "Tanca Al Verosa"];
   
-  let topikAktif = localStorage.getItem("topikLMS") || "Tugas Belum Diatur";
-  let linkAktif = localStorage.getItem("linkLMS") || "#";
+  let topikAktif = "Memuat...";
+  let linkAktif = "#";
   let siswaTerpilih = "";
 
-  document.getElementById('displayTopik').innerText = topikAktif;
-  document.getElementById('setTopik').value = topikAktif;
-  document.getElementById('setLink').value = linkAktif;
+  function muatPengaturan() {
+    fetch(scriptURL + "?action=getSettings")
+    .then(r => r.json())
+    .then(settings => {
+      topikAktif = settings.topik || "Tugas Belum Diatur";
+      linkAktif = settings.link || "#";
+      document.getElementById('displayTopik').innerText = topikAktif;
+      document.getElementById('setTopik').value = topikAktif;
+      document.getElementById('setLink').value = linkAktif;
+    });
+  }
 
   const grid = document.getElementById('cardsGrid');
   SISWA.forEach(s => {
@@ -123,15 +132,20 @@
   }
 
   function simpanPengaturan() {
-    localStorage.setItem("topikLMS", document.getElementById('setTopik').value);
-    localStorage.setItem("linkLMS", document.getElementById('setLink').value);
-    alert("Berhasil!");
-    location.reload();
+    const t = document.getElementById('setTopik').value;
+    const l = document.getElementById('setLink').value;
+    fetch(scriptURL, {
+      method: "POST",
+      body: JSON.stringify({ action: "setSettings", topik: t, link: l })
+    }).then(() => {
+      alert("Berhasil Update! Semua siswa akan melihat tugas baru.");
+      location.reload();
+    });
   }
 
   async function prosesUpload() {
     const files = document.getElementById('fileInput').files;
-    if(files.length === 0) return alert("Pilih file!");
+    if(files.length === 0) return alert("Pilih file bukti!");
     const btn = document.getElementById('btnKirim');
     btn.innerText = "Mengirim..."; btn.disabled = true;
 
@@ -150,14 +164,16 @@
     const allFiles = await Promise.all(filePromises);
     fetch(scriptURL, {
       method: "POST",
-      body: JSON.stringify({ siswa: siswaTerpilih, topik: topikAktif, files: allFiles })
+      body: JSON.stringify({ action: "upload", siswa: siswaTerpilih, topik: topikAktif, files: allFiles })
     }).then(() => { alert("Terkirim!"); tutupModal(); }).finally(() => { btn.innerText = "KIRIM JAWABAN"; btn.disabled = false; });
   }
 
   function muatRekap() {
     const tbody = document.getElementById('rekapBody');
-    tbody.innerHTML = "Memuat...";
-    fetch(scriptURL).then(r => r.json()).then(data => {
+    tbody.innerHTML = "Memuat data...";
+    fetch(scriptURL)
+    .then(r => r.json())
+    .then(data => {
       tbody.innerHTML = "";
       SISWA.forEach((s, i) => {
         const kiriman = data.filter(d => d[1] === s && d[4] === topikAktif);
@@ -171,6 +187,8 @@
       });
     });
   }
+
+  muatPengaturan();
 </script>
 </body>
 </html>
