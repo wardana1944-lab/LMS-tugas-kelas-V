@@ -11,13 +11,10 @@
     body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; padding: 15px; color: #f8fafc; }
     .container { max-width: 1000px; margin: 0 auto; position: relative; }
     
-    /* Logo Pojok Kiri Atas */
-    .logo-sekolah { position: absolute; top: 0; left: 0; width: 45px; height: auto; opacity: 0.9; }
-    
     .header-main { text-align: center; margin-bottom: 25px; padding-top: 10px; }
     .header-main h1 { font-size: 1.8rem; color: #38bdf8; letter-spacing: 2px; margin-bottom: 20px; text-shadow: 0 0 15px rgba(56,189,248,0.5); }
 
-    /* Layout Dua Kolom (Tetap Berjajar di Semua Layar) */
+    /* Layout Dua Kolom */
     .identity-row { 
         display: flex; 
         gap: 10px; 
@@ -29,33 +26,45 @@
     .identitas-box, .guru-profile-box { 
         flex: 1; 
         background: rgba(255,255,255,0.05); 
-        padding: 12px 8px; 
+        padding: 12px; 
         border-radius: 15px; 
         border: 1px solid rgba(56,189,248,0.2);
         display: flex;
         align-items: center;
-        justify-content: center;
+        gap: 12px; /* Jarak antara gambar dan teks */
         text-align: left;
     }
 
     .identitas-box { border-style: dashed; }
-    .guru-profile-box { background: rgba(56,189,248,0.1); gap: 10px; }
+    .guru-profile-box { background: rgba(56,189,248,0.1); }
 
-    .foto-guru { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #38bdf8; object-fit: cover; }
+    /* Ukuran Gambar Identitas */
+    .img-identitas { 
+        width: 45px; 
+        height: 45px; 
+        object-fit: contain; /* Agar logo tidak terpotong */
+    }
+    .foto-guru { 
+        width: 45px; 
+        height: 45px; 
+        border-radius: 50%; 
+        border: 2px solid #38bdf8; 
+        object-fit: cover; 
+    }
     
     /* Ukuran Teks Header */
     .identitas-box p, .guru-info p { 
         font-size: 0.7rem; 
         line-height: 1.3; 
     }
-    .guru-nama { font-weight: bold; color: #38bdf8; font-size: 0.75rem !important; }
+    .text-utama { font-weight: bold; color: #38bdf8; font-size: 0.75rem !important; }
 
     .btn-guru-menu { 
         background: rgba(56,189,248,0.2); 
         border: 1px solid #38bdf8; 
         color: #38bdf8; 
         padding: 3px 8px; 
-        font-size: 0.65rem; 
+        font-size: 0.6rem; 
         cursor: pointer; 
         border-radius: 5px; 
         margin-top: 4px; 
@@ -70,7 +79,6 @@
     .status-sudah { background: #10b981; color: white; }
     .student-icon { width: 50px; height: 50px; background: #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 1.8rem; border: 2px solid #38bdf8; }
     
-    /* Dashboard Guru */
     #halamanGuru { display: none; background: #ffffff; color: #1e293b; border-radius: 20px; padding: 20px; margin-top: 10px; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; color: #333; font-size: 0.8rem; }
     th { background: #38bdf8; color: white; padding: 10px; text-align: left; }
@@ -89,20 +97,20 @@
 <body>
 <div class="container">
   <div id="halamanDepan">
-    <img src="logo-putih.png" class="logo-sekolah" alt="Logo">
     <div class="header-main">
       <h1>RUANG BELAJAR</h1>
       <div class="identity-row">
           <div class="identitas-box">
+              <img src="logo-putih.png" class="img-identitas" alt="Logo">
               <div>
-                  <p><strong>SDN Pengkol</strong></p>
+                  <p class="text-utama">SDN Pengkol</p>
                   <p>Kelas 5 | 2025/2026</p>
               </div>
           </div>
           <div class="guru-profile-box">
               <img src="foto-guru.webp" class="foto-guru" alt="Aditya">
               <div class="guru-info">
-                  <p class="guru-nama">Aditya W. W., S.Pd</p>
+                  <p class="text-utama">Aditya W. W., S.Pd</p>
                   <p>NIP. 199403192023211005</p>
                   <button class="btn-guru-menu" onclick="bukaSandi()">⚙️ Login</button>
               </div>
@@ -137,30 +145,8 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="sandiModal">
-  <div class="modal" style="max-width:280px;">
-    <h3 style="color:white; margin-bottom:15px; font-size: 1rem;">Akses Guru</h3>
-    <input type="password" id="passInput" placeholder="Sandi">
-    <button class="btn btn-primary" onclick="cekSandi()">Masuk</button>
-    <button class="btn" style="background:transparent; color:white;" onclick="tutupSandi()">Batal</button>
-  </div>
-</div>
-
-<div class="modal-overlay" id="uploadModal">
-  <div class="modal">
-    <h3 id="modalSiswa" style="color:#38bdf8; font-size: 1.1rem;">Nama Siswa</h3>
-    <hr style="margin:15px 0; opacity:0.1;">
-    <div id="areaTugas">
-        <a href="#" id="linkKuisSiswa" target="_blank" class="btn btn-kuis">🚀 KERJAKAN TUGAS</a>
-        <input type="file" id="fileInput" multiple style="color:white; margin-bottom:15px; font-size: 0.8rem;">
-        <button class="btn btn-primary" id="btnKirim" onclick="prosesUpload()">UPLOAD BUKTI</button>
-    </div>
-    <div id="areaTutup" style="display:none; color:white; text-align:center;"><p>⚠️ Tugas ditutup.</p></div>
-    <button class="btn" style="background:transparent; color:white;" onclick="tutupModal()">Tutup</button>
-  </div>
-</div>
-
 <script>
+  // ... (Sisa script JavaScript tetap sama seperti sebelumnya) ...
   const scriptURL = "https://script.google.com/macros/s/AKfycbzMn1SBnS_K0P_DXVVWugsbAdCBq98iNAj4Bnungihi1HYDHm11x_np5meayW9o4Nhs3g/exec"; 
   const SISWA_DATA = [
     { nama: "Alvaro Adnan Aji Pambudi", ikon: "👦" }, { nama: "Anantha Yudha Diztira", ikon: "👦" },
@@ -247,5 +233,8 @@
   }
   muatDataUtama();
 </script>
+
+<div class="modal-overlay" id="sandiModal">...</div>
+<div class="modal-overlay" id="uploadModal">...</div>
 </body>
 </html>
