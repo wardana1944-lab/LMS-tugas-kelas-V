@@ -51,7 +51,7 @@
           <img src="foto-guru.webp" class="foto-guru" alt="Aditya">
           <div class="guru-info">
               <p style="font-weight:bold; color:#38bdf8;">Aditya Wahyu Wardana, S.Pd</p>
-              <button class="btn-guru-menu" onclick="bukaSandi()">⚙️ Menu Guru</button>
+              <button class="btn-guru-menu" onclick="bukaSandi()">⚙️ Log In Guru</button>
           </div>
       </div>
     </div>
@@ -71,7 +71,7 @@
         <input type="text" id="setTopik" placeholder="Nama Tugas Baru">
         <input type="text" id="setLink" placeholder="Link Materi/Kuis">
         <button class="btn btn-primary" onclick="simpanPengaturan()">AKTIFKAN TUGAS</button>
-        <button class="btn btn-danger" onclick="cutOffTugas()" style="margin-top:10px;">✂️ CUT OFF & RESET SEMUA</button>
+        <button class="btn btn-danger" onclick="cutOffTugas()" style="margin-top:10px;">✂️ CUT OFF TUGAS</button>
     </div>
     <div style="overflow-x: auto;">
         <table id="tabelRekap">
@@ -98,7 +98,7 @@
     <div id="areaTugas">
         <a href="#" id="linkKuisSiswa" target="_blank" class="btn btn-kuis">🚀 KERJAKAN TUGAS</a>
         <input type="file" id="fileInput" multiple style="color:white; margin-bottom:15px;">
-        <button class="btn btn-primary" id="btnKirim" onclick="prosesUpload()">UPLOAD BUKTI</button>
+        <button class="btn btn-primary" id="btnKirim" onclick="prosesUpload()">UPLOAD</button>
     </div>
     <div id="areaTutup" style="display:none; color:white; text-align:center;"><p>⚠️ Tugas ditutup.</p></div>
     <button class="btn" style="background:transparent; color:white;" onclick="tutupModal()">Tutup</button>
@@ -192,3 +192,4 @@
 </script>
 </body>
 </html>
+
