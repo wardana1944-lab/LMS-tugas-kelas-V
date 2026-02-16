@@ -7,42 +7,42 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
-    /* CSS & Tampilan Utama */
+    /* KEMBALI KE STYLE AWAL YANG BAPAK SUKA */
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
     body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; padding: 15px; color: #f8fafc; }
-    .container { max-width: 1000px; margin: 0 auto; }
+    .container { max-width: 1000px; margin: 0 auto; position: relative; }
     
-    /* Header & Identitas */
-    .header-main { text-align: center; margin-bottom: 25px; }
-    .identity-row { display: flex; gap: 10px; margin-bottom: 20px; }
-    .identitas-box, .guru-profile-box { flex: 1; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 15px; border: 1px solid rgba(56,189,248,0.2); display: flex; align-items: center; gap: 10px; }
-    .img-identitas, .foto-guru { width: 45px; height: 45px; object-fit: cover; }
-    .foto-guru { border-radius: 50%; border: 2px solid #38bdf8; }
-    .text-utama { font-weight: bold; color: #38bdf8; font-size: 0.75rem; }
+    .header-main { text-align: center; margin-bottom: 25px; padding-top: 10px; }
+    .header-main h1 { font-size: 1.8rem; color: #38bdf8; letter-spacing: 2px; margin-bottom: 20px; text-shadow: 0 0 15px rgba(56,189,248,0.5); }
 
-    /* Dashboard Guru */
-    #halamanGuru { display: none; background: #ffffff; color: #1e293b; border-radius: 20px; padding: 20px; }
-    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-    .tab-link { cursor: pointer; padding: 8px 15px; border-radius: 8px; background: #e2e8f0; font-weight: bold; font-size: 0.8rem; }
-    .tab-link.active { background: #38bdf8; color: white; }
-    .panel { display: none; }
-    .panel.active { display: block; }
+    .identity-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; width: 100%; }
+    .identitas-box, .guru-profile-box { flex: 1; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 15px; border: 1px solid rgba(56,189,248,0.2); display: flex; align-items: center; gap: 12px; text-align: left; }
+    .identitas-box { border-style: dashed; }
+    .guru-profile-box { background: rgba(56,189,248,0.1); cursor: pointer; }
 
-    /* Form & Input */
-    input, textarea, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px; }
-    .btn { padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
-    .btn-primary { background: #38bdf8; color: #0f172a; }
-    .btn-success { background: #10b981; color: white; }
+    .img-identitas { width: 45px; height: 45px; object-fit: contain; }
+    .foto-guru { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #38bdf8; object-fit: cover; }
+    .text-utama { font-weight: bold; color: #38bdf8; font-size: 0.75rem !important; }
+    .sub-text { font-size: 0.7rem; line-height: 1.3; }
 
-    /* Area Ujian Siswa */
-    #areaUjian { display: none; background: white; color: #1e293b; padding: 20px; border-radius: 20px; margin-top: 10px; }
-    .soal-item { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-    
-    /* Sertifikat/Hasil yang akan di-download */
-    #hasilSiswa { display: none; background: #f8fafc; padding: 30px; border-radius: 15px; border: 5px solid #38bdf8; text-align: center; color: #1e293b; }
-    
+    /* GRID SISWA */
     .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
-    .student-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; }
+    .student-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px 10px; text-align: center; cursor: pointer; transition: 0.3s; }
+    .student-icon { width: 50px; height: 50px; background: #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 1.8rem; border: 2px solid #38bdf8; }
+
+    /* DASHBOARD GURU - PER KOLOM */
+    #halamanGuru { display: none; background: #ffffff; color: #1e293b; border-radius: 20px; padding: 20px; margin-top: 10px; }
+    .soal-card { background: #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #38bdf8; }
+    input, textarea, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px; font-size: 0.9rem; }
+    
+    .btn { padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
+    .btn-primary { background: #38bdf8; color: white; }
+    .btn-add { background: #10b981; color: white; margin-bottom: 20px; }
+    .btn-outline { background: #64748b; color: white; margin-top: 5px; }
+
+    /* AREA HASIL UNTUK DOWNLOAD */
+    #areaUjianSiswa { display: none; background: white; color: #1e293b; border-radius: 20px; padding: 20px; }
+    #sertifikat { display: none; background: white; color: #1e293b; padding: 30px; border-radius: 15px; border: 8px solid #38bdf8; text-align: center; }
   </style>
 </head>
 <body>
@@ -50,175 +50,205 @@
 <div class="container">
   <div id="halamanDepan">
     <div class="header-main">
-      <h1 style="color:#38bdf8">RUANG BELAJAR</h1>
+      <h1>RUANG BELAJAR</h1>
       <div class="identity-row">
           <div class="identitas-box">
               <img src="logo-putih.png" class="img-identitas">
-              <div><p class="text-utama">SDN Pengkol</p></div>
+              <div><p class="text-utama">SDN Pengkol</p><p class="sub-text">Kelas 5 | 2025/2026</p></div>
           </div>
           <div class="guru-profile-box" onclick="bukaSandi()">
               <img src="foto-guru.webp" class="foto-guru">
-              <div class="guru-info"><p class="text-utama">Aditya W. W.</p></div>
+              <div class="guru-info"><p class="text-utama">Aditya W. W., S.Pd</p><p class="sub-text">⚙️ Dashboard Guru</p></div>
           </div>
       </div>
     </div>
     <div class="cards-grid" id="cardsGrid"></div>
   </div>
 
-  <div id="areaUjian">
-    <h2 id="judulUjianSiswa" style="margin-bottom: 20px;"></h2>
-    <div id="kontenSoal"></div>
-    <button class="btn btn-success" onclick="akhiriUjian()">AKHIRI & SIMPAN NILAI</button>
+  <div id="areaUjianSiswa">
+      <h2 id="judulUjian" style="margin-bottom:20px; color:#0f172a"></h2>
+      <div id="listSoalSiswa"></div>
+      <button class="btn btn-primary" onclick="selesaiUjian()">AKHIRI TUGAS</button>
   </div>
 
-  <div id="hasilSiswa">
-    <img src="logo-putih.png" style="width: 60px; filter: invert(1);"><br><br>
-    <h3>HASIL TUGAS MANDIRI</h3>
-    <h1 id="nilaiAngka" style="font-size: 4rem; color: #38bdf8; margin: 10px 0;">0</h1>
-    <p id="namaSiswaHasil" style="font-weight: bold;"></p>
-    <p id="tglHasil"></p>
-    <div id="rekapUraian" style="text-align: left; font-size: 0.8rem; margin-top: 15px; border-top: 1px solid #ccc; padding-top: 10px; display: none;"></div>
-    <br>
-    <button class="btn btn-primary" onclick="downloadHasil()">💾 SIMPAN KE GALERI (JPG)</button>
+  <div id="sertifikat">
+      <img src="logo-putih.png" style="width:50px; filter:invert(1)">
+      <h2 style="margin-top:10px">HASIL TUGAS</h2>
+      <hr style="margin:15px 0">
+      <p>Diberikan kepada:</p>
+      <h1 id="namaHasil" style="color:#38bdf8">NAMA SISWA</h1>
+      <div id="boxNilai" style="margin:20px 0; display:none;">
+          <p>Nilai Akhir:</p>
+          <h1 id="angkaNilai" style="font-size: 4rem;">0</h1>
+      </div>
+      <div id="boxUraian" style="text-align:left; background:#f1f5f9; padding:15px; border-radius:10px; display:none;">
+          <p><b>Rekap Jawaban:</b></p>
+          <div id="teksJawaban"></div>
+      </div>
+      <p id="waktuHasil" style="font-size:0.7rem; margin-top:20px; opacity:0.6"></p>
+      <br>
+      <button class="btn btn-primary" onclick="downloadJpg()">💾 DOWNLOAD HASIL KE GALERI</button>
   </div>
 
   <div id="halamanGuru">
-    <h2>📊 Dashboard Guru</h2><br>
-    <div class="tabs">
-        <div class="tab-link active" onclick="openTab(event, 'tabBuat')">🛠 Buat Soal</div>
-        <div class="tab-link" onclick="openTab(event, 'tabRekap')">📋 Rekap Nilai</div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
+        <h2 style="color:#0f172a">🛠 Question Builder</h2>
+        <button onclick="location.reload()" style="background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer">Keluar</button>
     </div>
+    
+    <label>Judul Tugas / Mata Pelajaran:</label>
+    <input type="text" id="judulInput" placeholder="Contoh: UH Matematika Pecahan">
+    
+    <label>Jenis Soal:</label>
+    <select id="jenisInput" onchange="resetSoal()">
+        <option value="pg">Pilihan Ganda (Otomatis Nilai)</option>
+        <option value="uraian">Uraian (Rekap Jawaban)</option>
+    </select>
 
-    <div id="tabBuat" class="panel active">
-        <label>Judul Tugas:</label>
-        <input type="text" id="judulTugas" placeholder="Misal: UH IPAS Bab 1">
-        
-        <label>Jenis Soal:</label>
-        <select id="jenisSoal" onchange="toggleInputSoal()">
-            <option value="pg">Pilihan Ganda (Otomatis Nilai)</option>
-            <option value="uraian">Uraian (Rekap Jawaban)</option>
-        </select>
-
-        <div id="areaEditorSoal">
-            <textarea id="inputSoal" rows="5" placeholder="Tulis soal di sini..."></textarea>
-            <div id="opsiPG">
-                <input type="text" id="pg_a" placeholder="Pilihan A">
-                <input type="text" id="pg_b" placeholder="Pilihan B">
-                <input type="text" id="pg_c" placeholder="Pilihan C">
-                <input type="text" id="pg_d" placeholder="Pilihan D">
-                <label>Kunci Jawaban:</label>
-                <select id="pg_kunci"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
-            </div>
+    <div id="containerSoal">
         </div>
-        <button class="btn btn-primary" onclick="publishTugas()">PUBLIKASIKAN TUGAS</button>
-    </div>
+
+    <button class="btn btn-add" onclick="tambahKolomSoal()">+ Tambah Soal</button>
+    <button class="btn btn-primary" onclick="simpanTugas()">PUBLIKASIKAN TUGAS</button>
+    <button class="btn btn-outline" onclick="location.reload()">BATAL</button>
   </div>
 </div>
 
-<div id="modalLogin" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:999; align-items:center; justify-content:center;">
-    <div style="background:white; padding:20px; border-radius:15px; width:280px;">
-        <input type="password" id="passInput" placeholder="Sandi Guru">
-        <button class="btn btn-primary" onclick="loginGuru()">Masuk</button>
+<div id="modalSandi" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:999; align-items:center; justify-content:center;">
+    <div style="background:white; padding:20px; border-radius:15px; width:280px; text-align:center;">
+        <h3 style="color:#0f172a">Akses Guru</h3><br>
+        <input type="password" id="passGuru" placeholder="Sandi">
+        <button class="btn btn-primary" onclick="cekSandi()">Login</button>
+        <button class="btn btn-outline" onclick="tutupSandi()">Batal</button>
     </div>
 </div>
 
 <script>
-    let dbTugas = { judul: "", jenis: "", soal: "", kunci: "", opsi: [] };
-    let userSekarang = "";
+    let listSiswa = ["Alvaro", "Anantha", "Arifah", "Aurelia", "Dhafitha", "Dhian", "Dimas", "Erfin", "Marsya", "Mikayla", "Ozil", "Rhevan", "Ridho", "Rizky", "Tanca"];
+    let dataTugas = { judul: "", jenis: "", soal: [] };
+    let siswaAktif = "";
 
-    // Inisialisasi Data Siswa
-    const SISWA = ["Alvaro", "Anantha", "Arifah", "Aurelia", "Dhafitha", "Dhian", "Dimas", "Erfin", "Marsya", "Mikayla", "Ozil", "Rhevan", "Ridho", "Rizky", "Tanca"];
+    // TAMPILKAN SISWA
     const grid = document.getElementById('cardsGrid');
-    SISWA.forEach(s => {
-        grid.innerHTML += `<div class="student-card" onclick="mulaiUjian('${s}')">👤<br>${s}</div>`;
+    listSiswa.forEach(s => {
+        grid.innerHTML += `<div class="student-card" onclick="mulaiTugas('${s}')"><div class="student-icon">👤</div><div class="text-utama">${s}</div></div>`;
     });
 
-    function toggleInputSoal() {
-        document.getElementById('opsiPG').style.display = document.getElementById('jenisSoal').value === 'pg' ? 'block' : 'none';
-    }
-
-    function publishTugas() {
-        dbTugas = {
-            judul: document.getElementById('judulTugas').value,
-            jenis: document.getElementById('jenisSoal').value,
-            soal: document.getElementById('inputSoal').value,
-            kunci: document.getElementById('pg_kunci').value,
-            opsi: [document.getElementById('pg_a').value, document.getElementById('pg_b').value, document.getElementById('pg_c').value, document.getElementById('pg_d').value]
-        };
-        alert("Tugas Berhasil Dipublikasikan!");
-        location.reload();
-    }
-
-    function mulaiUjian(nama) {
-        if(!dbTugas.judul) return alert("Belum ada tugas dari Guru!");
-        userSekarang = nama;
-        document.getElementById('halamanDepan').style.display = 'none';
-        document.getElementById('areaUjian').style.display = 'block';
-        document.getElementById('judulUjianSiswa').innerText = dbTugas.judul;
+    // SISTEM GURU
+    let jmlSoal = 0;
+    function tambahKolomSoal() {
+        jmlSoal++;
+        const jenis = document.getElementById('jenisInput').value;
+        const div = document.createElement('div');
+        div.className = 'soal-card';
+        div.innerHTML = `<p><b>Soal No. ${jmlSoal}</b></p>
+            <textarea class="q-text" placeholder="Tulis pertanyaan..."></textarea>`;
         
-        let html = `<div class="soal-item"><p>${dbTugas.soal}</p>`;
-        if(dbTugas.jenis === 'pg') {
-            ['A','B','C','D'].forEach((r, i) => {
-                html += `<label><input type="radio" name="jawaban" value="${r}"> ${r}. ${dbTugas.opsi[i]}</label><br>`;
-            });
-        } else {
-            html += `<textarea id="jawabanUraian" rows="4" placeholder="Ketik jawabanmu di sini..."></textarea>`;
+        if(jenis === 'pg') {
+            div.innerHTML += `
+                <input type="text" class="q-a" placeholder="Opsi A">
+                <input type="text" class="q-b" placeholder="Opsi B">
+                <input type="text" class="q-c" placeholder="Opsi C">
+                <input type="text" class="q-d" placeholder="Opsi D">
+                <select class="q-kunci"><option value="0">Kunci A</option><option value="1">Kunci B</option><option value="2">Kunci C</option><option value="3">Kunci D</option></select>`;
         }
-        html += `</div>`;
-        document.getElementById('kontenSoal').innerHTML = html;
+        document.getElementById('containerSoal').appendChild(div);
     }
 
-    function akhiriUjian() {
-        let skor = 0;
-        let rekap = "";
-        
-        if(dbTugas.jenis === 'pg') {
-            let terpilih = document.querySelector('input[name="jawaban"]:checked')?.value;
-            skor = (terpilih === dbTugas.kunci) ? 100 : 0;
-            document.getElementById('nilaiAngka').innerText = skor;
+    function resetSoal() { document.getElementById('containerSoal').innerHTML = ""; jmlSoal = 0; tambahKolomSoal(); }
+
+    function simpanTugas() {
+        dataTugas.judul = document.getElementById('judulInput').value;
+        dataTugas.jenis = document.getElementById('jenisInput').value;
+        dataTugas.soal = [];
+        const cards = document.querySelectorAll('.soal-card');
+        cards.forEach(c => {
+            let sObj = { tanya: c.querySelector('.q-text').value };
+            if(dataTugas.jenis === 'pg') {
+                sObj.opsi = [c.querySelector('.q-a').value, c.querySelector('.q-b').value, c.querySelector('.q-c').value, c.querySelector('.q-d').value];
+                sObj.kunci = c.querySelector('.q-kunci').value;
+            }
+            dataTugas.soal.push(sObj);
+        });
+        alert("Tugas Aktif!");
+        document.getElementById('halamanGuru').style.display='none';
+        document.getElementById('halamanDepan').style.display='block';
+    }
+
+    // SISTEM SISWA
+    function mulaiTugas(nama) {
+        if(dataTugas.soal.length === 0) return alert("Belum ada tugas.");
+        siswaAktif = nama;
+        document.getElementById('halamanDepan').style.display='none';
+        document.getElementById('areaUjianSiswa').style.display='block';
+        document.getElementById('judulUjian').innerText = dataTugas.judul;
+        let html = "";
+        dataTugas.soal.forEach((s, idx) => {
+            html += `<div style="margin-bottom:20px; border-bottom:1px solid #ddd; padding-bottom:15px;">
+                <p><b>${idx+1}. ${s.tanya}</b></p>`;
+            if(dataTugas.jenis === 'pg') {
+                s.opsi.forEach((o, i) => {
+                    html += `<label style="display:block; margin:5px 0;"><input type="radio" name="soal${idx}" value="${i}"> ${o}</label>`;
+                });
+            } else {
+                html += `<textarea class="ans-uraian" style="margin-top:10px" placeholder="Ketik jawaban..."></textarea>`;
+            }
+            html += `</div>`;
+        });
+        document.getElementById('listSoalSiswa').innerHTML = html;
+    }
+
+    function selesaiUjian() {
+        let betul = 0;
+        let rekapUraian = "";
+        dataTugas.soal.forEach((s, idx) => {
+            if(dataTugas.jenis === 'pg') {
+                let r = document.querySelector(`input[name="soal${idx}"]:checked`);
+                if(r && r.value == s.kunci) betul++;
+            } else {
+                let t = document.querySelectorAll('.ans-uraian')[idx].value;
+                rekapUraian += `<p><b>No.${idx+1}:</b> ${t}</p>`;
+            }
+        });
+
+        document.getElementById('areaUjianSiswa').style.display='none';
+        document.getElementById('sertifikat').style.display='block';
+        document.getElementById('namaHasil').innerText = siswaAktif;
+        document.getElementById('waktuHasil').innerText = "Diselesaikan pada: " + new Date().toLocaleString();
+
+        if(dataTugas.jenis === 'pg') {
+            document.getElementById('boxNilai').style.display='block';
+            document.getElementById('angkaNilai').innerText = Math.round((betul/dataTugas.soal.length)*100);
         } else {
-            rekap = document.getElementById('jawabanUraian').value;
-            document.getElementById('nilaiAngka').innerText = "SELESAI";
-            document.getElementById('rekapUraian').style.display = "block";
-            document.getElementById('rekapUraian').innerText = "Jawaban Kamu: " + rekap;
+            document.getElementById('boxUraian').style.display='block';
+            document.getElementById('teksJawaban').innerHTML = rekapUraian;
         }
-
-        document.getElementById('areaUjian').style.display = 'none';
-        document.getElementById('hasilSiswa').style.display = 'block';
-        document.getElementById('namaSiswaHasil').innerText = userSekarang;
-        document.getElementById('tglHasil').innerText = new Date().toLocaleString();
     }
 
-    function downloadHasil() {
-        const target = document.getElementById('hasilSiswa');
-        // Menyembunyikan tombol download saat difoto agar tidak ikut masuk gambar
-        target.querySelector('button').style.display = 'none';
-        
-        html2canvas(target).then(canvas => {
+    function downloadJpg() {
+        const box = document.getElementById('sertifikat');
+        box.querySelector('button').style.display = 'none'; // Sembunyikan tombol saat difoto
+        html2canvas(box).then(canvas => {
+            const img = canvas.toDataURL("image/jpeg");
             const link = document.createElement('a');
-            link.download = `Nilai_${userSekarang}.jpg`;
-            link.href = canvas.toDataURL("image/jpeg");
+            link.download = `Nilai_${siswaAktif}.jpg`;
+            link.href = img;
             link.click();
-            target.querySelector('button').style.display = 'block';
-            alert("Berhasil disimpan ke Galeri!");
+            box.querySelector('button').style.display = 'block';
         });
     }
 
-    function bukaSandi() { document.getElementById('modalLogin').style.display = 'flex'; }
-    function loginGuru() {
-        if(document.getElementById('passInput').value === "guru123") {
-            document.getElementById('modalLogin').style.display = 'none';
-            document.getElementById('halamanDepan').style.display = 'none';
-            document.getElementById('halamanGuru').style.display = 'block';
-        }
-    }
-    function openTab(evt, name) {
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
-        document.getElementById(name).classList.add('active');
-        evt.currentTarget.classList.add('active');
+    // LOGIN GURU
+    function bukaSandi() { document.getElementById('modalSandi').style.display='flex'; }
+    function tutupSandi() { document.getElementById('modalSandi').style.display='none'; }
+    function cekSandi() {
+        if(document.getElementById('passGuru').value === "guru123") {
+            tutupSandi();
+            document.getElementById('halamanDepan').style.display='none';
+            document.getElementById('halamanGuru').style.display='block';
+            resetSoal();
+        } else { alert("Sandi salah!"); }
     }
 </script>
-
 </body>
 </html>
