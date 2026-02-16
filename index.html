@@ -10,14 +10,13 @@
     body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; padding: 20px; color: #f8fafc; position: relative; }
     .container { max-width: 1000px; margin: 0 auto; }
     
-    /* Logo Pojok Kanan Atas */
+    /* Logo Pojok Kanan Atas - Memanggil dari GitHub Repo */
     .logo-sekolah { 
       position: absolute; 
       top: 20px; 
       right: 20px; 
-      width: 60px; 
+      width: 70px; 
       height: auto; 
-      filter: drop-shadow(0 0 5px rgba(56,189,248,0.3));
       z-index: 10;
     }
 
@@ -26,7 +25,6 @@
     
     .identitas-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 15px; border: 1px dashed rgba(56,189,248,0.3); margin-bottom: 15px; }
     
-    /* Profil Wali Kelas */
     .guru-profile-box { 
       background: rgba(56,189,248,0.1); 
       padding: 20px; 
@@ -39,7 +37,6 @@
       gap: 20px;
       text-align: left;
       max-width: 450px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
     .foto-guru {
       width: 90px;
@@ -49,9 +46,8 @@
       object-fit: cover;
       background: #334155;
     }
-    .guru-info { display: flex; flex-direction: column; gap: 3px; }
     .guru-info p { margin: 0; font-size: 0.85rem; opacity: 0.9; }
-    .guru-nama { font-weight: bold; color: #38bdf8; font-size: 1.1rem !important; margin-bottom: 2px !important; }
+    .guru-nama { font-weight: bold; color: #38bdf8; font-size: 1.1rem !important; }
 
     .btn-guru-menu { 
       background: rgba(56,189,248,0.2); 
@@ -62,18 +58,14 @@
       cursor: pointer; 
       border-radius: 6px; 
       margin-top: 8px;
-      width: fit-content;
-      transition: 0.3s;
       font-weight: 600;
     }
-    .btn-guru-menu:hover { background: #38bdf8; color: #0f172a; }
 
-    /* Gaya Kartu Siswa */
     .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
-    .student-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px); }
-    .student-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.1); border-color: #38bdf8; }
+    .student-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; }
     .student-icon { width: 65px; height: 65px; background: #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 2.5rem; border: 2px solid #38bdf8; }
-    
+
+    /* Modal Styles */
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
     .modal { background: #1e293b; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; border: 1px solid rgba(255,255,255,0.1); }
     .active { display: flex; }
@@ -84,28 +76,26 @@
     .guru-panel { background: #ffffff; color: #1e293b; border-radius: 20px; padding: 25px; display: none; margin-top: 20px; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; color: #333; font-size: 0.9rem; }
     th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
-    input[type="text"], input[type="password"] { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 10px; }
 
     @media (max-width: 600px) {
-      .logo-sekolah { position: static; display: block; margin: 0 auto 15px; width: 50px; }
+      .logo-sekolah { position: static; display: block; margin: 0 auto 15px; width: 60px; }
     }
   </style>
 </head>
 <body>
 
-<img src="https://drive.google.com/uc?export=view&id=1XjSu50GinqKep-bRm4xr2_ITV_cOoPKi" class="logo-sekolah" alt="Logo">
+<img src="logo putih.png" class="logo-sekolah" alt="Logo Sekolah">
 
 <div class="container">
   <div class="header">
     <h1>RUANG BELAJAR</h1>
-
     <div class="identitas-box">
         <p><strong>SD Negeri Pengkol</strong></p>
         <p>Kelas: 5 (Lima) | Tahun Pelajaran 2025/2026</p>
     </div>
 
     <div class="guru-profile-box">
-        <img src="https://drive.google.com/uc?export=view&id=17XiEmbNxkFpi1E8fzA-aRKizAEzYEY7t" class="foto-guru" alt="Aditya Wahyu Wardana">
+        <img src="foto-guru.jpg" class="foto-guru" alt="Aditya Wahyu Wardana">
         <div class="guru-info">
             <p class="guru-nama">Aditya Wahyu Wardana, S.Pd</p>
             <p>NIP. 199403192023211005</p>
@@ -118,7 +108,7 @@
   <div id="studentView">
     <div style="text-align: center; margin-bottom: 25px; background: rgba(56,189,248,0.1); padding: 15px; border-radius: 15px; border: 1px solid rgba(56,189,248,0.2);">
         <p style="color: #38bdf8; font-size: 0.8rem; text-transform: uppercase; font-weight: bold;">Tugas Aktif:</p>
-        <h2 id="displayTopik">Menghubungkan...</h2>
+        <h2 id="displayTopik">Memuat...</h2>
     </div>
     <div class="cards-grid" id="cardsGrid"></div>
   </div>
@@ -126,13 +116,11 @@
   <div id="guruView" class="guru-panel">
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2>Dashboard Guru</h2>
-        <button onclick="location.reload()" style="padding: 5px 10px; cursor: pointer;">Keluar</button>
+        <button onclick="location.reload()">Keluar</button>
     </div>
     <div style="margin: 15px 0;">
-        <label>Nama Tugas:</label>
-        <input type="text" id="setTopik" placeholder="Nama Tugas">
-        <label>Link Materi/Kuis:</label>
-        <input type="text" id="setLink" placeholder="Tempel Link">
+        <input type="text" id="setTopik" style="width:100%; padding:10px; margin-bottom:10px;" placeholder="Nama Tugas">
+        <input type="text" id="setLink" style="width:100%; padding:10px; margin-bottom:10px;" placeholder="Link Materi">
         <button class="btn btn-primary" onclick="simpanPengaturan()">SIMPAN & UPDATE</button>
     </div>
     <div style="overflow-x: auto;">
@@ -144,145 +132,66 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="uploadModal">
-  <div class="modal">
-    <h3 id="modalSiswa">Nama Siswa</h3>
-    <hr style="margin: 15px 0; opacity: 0.1;">
-    <a href="#" id="linkKuisSiswa" target="_blank" class="btn btn-kuis">🚀 MULAI KERJAKAN TUGAS</a>
-    <input type="file" id="fileInput" multiple style="margin-bottom: 15px; color: white;">
-    <button class="btn btn-primary" id="btnKirim" onclick="prosesUpload()">UPLOAD NILAI</button>
-    <button class="btn" style="background:transparent; color:white;" onclick="tutupModal()">Batal</button>
-  </div>
-</div>
-
 <div class="modal-overlay" id="sandiModal">
   <div class="modal" style="max-width: 300px;">
     <h3>Sandi Guru</h3>
-    <input type="password" id="passInput">
+    <input type="password" id="passInput" style="width:100%; padding:10px; margin:10px 0;">
     <button class="btn btn-primary" onclick="cekSandi()">Masuk</button>
     <button class="btn" style="background:transparent; color:white;" onclick="tutupSandi()">Batal</button>
   </div>
 </div>
 
+<div class="modal-overlay" id="uploadModal">
+  <div class="modal">
+    <h3 id="modalSiswa">Nama Siswa</h3>
+    <hr style="margin: 15px 0; opacity: 0.1;">
+    <a href="#" id="linkKuisSiswa" target="_blank" class="btn btn-kuis">🚀 MULAI KERJAKAN TUGAS</a>
+    <input type="file" id="fileInput" multiple style="margin-bottom: 10px; color:white;">
+    <button class="btn btn-primary" id="btnKirim" onclick="prosesUpload()">UPLOAD NILAI</button>
+    <button class="btn" style="background:transparent; color:white;" onclick="tutupModal()">Batal</button>
+  </div>
+</div>
+
 <script>
   const scriptURL = "https://script.google.com/macros/s/AKfycbzMn1SBnS_K0P_DXVVWugsbAdCBq98iNAj4Bnungihi1HYDHm11x_np5meayW9o4Nhs3g/exec"; 
-
   const SISWA_DATA = [
-    { nama: "Alvaro Adnan Aji Pambudi", ikon: "👦" },
-    { nama: "Anantha Yudha Diztira", ikon: "👦" },
-    { nama: "Arifah Yhuan Nur Azizah", ikon: "👧" },
-    { nama: "Aurelia Gieni Lindria Putri", ikon: "👧" },
-    { nama: "Dhafitha Nizza Nur Azizah", ikon: "👧" },
-    { nama: "Dhian Rahmawati", ikon: "👧" },
-    { nama: "Dimas Rasyid Faristia", ikon: "👦" },
-    { nama: "Erfin Denu Setiawan", ikon: "👦" },
-    { nama: "Marsya Anindya Kiera", ikon: "👧" },
-    { nama: "Mikayla Ayuningtyas", ikon: "👧" },
-    { nama: "Muhammad Ozil Ramadhan", ikon: "👦" },
-    { nama: "Rhevan Nabil Yudanta", ikon: "👦" },
-    { nama: "Ridho Wicaksono", ikon: "👦" },
-    { nama: "Rizky Syam Dani", ikon: "👦" },
+    { nama: "Alvaro Adnan Aji Pambudi", ikon: "👦" }, { nama: "Anantha Yudha Diztira", ikon: "👦" },
+    { nama: "Arifah Yhuan Nur Azizah", ikon: "👧" }, { nama: "Aurelia Gieni Lindria Putri", ikon: "👧" },
+    { nama: "Dhafitha Nizza Nur Azizah", ikon: "👧" }, { nama: "Dhian Rahmawati", ikon: "👧" },
+    { nama: "Dimas Rasyid Faristia", ikon: "👦" }, { nama: "Erfin Denu Setiawan", ikon: "👦" },
+    { nama: "Marsya Anindya Kiera", ikon: "👧" }, { nama: "Mikayla Ayuningtyas", ikon: "👧" },
+    { nama: "Muhammad Ozil Ramadhan", ikon: "👦" }, { nama: "Rhevan Nabil Yudanta", ikon: "👦" },
+    { nama: "Ridho Wicaksono", ikon: "👦" }, { nama: "Rizky Syam Dani", ikon: "👦" },
     { nama: "Tanca Al Verosa", ikon: "👦" }
   ];
   
-  let topikAktif = "Memuat...";
-  let linkAktif = "#";
-  let siswaTerpilih = "";
-
-  function muatPengaturan() {
-    fetch(scriptURL + "?action=getSettings")
-    .then(r => r.json())
-    .then(settings => {
-      topikAktif = settings.topik || "Tugas Belum Diatur";
-      linkAktif = settings.link || "#";
-      document.getElementById('displayTopik').innerText = topikAktif;
-      document.getElementById('setTopik').value = topikAktif;
-      document.getElementById('setLink').value = linkAktif;
-    });
-  }
-
+  let topikAktif = ""; let linkAktif = ""; let siswaTerpilih = "";
+  function muatPengaturan() { fetch(scriptURL + "?action=getSettings").then(r => r.json()).then(s => { topikAktif = s.topik; linkAktif = s.link; document.getElementById('displayTopik').innerText = topikAktif; }); }
   const grid = document.getElementById('cardsGrid');
-  SISWA_DATA.forEach(s => {
-    grid.innerHTML += `<div class="student-card" onclick="bukaUpload('${s.nama}')"><div class="student-icon">${s.ikon}</div><div style="font-size:0.8rem; font-weight:bold;">${s.nama}</div></div>`;
-  });
-
-  function bukaUpload(nama) {
-    siswaTerpilih = nama;
-    document.getElementById('modalSiswa').innerText = nama;
-    document.getElementById('linkKuisSiswa').href = linkAktif;
-    document.getElementById('uploadModal').classList.add('active');
-  }
-
+  SISWA_DATA.forEach(s => { grid.innerHTML += `<div class="student-card" onclick="bukaUpload('${s.nama}')"><div class="student-icon">${s.ikon}</div><div style="font-size:0.8rem; font-weight:bold;">${s.nama}</div></div>`; });
+  function bukaUpload(n) { siswaTerpilih = n; document.getElementById('modalSiswa').innerText = n; document.getElementById('linkKuisSiswa').href = linkAktif; document.getElementById('uploadModal').classList.add('active'); }
   function tutupModal() { document.getElementById('uploadModal').classList.remove('active'); }
   function bukaSandi() { document.getElementById('sandiModal').classList.add('active'); }
   function tutupSandi() { document.getElementById('sandiModal').classList.remove('active'); }
-
-  function cekSandi() {
-    if(document.getElementById('passInput').value === "guru123") {
-        tutupSandi();
-        document.getElementById('studentView').style.display = "none";
-        document.getElementById('guruView').style.display = "block";
-        muatRekap();
-    } else { alert("Sandi Salah!"); }
-  }
-
-  function simpanPengaturan() {
-    const t = document.getElementById('setTopik').value;
-    const l = document.getElementById('setLink').value;
-    fetch(scriptURL, {
-      method: "POST",
-      body: JSON.stringify({ action: "setSettings", topik: t, link: l })
-    }).then(() => {
-      alert("Berhasil Update!");
-      location.reload();
-    });
-  }
-
+  function cekSandi() { if(document.getElementById('passInput').value === "guru123") { tutupSandi(); document.getElementById('studentView').style.display = "none"; document.getElementById('guruView').style.display = "block"; muatRekap(); } else { alert("Sandi Salah!"); } }
+  function simpanPengaturan() { fetch(scriptURL, { method: "POST", body: JSON.stringify({ action: "setSettings", topik: document.getElementById('setTopik').value, link: document.getElementById('setLink').value }) }).then(() => location.reload()); }
   async function prosesUpload() {
-    const files = document.getElementById('fileInput').files;
-    if(files.length === 0) return alert("Pilih file bukti!");
-    const btn = document.getElementById('btnKirim');
-    btn.innerText = "Mengirim..."; btn.disabled = true;
-
-    let filePromises = Array.from(files).map(file => {
-      return new Promise((resolve) => {
-        let fr = new FileReader();
-        fr.readAsDataURL(file);
-        fr.onload = (e) => resolve({
-          base64: e.target.result.split(",")[1],
-          type: file.type,
-          name: siswaTerpilih + " - " + file.name
-        });
-      });
-    });
-
+    const files = document.getElementById('fileInput').files; if(files.length === 0) return alert("Pilih file!");
+    const btn = document.getElementById('btnKirim'); btn.innerText = "Mengirim..."; btn.disabled = true;
+    let filePromises = Array.from(files).map(f => new Promise((resolve) => { let fr = new FileReader(); fr.readAsDataURL(f); fr.onload = (e) => resolve({ base64: e.target.result.split(",")[1], type: f.type, name: siswaTerpilih + " - " + f.name }); }));
     const allFiles = await Promise.all(filePromises);
-    fetch(scriptURL, {
-      method: "POST",
-      body: JSON.stringify({ action: "upload", siswa: siswaTerpilih, topik: topikAktif, files: allFiles })
-    }).then(() => { alert("Nilai Berhasil Ter-upload!"); tutupModal(); }).finally(() => { btn.innerText = "UPLOAD NILAI"; btn.disabled = false; });
+    fetch(scriptURL, { method: "POST", body: JSON.stringify({ action: "upload", siswa: siswaTerpilih, topik: topikAktif, files: allFiles }) }).then(() => { alert("Berhasil!"); tutupModal(); }).finally(() => { btn.innerText = "UPLOAD NILAI"; btn.disabled = false; });
   }
-
   function muatRekap() {
     const tbody = document.getElementById('rekapBody');
-    tbody.innerHTML = "Memuat data...";
-    fetch(scriptURL)
-    .then(r => r.json())
-    .then(data => {
+    fetch(scriptURL).then(r => r.json()).then(data => {
       tbody.innerHTML = "";
       SISWA_DATA.forEach((s, i) => {
-        const kiriman = data.filter(d => d[1] === s.nama && d[4] === topikAktif);
-        const sudah = kiriman.length > 0;
-        tbody.innerHTML += `<tr>
-          <td>${i+1}</td>
-          <td>${s.nama}</td>
-          <td style="color:${sudah ? '#10b981' : '#ef4444'}; font-weight:bold">${sudah ? 'Sudah' : 'Belum'}</td>
-          <td>${sudah ? `<a href="https://drive.google.com/open?id=${kiriman[0][3]}" target="_blank">Lihat</a>` : '-'}</td>
-        </tr>`;
+        const kiriman = data.filter(d => d[1] === s.nama && d[4] === topikAktif); const sudah = kiriman.length > 0;
+        tbody.innerHTML += `<tr><td>${i+1}</td><td>${s.nama}</td><td style="color:${sudah ? '#10b981' : '#ef4444'}">${sudah ? 'Sudah' : 'Belum'}</td><td>${sudah ? `<a href="https://drive.google.com/open?id=${kiriman[0][3]}" target="_blank">Lihat</a>` : '-'}</td></tr>`;
       });
     });
   }
-
   muatPengaturan();
 </script>
 </body>
