@@ -14,7 +14,7 @@
     .header-main { text-align: center; margin-bottom: 25px; padding-top: 10px; }
     .header-main h1 { font-size: 1.8rem; color: #38bdf8; letter-spacing: 2px; margin-bottom: 20px; text-shadow: 0 0 15px rgba(56,189,248,0.5); }
 
-    /* Layout Dua Kolom */
+    /* Layout Dua Kolom Tetap Berjajar */
     .identity-row { 
         display: flex; 
         gap: 10px; 
@@ -56,6 +56,7 @@
         font-weight: 600; 
     }
     
+    /* Grid Siswa */
     .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
     .student-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px 10px 12px 10px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
     .status-badge { position: absolute; top: 0; right: 0; padding: 3px 7px; font-size: 0.55rem; font-weight: bold; border-bottom-left-radius: 10px; text-transform: uppercase; }
@@ -63,6 +64,7 @@
     .status-sudah { background: #10b981; color: white; }
     .student-icon { width: 50px; height: 50px; background: #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 1.8rem; border: 2px solid #38bdf8; }
     
+    /* Dashboard Guru */
     #halamanGuru { display: none; background: #ffffff; color: #1e293b; border-radius: 20px; padding: 20px; margin-top: 10px; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; color: #333; font-size: 0.8rem; }
     th { background: #38bdf8; color: white; padding: 10px; text-align: left; }
@@ -111,12 +113,16 @@
 
   <div id="halamanGuru">
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #38bdf8; padding-bottom: 15px; margin-bottom: 20px;">
-        <h2 style="color: #0f172a; font-size: 1.2rem;">📊 Dashboard</h2>
+        <h2 style="color: #0f172a; font-size: 1.2rem;">📊 Dashboard Guru</h2>
         <button onclick="location.reload()" style="background:#64748b; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-size: 0.8rem;">Keluar</button>
     </div>
     <div style="background:#f8fafc; padding:15px; border:1px solid #e2e8f0; border-radius:12px; margin-bottom:25px;">
-        <input type="text" id="setTopik" placeholder="Nama Tugas Baru">
-        <input type="text" id="setLink" placeholder="Link Materi/Kuis">
+        <p style="font-size: 0.8rem; margin-bottom: 5px; font-weight: bold;">Judul Tugas:</p>
+        <input type="text" id="setTopik" placeholder="Contoh: Latihan Matematika Perkalian">
+        
+        <p style="font-size: 0.8rem; margin-bottom: 5px; font-weight: bold;">Link Materi/Tugas:</p>
+        <input type="text" id="setLink" placeholder="Tempelkan link Google Drive/Form di sini">
+        
         <button class="btn btn-primary" onclick="simpanPengaturan()">AKTIFKAN TUGAS</button>
         <button class="btn btn-danger" onclick="cutOffTugas()" style="margin-top:10px;">✂️ RESET SEMUA</button>
     </div>
@@ -153,6 +159,7 @@
 </div>
 
 <script>
+  // Script JavaScript tetap sama agar fungsi upload dan login berjalan lancar
   const scriptURL = "https://script.google.com/macros/s/AKfycbzMn1SBnS_K0P_DXVVWugsbAdCBq98iNAj4Bnungihi1HYDHm11x_np5meayW9o4Nhs3g/exec"; 
   const SISWA_DATA = [
     { nama: "Alvaro Adnan Aji Pambudi", ikon: "👦" }, { nama: "Anantha Yudha Diztira", ikon: "👦" },
