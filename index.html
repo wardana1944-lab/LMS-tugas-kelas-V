@@ -83,7 +83,7 @@
     <hr style="margin: 15px 0; opacity: 0.1;">
     <a href="#" id="linkKuisSiswa" target="_blank" class="btn btn-kuis">🚀 MULAI KERJAKAN TUGAS</a>
     <input type="file" id="fileInput" multiple style="margin-bottom: 15px; color: white;">
-    <button class="btn btn-primary" id="btnKirim" onclick="prosesUpload()">UPLOAD NILAI</button>
+    <button class="btn btn-primary" id="btnKirim" onclick="prosesUpload()">UPLOAD</button>
     <button class="btn" style="background:transparent; color:white;" onclick="tutupModal()">Batal</button>
   </div>
 </div>
@@ -178,7 +178,7 @@
     fetch(scriptURL, {
       method: "POST",
       body: JSON.stringify({ action: "upload", siswa: siswaTerpilih, topik: topikAktif, files: allFiles })
-    }).then(() => { alert("Terkirim!"); tutupModal(); }).finally(() => { btn.innerText = "UPLOAD NILAI"; btn.disabled = false; });
+    }).then(() => { alert("Terkirim!"); tutupModal(); }).finally(() => { btn.innerText = "UPLOAD"; btn.disabled = false; });
   }
 
   function muatRekap() {
@@ -205,5 +205,6 @@
 </script>
 </body>
 </html>
+
 
 
