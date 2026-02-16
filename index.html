@@ -11,53 +11,86 @@
     body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; padding: 20px; color: #f8fafc; }
     .container { max-width: 1000px; margin: 0 auto; position: relative; }
     
-    /* UKURAN LOGO DIPERKECIL DISINI */
+    /* Logo Pojok Kiri Atas */
     .logo-sekolah { position: absolute; top: 0; left: 0; width: 50px; height: auto; opacity: 0.9; }
     
     .header-main { text-align: center; margin-bottom: 30px; padding-top: 10px; }
-    .header-main h1 { font-size: 2.2rem; color: #38bdf8; letter-spacing: 2px; margin-bottom: 15px; text-shadow: 0 0 15px rgba(56,189,248,0.5); }
-    .identitas-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 15px; border: 1px dashed rgba(56,189,248,0.3); margin-bottom: 15px; }
-    .guru-profile-box { background: rgba(56,189,248,0.1); padding: 20px; border-radius: 20px; border: 1px solid rgba(56,189,248,0.2); margin: 0 auto 30px auto; display: flex; align-items: center; justify-content: center; gap: 20px; text-align: left; max-width: 450px; }
-    .foto-guru { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #38bdf8; object-fit: cover; }
-    .btn-guru-menu { background: rgba(56,189,248,0.2); border: 1px solid #38bdf8; color: #38bdf8; padding: 5px 12px; font-size: 0.75rem; cursor: pointer; border-radius: 6px; margin-top: 8px; font-weight: 600; }
+    .header-main h1 { font-size: 2.2rem; color: #38bdf8; letter-spacing: 2px; margin-bottom: 25px; text-shadow: 0 0 15px rgba(56,189,248,0.5); }
+
+    /* Layout Dua Kolom untuk Identitas */
+    .identity-row { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+    
+    .identitas-box, .guru-profile-box { 
+        flex: 1; 
+        min-width: 300px; 
+        background: rgba(255,255,255,0.05); 
+        padding: 15px; 
+        border-radius: 20px; 
+        border: 1px solid rgba(56,189,248,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: left;
+    }
+
+    .identitas-box { border-style: dashed; }
+    .guru-profile-box { background: rgba(56,189,248,0.1); gap: 15px; }
+
+    .foto-guru { width: 65px; height: 65px; border-radius: 50%; border: 2px solid #38bdf8; object-fit: cover; }
+    .guru-info p { font-size: 0.85rem; line-height: 1.4; }
+    .guru-nama { font-weight: bold; color: #38bdf8; font-size: 1rem !important; }
+
+    .btn-guru-menu { background: rgba(56,189,248,0.2); border: 1px solid #38bdf8; color: #38bdf8; padding: 4px 10px; font-size: 0.7rem; cursor: pointer; border-radius: 6px; margin-top: 5px; font-weight: 600; }
+    
     .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
     .student-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 25px 15px 15px 15px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
     .status-badge { position: absolute; top: 0; right: 0; padding: 3px 8px; font-size: 0.6rem; font-weight: bold; border-bottom-left-radius: 10px; text-transform: uppercase; }
     .status-belum { background: #ef4444; color: white; }
     .status-sudah { background: #10b981; color: white; }
     .student-icon { width: 60px; height: 60px; background: #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 2.2rem; border: 2px solid #38bdf8; }
+    
     #halamanGuru { display: none; background: #ffffff; color: #1e293b; border-radius: 20px; padding: 25px; margin-top: 10px; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; color: #333; font-size: 0.85rem; }
     th { background: #38bdf8; color: white; padding: 12px; text-align: left; }
     td { padding: 10px; border-bottom: 1px solid #eee; }
     input[type="text"], input[type="password"] { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px; }
+    
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
     .modal { background: #1e293b; padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; border: 1px solid rgba(255,255,255,0.1); }
     .active { display: flex; }
     .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; margin-top: 10px; }
     .btn-primary { background: #38bdf8; color: #0f172a; }
     .btn-danger { background: #ef4444; color: white; }
-    .btn-kuis { background: #f59e0b; color: #000; text-decoration: none; display: block; text-align: center; margin-bottom: 15px; border-radius: 10px; padding: 10px; }
+    .btn-kuis { background: #f59e0b; color: #000; text-decoration: none; display: block; text-align: center; margin-bottom: 15px; border-radius: 10px; padding: 10px; font-weight: bold; }
   </style>
 </head>
 <body>
 <div class="container">
   <div id="halamanDepan">
     <img src="logo-putih.png" class="logo-sekolah" alt="Logo">
+    
     <div class="header-main">
       <h1>RUANG BELAJAR</h1>
-      <div class="identitas-box">
-          <p><strong>SD Negeri Pengkol</strong></p>
-          <p>Kelas: 5 | Tahun Pelajaran 2025/2026</p>
-      </div>
-      <div class="guru-profile-box">
-          <img src="foto-guru.webp" class="foto-guru" alt="Aditya">
-          <div class="guru-info">
-              <p style="font-weight:bold; color:#38bdf8;">Aditya Wahyu Wardana, S.Pd</p>
-              <button class="btn-guru-menu" onclick="bukaSandi()">⚙️ Log In Guru</button>
+      
+      <div class="identity-row">
+          <div class="identitas-box">
+              <div style="font-size: 0.9rem;">
+                  <p><strong>SD Negeri Pengkol</strong></p>
+                  <p>Kelas: 5 | TP 2025/2026</p>
+              </div>
+          </div>
+
+          <div class="guru-profile-box">
+              <img src="foto-guru.webp" class="foto-guru" alt="Aditya">
+              <div class="guru-info">
+                  <p class="guru-nama">Aditya Wahyu Wardana, S.Pd</p>
+                  <p>NIP. 199403192023211005</p>
+                  <button class="btn-guru-menu" onclick="bukaSandi()">⚙️ Log In Guru</button>
+              </div>
           </div>
       </div>
     </div>
+
     <div style="text-align: center; margin-bottom: 25px; background: rgba(56,189,248,0.1); padding: 15px; border-radius: 15px; border: 1px solid rgba(56,189,248,0.2);">
         <p style="color:#38bdf8; font-size:0.8rem; font-weight:bold;">TUGAS AKTIF:</p>
         <h2 id="displayTopik">Menghubungkan...</h2>
@@ -101,7 +134,7 @@
     <div id="areaTugas">
         <a href="#" id="linkKuisSiswa" target="_blank" class="btn btn-kuis">🚀 KERJAKAN TUGAS</a>
         <input type="file" id="fileInput" multiple style="color:white; margin-bottom:15px;">
-        <button class="btn btn-primary" id="btnKirim" onclick="prosesUpload()">UPLOAD</button>
+        <button class="btn btn-primary" id="btnKirim" onclick="prosesUpload()">UPLOAD BUKTI</button>
     </div>
     <div id="areaTutup" style="display:none; color:white; text-align:center;"><p>⚠️ Tugas ditutup.</p></div>
     <button class="btn" style="background:transparent; color:white;" onclick="tutupModal()">Tutup</button>
@@ -195,4 +228,3 @@
 </script>
 </body>
 </html>
-
