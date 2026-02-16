@@ -3,124 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ruang Belajar Pak Adit</title>
+    <title>LMS KELAS 5</title>
     <style>
-        /* Tema Warna Biru Profesional */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: white; margin: 0; padding: 15px; text-align: center; }
-        .card { background: white; color: #1e293b; padding: 25px; border-radius: 20px; max-width: 500px; margin: 15px auto; box-shadow: 0 10px 25px rgba(0,0,0,0.4); border-top: 6px solid #3b82f6; }
-        h1 { color: #1e293b; margin-bottom: 5px; font-size: 24px; }
-        .sub-title { color: #64748b; margin-bottom: 20px; font-size: 14px; }
-        input, button { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #e2e8f0; box-sizing: border-box; font-size: 15px; }
-        button { background: #10b981; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #059669; transform: translateY(-2px); }
-        .btn-guru { background: #3b82f6; margin-top: 25px; font-size: 12px; opacity: 0.8; }
-        
-        /* Gaya Tabel */
-        .rekap-container { margin-top: 25px; text-align: left; }
-        table { width: 100%; border-collapse: collapse; background: #f8fafc; border-radius: 10px; overflow: hidden; }
-        th, td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
-        th { background: #3b82f6; color: white; text-align: left; }
-        .status { color: #10b981; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; margin: 0; padding: 20px; text-align: center; }
+        .card { background: white; color: #333; padding: 25px; border-radius: 20px; max-width: 450px; margin: 20px auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .btn { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-green { background: #10b981; color: white; }
+        .btn-blue { background: #3b82f6; color: white; }
+        .btn-menu { position: absolute; top: 20px; right: 20px; width: auto; padding: 8px 15px; font-size: 12px; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h1>Ruang Belajar Pak Adit</h1>
-        <p class="sub-title">Selamat Belajar & Semangat Berkarya!</p>
-        
-        <div style="background: #eff6ff; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-            <h2 id="topikTugas" style="margin: 0; color: #1e40af; font-size: 18px;">Memuat materi...</h2>
-            <a id="linkTugas" href="#" target="_blank" style="display: inline-block; margin-top: 10px; color: #2563eb; font-weight: bold; text-decoration: none;">👉 KLIK UNTUK BUKA MATERI</a>
-        </div>
-        
-        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
-        
-        <h3>Kirim Tugas Kamu</h3>
-        <input type="text" id="namaSiswa" placeholder="Ketik Nama Lengkap...">
-        <input type="file" id="fileSiswa">
-        <button onclick="kirimTugas()">KIRIM TUGAS SEKARANG</button>
+    <button class="btn btn-blue btn-menu" id="btnMode" onclick="togleGuru()">Menu Guru</button>
 
-        <div class="rekap-container">
-            <h3 style="text-align: center;">Daftar Siswa Selesai</h3>
+    <div id="halamanSiswa">
+        <div class="card">
+            <h1 style="margin-top:0">LMS Kelas 5</h1>
+            <h2 id="displayTopik">Memuat Judul...</h2>
+            <a id="displayLink" href="#" target="_blank" style="color:#3b82f6; text-decoration:none; font-weight:bold;">KLIK DI SINI UNTUK MATERI</a>
+            <hr style="margin:20px 0">
+            <h3>Kumpul Tugas</h3>
+            <input type="text" id="namaSiswa" placeholder="Nama Lengkap">
+            <input type="file" id="fileSiswa">
+            <button class="btn btn-green" onclick="kirimTugas()">KIRIM TUGAS</button>
+        </div>
+    </div>
+
+    <div id="halamanGuru" class="hidden">
+        <div class="card">
+            <h2>Dashboard Guru</h2>
+            <input type="text" id="setTopik" placeholder="Nama Tugas Baru">
+            <input type="text" id="setLink" placeholder="Link Materi Baru">
+            <button class="btn btn-blue" onclick="updateGuru()">Simpan & Perbarui</button>
+            <hr>
+            <h4>Rekapitulasi Tugas Siswa</h4>
             <table>
-                <thead>
-                    <tr>
-                        <th width="50">No</th>
-                        <th>Nama Siswa</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="tabelSiswa" style="color: #334155;">
-                    <tr><td colspan="3" style="text-align:center">Mengecek data...</td></tr>
-                </tbody>
+                <thead><tr><th>No</th><th>Nama Siswa</th><th>File</th></tr></thead>
+                <tbody id="tabelSiswa"></tbody>
             </table>
+            <button class="btn" style="background:#ef4444; color:white;" onclick="location.reload()">Keluar</button>
         </div>
-
-        <button class="btn-guru" onclick="menuGuru()">⚙️ Pengaturan Materi (Guru)</button>
     </div>
 
     <script>
-        // GANTI LINK DI BAWAH INI
-        const scriptURL = 'TEMPEL_LINK_EXEC_BARU_BAPAK_DI_SINI';
+        // GANTI DENGAN LINK /exec DARI GOOGLE APPS SCRIPT BAPAK
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzMn1SBnS_K0P_DXVVWugsbAdCBq98iNAj4Bnungihi1HYDHm11x_np5meayW9o4Nhs3g/exec';
+        let dataSiswaGlobal = [];
 
         function muatData() {
-            fetch(scriptURL)
-            .then(r => r.json())
-            .then(res => {
-                document.getElementById('topikTugas').innerText = res.config.topik;
-                document.getElementById('linkTugas').href = res.config.link;
-                
-                let h = "";
-                if (res.data.length === 0) {
-                    h = "<tr><td colspan='3' style='text-align:center'>Belum ada siswa yang mengumpul</td></tr>";
-                } else {
-                    res.data.forEach((r, i) => {
-                        h += `<tr>
-                            <td>${i+1}</td>
-                            <td style="text-transform: capitalize;">${r[0].toLowerCase()}</td>
-                            <td class="status">✅ Selesai</td>
-                        </tr>`;
-                    });
-                }
-                document.getElementById('tabelSiswa').innerHTML = h;
-            })
-            .catch(err => {
-                document.getElementById('tabelSiswa').innerHTML = "<tr><td colspan='3' style='text-align:center; color:red;'>Gagal memuat data</td></tr>";
+            fetch(scriptURL).then(r => r.json()).then(res => {
+                document.getElementById('displayTopik').innerText = res.config.topik;
+                document.getElementById('displayLink').href = res.config.link;
+                dataSiswaGlobal = res.data;
+                renderTabel();
             });
+        }
+
+        function renderTabel() {
+            let h = "";
+            dataSiswaGlobal.forEach((r, i) => {
+                h += `<tr><td>${i+1}</td><td>${r[0]}</td><td><a href="${r[1]}" target="_blank">Lihat</a></td></tr>`;
+            });
+            document.getElementById('tabelSiswa').innerHTML = h || "<tr><td colspan='3'>Belum ada data</td></tr>";
+        }
+
+        function togleGuru() {
+            let pass = prompt("Masukkan Password Guru:");
+            if (pass === "1234") {
+                document.getElementById('halamanSiswa').classList.add('hidden');
+                document.getElementById('halamanGuru').classList.remove('hidden');
+                document.getElementById('btnMode').style.display = 'none';
+            } else { alert("Password Salah!"); }
+        }
+
+        function updateGuru() {
+            const t = document.getElementById('setTopik').value;
+            const l = document.getElementById('setLink').value;
+            fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({type: "updateSettings", topik: t, link: l}) })
+            .then(() => { alert("Berhasil Diperbarui!"); location.reload(); });
         }
 
         function kirimTugas() {
             const n = document.getElementById('namaSiswa').value;
             const f = document.getElementById('fileSiswa').files[0];
-            if(!n || !f) return alert("Lengkapi Nama dan File ya!");
-
-            const btn = event.target;
-            btn.innerText = "Sabar, Sedang Mengirim...";
-            btn.disabled = true;
-
+            if(!n || !f) return alert("Isi Nama & File!");
             const r = new FileReader();
             r.readAsDataURL(f);
             r.onload = function() {
                 fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({type: "upload", nama: n, filename: f.name, fileData: r.result}) })
-                .then(() => { 
-                    alert("Mantap! Tugas kamu sudah sampai ke Pak Adit."); 
-                    location.reload(); 
-                });
+                .then(() => { alert("Tugas Terkirim!"); location.reload(); });
             };
         }
-
-        function menuGuru() {
-            if(prompt("Masukkan Password Guru:") === "1234") {
-                const t = prompt("Apa Judul Materi Hari Ini?");
-                const l = prompt("Tempel Link Materi (Canva/Lainnya):");
-                if(t && l) {
-                    fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({type: "updateSettings", topik: t, link: l}) })
-                    .then(() => { alert("Materi Ruang Belajar Berhasil Diupdate!"); location.reload(); });
-                }
-            } else { alert("Maaf, Password Salah!"); }
-        }
-
         muatData();
     </script>
 </body>
