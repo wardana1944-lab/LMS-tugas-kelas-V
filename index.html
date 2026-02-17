@@ -21,10 +21,9 @@
 
     /* INPUTS */
     input[type="text"], input[type="password"], textarea, select { width: 100%; padding: 15px; font-size: 1.1rem; border-radius: 15px; border: 2px solid #e2e8f0; margin-top: 10px; margin-bottom: 10px; background: white; color: #1e293b; }
-    input:focus, textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 10px rgba(56, 189, 248, 0.2); }
 
     /* GRID SISWA */
-    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
     .student-card { background: var(--glass); border: 1px solid var(--border); border-radius: 25px; padding: 25px 10px; text-align: center; position: relative; cursor: pointer; transition: 0.3s; }
     .status-badge { position: absolute; top: 0; right: 0; padding: 5px 12px; font-size: 0.6rem; font-weight: 800; border-bottom-left-radius: 15px; }
     .s-belum { background: #ef4444; color: white; }
@@ -44,7 +43,6 @@
 
     /* DASHBOARD GURU */
     .dash-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 25px; text-align: center; cursor: pointer; }
-    .dash-card:hover { border-color: var(--primary); background: rgba(255,255,255,0.08); }
     .btn-reset-modern { background: transparent; border: 2px solid #ef4444; color: #ef4444; padding: 10px 20px; font-size: 0.8rem; border-radius: 12px; margin: 30px auto; font-weight: bold; cursor: pointer; display: block; }
   </style>
 </head>
@@ -60,7 +58,7 @@
                 </div>
                 <div class="guru-btn" id="btnBukaLogin">
                     <img src="foto-guru.webp" class="foto-guru" onerror="this.src='https://via.placeholder.com/150'">
-                    <div style="text-align:left"><p style="font-size:0.8rem; font-weight:bold">Aditya W. W., S.Pd</p><p style="font-size:0.65rem; color:#94a3b8">NIP. 199304132022211007</p></div>
+                    <div style="text-align:left"><p style="font-size:0.8rem; font-weight:bold">Aditya W. W., S.Pd</p><p style="font-size:0.6rem; color:#94a3b8">NIP. 199304132022211007</p></div>
                 </div>
             </div>
         </div>
@@ -140,33 +138,43 @@
 <canvas id="canvasLJ" style="display:none;"></canvas>
 
 <script>
-    const API = "https://script.google.com/macros/s/AKfycbysS0b4gTplBYXHXCBkocSccOym2DugBY5TIKNQo6Znt3VWm8Uu-ZxSrSC8TP9x9aT-PA/exec";
+    // MASUKKAN URL BARU SETELAH DEPLOY ULANG DI SINI
+    const API = "https://script.google.com/macros/s/AKfycby437Nx9cFhd-WUkt40A6DZ3XBanx3xbXm_EX-560I-XyKwLR8MFFkqcrJLX0VyY6WFsA/exec";
+    
     const SISWA = [{ n: "Alvaro Adnan Aji Pambudi", i: "👦" }, { n: "Anantha Yudha Diztira", i: "👦" }, { n: "Arifah Yhuan Nur Azizah", i: "👧" }, { n: "Aurelia Gieni Lindria Putri", i: "👧" }, { n: "Dhafitha Nizza Nur Azizah", i: "👧" }, { n: "Dhian Rahmawati", i: "👧" }, { n: "Dimas Rasyid Faristia", i: "👦" }, { n: "Erfin Denu Setiawan", i: "👦" }, { n: "Marsya Anindya Kiera", i: "👧" }, { n: "Mikayla Ayuningtyas", i: "👧" }, { n: "Muhammad Ozil Ramadhan", i: "👦" }, { n: "Rhevan Nabil Yudanta", i: "👦" }, { n: "Ridho Wicaksono", i: "👦" }, { n: "Rizky Syam Dani", i: "👦" }, { n: "Tanca Al Verosa", i: "👦" }];
 
     let tugasAktif = null; let namaTerpilih = "";
 
     window.onload = function() { muatData(); document.getElementById('btnBukaLogin').onclick = () => document.getElementById('modalLogin').style.display='flex'; };
 
+    // JALUR CEPAT: AMBIL TUGAS DAN REKAP SEKALIGUS
     async function muatData() {
         try {
-            const resT = await fetch(API + "?action=getTugas"); tugasAktif = await resT.json();
-            const resR = await fetch(API + "?action=getRekap"); const dataRekap = await resR.json();
+            const res = await fetch(API + "?action=getAllData");
+            const data = await res.json();
+            tugasAktif = data.tugas;
+            const dataRekap = data.rekap;
+
             document.getElementById('bannerTugas').innerHTML = (!tugasAktif.judul || tugasAktif.judul === "TIDAK ADA TUGAS") ? `<div class="status-banner" style="color:#ef4444; border-color:#ef4444">BELUM ADA TUGAS AKTIF</div>` : `<div class="status-banner">TUGAS AKTIF: ${tugasAktif.judul}</div>`;
+            
             const grid = document.getElementById('gridSiswa'); grid.innerHTML = "";
             SISWA.forEach(s => {
                 const sudah = dataRekap.some(d => d.nama === s.n && d.materi === tugasAktif.judul);
-                grid.innerHTML += `<div class="student-card" onclick="bukaPengerjaan('${s.n}')"><div class="status-badge ${sudah?'s-sudah':'s-belum'}">${sudah?'Sudah':'Belum'}</div><span class="student-icon">${s.i}</span><p style="font-size:0.75rem; font-weight:bold">${s.n}</p></div>`;
+                grid.innerHTML += `<div class="student-card" onclick="bukaPengerjaan('${s.n}')"><div class="status-badge ${sudah?'s-sudah':'s-belum'}">${sudah?'Sudah':'Belum'}</div><span style="font-size:2rem">${s.i}</span><p style="font-size:0.75rem; font-weight:bold; margin-top:10px;">${s.n}</p></div>`;
             });
+
             const body = document.getElementById('bodyRekap'); body.innerHTML = "";
             SISWA.forEach(s => {
-                const d = [...dataRekap].reverse().find(rd => rd.nama === s.n && rd.materi === tugasAktif.judul);
+                const d = dataRekap.find(rd => rd.nama === s.n && rd.materi === tugasAktif.judul);
                 body.innerHTML += `<tr><td style="padding:10px; border:1px solid #eee">${s.n}</td><td style="padding:10px; border:1px solid #eee">${d?'✅':'❌'}</td><td style="padding:10px; border:1px solid #eee">${d?`<a href="https://drive.google.com/uc?id=${d.link}" target="_blank">Lihat</a>`:'-'}</td><td style="padding:10px; border:1px solid #eee">${d?`<button onclick="alert('${d.jawaban}')">Cek</button>`:'-'}</td></tr>`;
             });
-        } catch(e) { console.error("Error Muat Data:", e); }
+        } catch(e) { 
+            console.error("Gagal Muat:", e); 
+            document.getElementById('bannerTugas').innerHTML = "Gagal memuat data, pastikan URL API sudah benar.";
+        }
     }
 
     function prosesLogin() { if(document.getElementById('passInput').value === "guru123") { document.getElementById('modalLogin').style.display='none'; document.getElementById('dashGuru').style.display='block'; } else { alert("Sandi Salah!"); } }
-    async function resetTugas() { if(confirm("Reset status tugas hari ini?")){ await fetch(API, {method:"POST", body:JSON.stringify({action:"setTugas", judul:"TIDAK ADA TUGAS", jenis:"pg", soal:[]})}); location.reload(); } }
     
     function bukaPengerjaan(nama) {
         if(!tugasAktif.judul || tugasAktif.judul === "TIDAK ADA TUGAS") return alert("Tidak ada tugas!");
@@ -178,6 +186,7 @@
             area.innerHTML += h + `</div>`;
         });
         document.getElementById('panelKerjakan').style.display='block';
+        window.scrollTo(0,0);
     }
 
     function generateJPG() {
@@ -192,7 +201,7 @@
     }
 
     async function simpanJawabanSiswa() {
-        const f = document.getElementById('fileInput').files[0]; if(!f) return alert("Pilih file dulu!");
+        const f = document.getElementById('fileInput').files[0]; if(!f) return alert("Pilih file gambar dulu!");
         document.getElementById('btnKirim').innerText = "MENGOMPRES & MENGIRIM...";
         document.getElementById('btnKirim').disabled = true;
         const r = new FileReader();
@@ -210,7 +219,7 @@
                 try {
                     await fetch(API, {method: "POST", body: JSON.stringify({action: "upload", nama: namaTerpilih, file: b64, filename: namaTerpilih + ".jpg", materi: tugasAktif.judul, jawaban: ans})});
                     alert("Berhasil Terkirim!"); location.reload();
-                } catch (err) { alert("Gagal!"); document.getElementById('btnKirim').disabled = false; }
+                } catch (err) { alert("Gagal mengirim!"); document.getElementById('btnKirim').disabled = false; }
             };
         }; r.readAsDataURL(f);
     }
@@ -223,6 +232,7 @@
         document.querySelectorAll('#builder .card-soal').forEach(c => { let s = { tanya: c.querySelector('.q-t').value }; if(p.jenis==='pg') s.opsi = [c.querySelector('.o-a').value, c.querySelector('.o-b').value, "", ""]; p.soal.push(s); });
         await fetch(API, {method:"POST", body:JSON.stringify(p)}); location.reload();
     }
+    async function resetTugas() { if(confirm("Reset tugas hari ini?")){ await fetch(API, {method:"POST", body:JSON.stringify({action:"setTugas", judul:"TIDAK ADA TUGAS", jenis:"pg", soal:[]})}); location.reload(); } }
     function tutupLogin() { document.getElementById('modalLogin').style.display='none'; }
     function bukaPanel(id) { document.getElementById(id).style.display='block'; }
     function tutupPanel(id) { document.getElementById(id).style.display='none'; }
