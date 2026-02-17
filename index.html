@@ -34,25 +34,25 @@
     .content-area { max-width: 800px; margin: 0 auto; padding-bottom: 50px; }
     .card-soal { background: white; padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #e2e8f0; position: relative; }
     
+    /* PERBAIKAN KOTAK JAWABAN (TEXTAREA) */
+    textarea.ans-txt { width: 100%; min-height: 150px; padding: 15px; border-radius: 12px; border: 2px solid #e2e8f0; background: #f8fafc; font-size: 1rem; margin-top: 10px; resize: none; transition: 0.3s; }
+    textarea.ans-txt:focus { border-color: var(--primary); background: white; outline: none; box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1); }
+
     /* BUTTONS */
     .btn { padding: 12px 20px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: block; width: 100%; text-align: center; transition: 0.3s; }
     .btn-blue { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(56, 189, 248, 0.4); }
-    .btn-green { background: #10b981; color: white; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); }
+    .btn-green { background: #10b981; color: white; }
     .btn-orange { background: #f59e0b; color: white; }
     .btn-gray { background: #64748b; color: white; }
 
-    /* TAMPILAN DASHBOARD GURU MODERN */
+    /* DASHBOARD GURU */
     .dash-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; }
     .dash-card:hover { background: rgba(255,255,255,0.08); border-color: var(--primary); transform: translateY(-5px); }
-    .dash-card span { font-size: 2.5rem; display: block; margin-bottom: 10px; }
-    .dash-card h3 { font-size: 0.9rem; letter-spacing: 1px; }
-
-    /* RESET BUTTON MODERN & KECIL */
-    .btn-reset-modern { background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 8px 16px; font-size: 0.7rem; border-radius: 10px; width: auto; margin: 30px auto 0; font-weight: bold; cursor: pointer; transition: 0.3s; }
+    .btn-reset-modern { background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 8px 16px; font-size: 0.7rem; border-radius: 10px; width: auto; margin: 30px auto 0; font-weight: bold; cursor: pointer; transition: 0.3s; display: block; }
     .btn-reset-modern:hover { background: #ef4444; color: white; }
 
     .rekap-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    .rekap-table th, .rekap-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+    .rekap-table th, .rekap-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; text-align: left; font-size: 0.85rem;}
 
     @media (max-width: 600px) { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
   </style>
@@ -82,20 +82,11 @@
     <div class="container" style="max-width: 600px; text-align:center">
         <p style="color:var(--primary); font-weight: 800; letter-spacing: 2px; margin-bottom: 10px;">DASHBOARD KENDALI</p>
         <h2 style="margin-bottom: 40px;">Halo, Pak Adit!</h2>
-        
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-            <div class="dash-card" onclick="bukaPanel('panelBuat')">
-                <span>📝</span>
-                <h3>BUAT TUGAS</h3>
-            </div>
-            <div class="dash-card" onclick="bukaPanel('panelRekap')">
-                <span>📊</span>
-                <h3>LIHAT REKAP</h3>
-            </div>
+            <div class="dash-card" onclick="bukaPanel('panelBuat')"><span>📝</span><h3>BUAT TUGAS</h3></div>
+            <div class="dash-card" onclick="bukaPanel('panelRekap')"><span>📊</span><h3>LIHAT REKAP</h3></div>
         </div>
-
         <button class="btn-reset-modern" onclick="resetTugas()">🧹 RESET TUGAS HARI INI</button>
-        
         <div style="margin-top: 60px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
             <button class="btn btn-gray" style="max-width: 150px; margin: 0 auto; font-size: 0.8rem;" onclick="location.reload()">LOGOUT</button>
         </div>
@@ -103,8 +94,8 @@
 </div>
 
 <div class="overlay" id="modalLogin">
-    <div style="background:#1e293b; padding:35px; border-radius:30px; width:90%; max-width:350px; text-align:center; border: 1px solid var(--border);">
-        <h3 style="color:var(--primary); margin-bottom:20px;">Keamanan Guru</h3>
+    <div style="background:#1e293b; padding:35px; border-radius:30px; width:90%; max-width:350px; text-align:center;">
+        <h3 style="color:var(--primary); margin-bottom:20px;">Sandi Guru</h3>
         <input type="password" id="passInput" placeholder="Masukkan Sandi">
         <button class="btn btn-blue" style="margin-top: 20px;" onclick="prosesLogin()">MASUK</button>
         <button class="btn btn-gray" style="margin-top: 10px; background:transparent;" onclick="tutupLogin()">Batal</button>
@@ -118,12 +109,12 @@
             <button class="btn btn-gray" style="width:auto; margin:0;" onclick="tutupPanel('panelBuat')">X</button>
         </div>
         <div class="card-soal">
-            <b>Judul:</b><input type="text" id="judulTugas" placeholder="Contoh: Matematika Perkalian">
+            <b>Judul:</b><input type="text" id="judulTugas" placeholder="Contoh: Matematika">
             <b>Tipe:</b><select id="tipeTugas" onchange="resetBuilder()"><option value="pg">Pilihan Ganda</option><option value="uraian">Uraian</option></select>
         </div>
         <div id="builder"></div>
-        <button class="btn btn-green" onclick="tambahSoal()" style="margin-top:10px;">+ Tambah Soal</button>
-        <button class="btn btn-blue" onclick="terbitkanTugas()" style="margin-top:30px; padding:18px;">TERBITKAN TUGAS</button>
+        <button class="btn btn-green" onclick="tambahSoal()">+ Tambah Soal</button>
+        <button class="btn btn-blue" onclick="terbitkanTugas()" style="margin-top:30px;">TERBITKAN TUGAS</button>
     </div>
 </div>
 
@@ -133,12 +124,10 @@
             <h2>Rekap Pengerjaan</h2>
             <button class="btn btn-gray" style="width:auto; margin:0;" onclick="tutupPanel('panelRekap')">X</button>
         </div>
-        <div style="overflow-x:auto">
-            <table class="rekap-table">
-                <thead><tr><th>Nama</th><th>Status</th><th>Foto</th><th>Jawaban</th></tr></thead>
-                <tbody id="bodyRekap"></tbody>
-            </table>
-        </div>
+        <table class="rekap-table">
+            <thead><tr><th>Nama</th><th>Status</th><th>Foto</th><th>Jawaban</th></tr></thead>
+            <tbody id="bodyRekap"></tbody>
+        </table>
     </div>
 </div>
 
@@ -147,19 +136,17 @@
         <h2 id="sapaSiswa" style="color:var(--primary); text-align:center"></h2>
         <p id="infoJudul" style="text-align:center; margin-bottom:30px; opacity:0.6"></p>
         <div id="soalArea"></div>
-        
         <div class="card-soal" style="background:#fff9f0; border:1px solid #f59e0b">
             <b style="color:#f59e0b">Langkah 1:</b>
-            <p style="font-size:0.8rem; margin:5px 0 15px;">Wajib download Lembar Jawab sebelum upload.</p>
+            <p style="font-size:0.8rem; margin-bottom:10px;">Download Lembar Jawab sebelum upload.</p>
             <button class="btn btn-orange" onclick="generateJPG()">⬇️ DOWNLOAD LEMBAR JAWAB (JPG)</button>
         </div>
-
         <div class="card-soal">
-            <b>Langkah 2: Upload File Tadi</b>
+            <b>Langkah 2: Upload File JPG</b>
             <input type="file" id="fileInput" accept="image/*">
         </div>
         <button class="btn btn-blue" id="btnKirim" onclick="simpanJawabanSiswa()" style="padding:18px;">KIRIM KE GURU</button>
-        <button class="btn btn-gray" style="margin-top:10px; background:transparent; color:#64748b" onclick="tutupPanel('panelKerjakan')">Batal</button>
+        <button class="btn btn-gray" style="margin-top:10px; background:transparent;" onclick="tutupPanel('panelKerjakan')">Batal</button>
     </div>
 </div>
 
@@ -184,11 +171,10 @@
             
             const banner = document.getElementById('bannerTugas');
             banner.innerHTML = (!tugasAktif.judul || tugasAktif.judul === "TIDAK ADA TUGAS") 
-                ? `<div class="status-banner" style="color:#ef4444; border-color:#ef4444; background:rgba(239,68,68,0.1)">BELUM ADA TUGAS AKTIF</div>` 
+                ? `<div class="status-banner" style="color:#ef4444; border-color:#ef4444">BELUM ADA TUGAS AKTIF</div>` 
                 : `<div class="status-banner">TUGAS AKTIF: ${tugasAktif.judul}</div>`;
 
-            const grid = document.getElementById('gridSiswa');
-            grid.innerHTML = "";
+            const grid = document.getElementById('gridSiswa'); grid.innerHTML = "";
             SISWA.forEach(s => {
                 const sudah = dataRekap.some(d => d.nama === s.n && d.materi === tugasAktif.judul);
                 grid.innerHTML += `<div class="student-card" onclick="bukaPengerjaan('${s.n}')">
@@ -213,7 +199,7 @@
     }
 
     async function resetTugas() {
-        if(confirm("Tutup semua tugas hari ini? Status siswa akan kembali 'Belum'.")){
+        if(confirm("Reset status tugas hari ini?")){
             await fetch(API, {method:"POST", body:JSON.stringify({action:"setTugas", judul:"TIDAK ADA TUGAS", jenis:"pg", soal:[]})});
             location.reload();
         }
@@ -248,14 +234,14 @@
             let h = `<div class="card-soal"><p><b>${i+1}. ${s.tanya}</b></p>`;
             h += (tugasAktif.jenis === 'pg') ? 
                 `<label><input type="radio" name="r${i}" value="A"> A</label> <label><input type="radio" name="r${i}" value="B"> B</label> <label><input type="radio" name="r${i}" value="C"> C</label> <label><input type="radio" name="r${i}" value="D"> D</label>` :
-                `<textarea class="ans-txt" placeholder="Ketik jawabanmu..."></textarea>`;
+                `<textarea class="ans-txt" placeholder="Ketik jawabanmu di sini..."></textarea>`;
             area.innerHTML += h + `</div>`;
         });
         document.getElementById('panelKerjakan').style.display='block';
     }
 
     async function simpanJawabanSiswa() {
-        const f = document.getElementById('fileInput').files[0]; if(!f) return alert("Upload dulu gambarnya!");
+        const f = document.getElementById('fileInput').files[0]; if(!f) return alert("Download dulu gambarnya!");
         document.getElementById('btnKirim').innerText = "MENGIRIM...";
         let ans = ""; document.querySelectorAll('#soalArea .card-soal').forEach((c, i) => {
             ans += (tugasAktif.jenis==='pg' ? c.querySelector(`input[name="r${i}"]:checked`)?.value : c.querySelector('.ans-txt').value) + " ";
@@ -270,7 +256,7 @@
     let qCnt = 0;
     function tambahSoal() {
         qCnt++; const d = document.createElement('div'); d.className='card-soal';
-        d.innerHTML = `<b>Soal ${qCnt}</b><textarea class="q-t"></textarea>`;
+        d.innerHTML = `<b>Soal ${qCnt}</b><textarea class="q-t" style="width:100%; height:60px"></textarea>`;
         if(document.getElementById('tipeTugas').value==='pg') d.innerHTML += `<input class="o-a" placeholder="A"> <input class="o-b" placeholder="B">`;
         document.getElementById('builder').appendChild(d);
     }
