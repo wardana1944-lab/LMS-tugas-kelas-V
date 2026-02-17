@@ -1,71 +1,212 @@
-// 1. Tombol Hapus Soal (Tambahkan fungsi ini)
-function tambahSoal() { 
-    const id = Date.now(); // ID unik untuk setiap soal
-    const d = document.createElement('div'); 
-    d.className='card-soal';
-    d.id = 'soal-' + id;
-    d.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <b>Pertanyaan:</b>
-            <button onclick="hapusSoal('soal-${id}')" style="background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:8px; cursor:pointer; font-size:0.7rem;">Hapus Soal</button>
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RUANG BELAJAR - SDN PENGKOL</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --primary: #38bdf8; --bg-dark: #0f172a; --glass: rgba(255, 255, 255, 0.05); --border: rgba(255, 255, 255, 0.1); }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background: radial-gradient(circle at top right, #1e293b, #0f172a); min-height: 100vh; color: #f8fafc; overflow-x: hidden; }
+    .container { padding: 20px; max-width: 1000px; margin: 0 auto; }
+
+    /* HEADER */
+    .header-main { text-align: center; margin-bottom: 25px; }
+    .header-main h1 { font-size: 1.8rem; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
+    .identity-row { display: flex; gap: 12px; justify-content: center; margin: 20px 0; flex-wrap: wrap; }
+    .identitas-box, .guru-btn { background: var(--glass); backdrop-filter: blur(10px); padding: 12px 18px; border-radius: 18px; border: 1px solid var(--border); display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .foto-guru { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
+    .status-banner { text-align:center; padding:15px; border-radius:18px; margin-bottom:25px; font-weight:700; border: 1px solid var(--primary); color: var(--primary); background: rgba(56,189,248,0.1); }
+
+    /* GRID SISWA */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
+    .student-card { background: var(--glass); border: 1px solid var(--border); border-radius: 22px; padding: 20px 10px; text-align: center; position: relative; cursor: pointer; transition: 0.3s; }
+    .student-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+    .status-badge { position: absolute; top: -5px; right: -5px; padding: 4px 10px; font-size: 0.65rem; font-weight: 800; border-radius: 10px; }
+    .s-belum { background: #ef4444; color: white; }
+    .s-sudah { background: #10b981; color: white; }
+
+    /* PANEL & MODAL */
+    .panel-full { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: #f8fafc; color: #1e293b; z-index: 10000; overflow-y: auto; padding: 20px; }
+    .card-soal { background: white; padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #e2e8f0; position: relative; }
+    
+    input, textarea, select { width: 100%; padding: 12px; border-radius: 12px; border: 2px solid #e2e8f0; margin: 8px 0; font-size: 1rem; }
+    .btn { padding: 15px; border-radius: 15px; border: none; font-weight: 700; cursor: pointer; display: block; width: 100%; margin-top: 10px; }
+    .btn-blue { background: var(--primary); color: white; }
+    .btn-green { background: #10b981; color: white; }
+    .btn-red { background: #ef4444; color: white; }
+    .btn-gray { background: #64748b; color: white; }
+
+    table { width:100%; border-collapse:collapse; background:white; border-radius:15px; overflow:hidden; }
+    th { background:#f1f5f9; padding:12px; text-align:left; font-size:0.8rem; }
+    td { padding:12px; border-bottom:1px solid #f1f5f9; font-size:0.85rem; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-main">
+        <h1>RUANG BELAJAR</h1>
+        <div class="identity-row">
+            <div class="identitas-box">
+                <div style="text-align:left"><p style="font-weight:800; color:var(--primary); font-size:0.8rem">SDN PENGKOL</p></div>
+            </div>
+            <div class="guru-btn" onclick="document.getElementById('modalLogin').style.display='flex'">
+                <img src="https://via.placeholder.com/150" class="foto-guru">
+                <div style="text-align:left"><p style="font-size:0.75rem; font-weight:bold">Panel Guru</p></div>
+            </div>
         </div>
-        <textarea class="q-t" style="height:60px"></textarea>`;
-    
-    if(document.getElementById('tipeTugas').value==='pg') {
-        d.innerHTML += `<input class="o-a" placeholder="Opsi A"> <input class="o-b" placeholder="Opsi B">`;
-    }
-    document.getElementById('builder').appendChild(d);
-}
+    </div>
+    <div id="bannerTugas">Memuat data...</div>
+    <div class="cards-grid" id="gridSiswa"></div>
+</div>
 
-function hapusSoal(id) {
-    const el = document.getElementById(id);
-    if(el) el.remove();
-}
+<div id="modalLogin" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:11000; align-items:center; justify-content:center;">
+    <div style="background:#1e293b; padding:30px; border-radius:20px; width:90%; max-width:320px;">
+        <input type="password" id="passInput" placeholder="Sandi Guru" style="text-align:center">
+        <button class="btn btn-blue" onclick="prosesLogin()">MASUK</button>
+        <button class="btn btn-gray" onclick="document.getElementById('modalLogin').style.display='none'">BATAL</button>
+    </div>
+</div>
 
-// 2. Percepat Loading (Optimasi muatData)
-async function muatData() {
-    const banner = document.getElementById('bannerTugas');
-    banner.innerHTML = "Menghubungkan ke server...";
-    
-    try {
-        // Kita pakai cache: no-cache agar data selalu fresh tapi cepat
-        const res = await fetch(API + "?action=getAllData", { cache: "no-cache" });
-        const data = await res.json();
-        tugasAktif = data.tugas;
-        const dataRekap = data.rekap;
+<div id="dashGuru" class="panel-full" style="background:#0f172a; color:white;">
+    <div class="container" style="max-width: 400px;">
+        <h2 style="text-align:center; margin-bottom:20px">Menu Guru</h2>
+        <button class="btn btn-blue" onclick="bukaPanel('panelBuat')">📝 BUAT TUGAS</button>
+        <button class="btn btn-green" onclick="bukaPanel('panelRekap')">📊 LIHAT REKAP</button>
+        <button class="btn btn-red" onclick="resetTugas()">🧹 RESET TUGAS</button>
+        <button class="btn btn-gray" onclick="location.reload()">KELUAR</button>
+    </div>
+</div>
 
-        // Banner Status
-        if (!tugasAktif.judul || tugasAktif.judul === "TIDAK ADA TUGAS") {
-            banner.innerHTML = `<div class="status-banner" style="color:#ef4444; border-color:#ef4444">TIDAK ADA TUGAS AKTIF</div>`;
-        } else {
-            banner.innerHTML = `<div class="status-banner">TUGAS AKTIF: ${tugasAktif.judul}</div>`;
-        }
-        
-        // Render Grid Siswa
-        const grid = document.getElementById('gridSiswa'); 
-        grid.innerHTML = "";
-        
-        // Buat set untuk pencarian cepat
-        const sdhMengerjakan = new Set(dataRekap.filter(r => r.materi === tugasAktif.judul).map(r => r.nama));
+<div id="panelBuat" class="panel-full">
+    <div class="container" style="max-width:500px">
+        <h2>Buat Tugas Baru</h2>
+        <input type="text" id="judulTugas" placeholder="Judul Materi">
+        <select id="tipeTugas" onchange="document.getElementById('builder').innerHTML=''"><option value="pg">Pilihan Ganda</option><option value="uraian">Uraian</option></select>
+        <div id="builder"></div>
+        <button class="btn btn-gray" onclick="tambahSoal()">+ Tambah Soal</button>
+        <button class="btn btn-blue" onclick="terbitkanTugas()">TERBITKAN</button>
+        <button class="btn btn-red" onclick="tutupPanel('panelBuat')">KEMBALI</button>
+    </div>
+</div>
 
-        SISWA.forEach(s => {
-            const sudah = sdhMengerjakan.has(s.n);
-            grid.innerHTML += `
-                <div class="student-card" onclick="bukaPengerjaan('${s.n}')">
+<div id="panelRekap" class="panel-full">
+    <div class="container">
+        <h2>Rekap Nilai</h2>
+        <div style="overflow-x:auto">
+            <table>
+                <thead><tr><th>Nama</th><th>Materi</th><th>Aksi</th></tr></thead>
+                <tbody id="bodyRekap"></tbody>
+            </table>
+        </div>
+        <button class="btn btn-gray" onclick="tutupPanel('panelRekap')">KEMBALI</button>
+    </div>
+</div>
+
+<div id="panelKerjakan" class="panel-full">
+    <div class="container" style="max-width:500px">
+        <h2 id="sapaSiswa"></h2>
+        <div id="soalArea"></div>
+        <div class="card-soal">
+            <b>Upload Bukti Foto:</b>
+            <input type="file" id="fileInput" accept="image/*">
+            <button class="btn btn-blue" id="btnKirim" onclick="simpanJawaban()">KIRIM JAWABAN</button>
+        </div>
+        <button class="btn btn-gray" onclick="tutupPanel('panelKerjakan')">BATAL</button>
+    </div>
+</div>
+
+<script>
+    const API = "https://script.google.com/macros/s/AKfycbxS6aDyd7v-W5CKadPi6wsNYI1SSUi-1pAf53egfmzWjjqYx4ilFrE2Xk8h6rxK_jZyCw/exec";
+    const SISWA = [{ n: "Alvaro Adnan Aji Pambudi", i: "👦" }, { n: "Anantha Yudha Diztira", i: "👦" }, { n: "Arifah Yhuan Nur Azizah", i: "👧" }, { n: "Aurelia Gieni Lindria Putri", i: "👧" }, { n: "Dhafitha Nizza Nur Azizah", i: "👧" }, { n: "Dhian Rahmawati", i: "👧" }, { n: "Dimas Rasyid Faristia", i: "👦" }, { n: "Erfin Denu Setiawan", i: "👦" }, { n: "Marsya Anindya Kiera", i: "👧" }, { n: "Mikayla Ayuningtyas", i: "👧" }, { n: "Muhammad Ozil Ramadhan", i: "👦" }, { n: "Rhevan Nabil Yudanta", i: "👦" }, { n: "Ridho Wicaksono", i: "👦" }, { n: "Rizky Syam Dani", i: "👦" }, { n: "Tanca Al Verosa", i: "👦" }];
+
+    let tugasAktif = null; 
+    let namaTerpilih = "";
+
+    window.onload = muatData;
+
+    async function muatData() {
+        try {
+            const res = await fetch(API + "?action=getAllData");
+            const data = await res.json();
+            tugasAktif = data.tugas;
+            const dataRekap = data.rekap;
+
+            const listSudah = {};
+            dataRekap.forEach(r => { if(r.materi === tugasAktif.judul) listSudah[r.nama] = true; });
+
+            document.getElementById('bannerTugas').innerHTML = (!tugasAktif.judul || tugasAktif.judul === "TIDAK ADA TUGAS") ? 
+                `<div class="status-banner" style="color:#ef4444; border-color:#ef4444">TIDAK ADA TUGAS AKTIF</div>` : 
+                `<div class="status-banner">TUGAS: ${tugasAktif.judul}</div>`;
+            
+            const grid = document.getElementById('gridSiswa'); grid.innerHTML = "";
+            SISWA.forEach(s => {
+                const sudah = listSudah[s.n];
+                grid.innerHTML += `<div class="student-card" onclick="bukaPengerjaan('${s.n}')">
                     <div class="status-badge ${sudah?'s-sudah':'s-belum'}">${sudah?'Selesai':'Belum'}</div>
                     <span style="font-size:2.5rem">${s.i}</span>
-                    <p style="font-size:0.8rem; font-weight:bold; margin-top:10px; line-height:1.2">${s.n}</p>
+                    <p style="font-size:0.75rem; font-weight:bold; margin-top:8px">${s.n}</p>
                 </div>`;
-        });
+            });
 
-        // Render Tabel Rekap
-        const body = document.getElementById('bodyRekap'); 
-        body.innerHTML = "";
-        dataRekap.slice(-20).reverse().forEach(rd => { // Hanya ambil 20 data terakhir agar ringan
-            body.innerHTML += `<tr><td>${rd.nama}</td><td>✅</td><td>${rd.materi}</td><td><a href="https://drive.google.com/uc?id=${rd.link}" target="_blank" style="color:#38bdf8; text-decoration:none; font-weight:bold;">LIHAT</a></td></tr>`;
-        });
-
-    } catch(e) { 
-        banner.innerHTML = `<div class="status-banner" style="color:red">Koneksi Lambat. Sila muat ulang halaman.</div>`;
+            const body = document.getElementById('bodyRekap'); body.innerHTML = "";
+            dataRekap.slice(-20).reverse().forEach(rd => {
+                body.innerHTML += `<tr><td>${rd.nama}</td><td>${rd.materi}</td><td><a href="https://drive.google.com/uc?id=${rd.link}" target="_blank">Lihat</a></td></tr>`;
+            });
+        } catch(e) { document.getElementById('bannerTugas').innerText = "Gagal memuat data."; }
     }
-}
+
+    function tambahSoal() {
+        const id = "s-" + Date.now();
+        const html = `
+            <div class="card-soal" id="${id}">
+                <button onclick="document.getElementById('${id}').remove()" style="position:absolute; top:10px; right:10px; background:red; color:white; border:none; border-radius:5px; padding:5px; cursor:pointer; font-size:0.7rem">Hapus</button>
+                <b>Pertanyaan:</b>
+                <textarea class="q-t" placeholder="Tulis soal..."></textarea>
+                ${document.getElementById('tipeTugas').value === 'pg' ? '<input class="o-a" placeholder="Opsi A"><input class="o-b" placeholder="Opsi B">' : ''}
+            </div>`;
+        document.getElementById('builder').insertAdjacentHTML('beforeend', html);
+    }
+
+    function prosesLogin() { if(document.getElementById('passInput').value === "guru123") { document.getElementById('modalLogin').style.display='none'; document.getElementById('dashGuru').style.display='block'; } else { alert("Salah!"); } }
+    function bukaPanel(id) { document.getElementById(id).style.display='block'; if(id==='panelBuat') tambahSoal(); }
+    function tutupPanel(id) { document.getElementById(id).style.display='none'; }
+
+    async function terbitkanTugas() {
+        const p = { action:"setTugas", judul: document.getElementById('judulTugas').value, jenis: document.getElementById('tipeTugas').value, soal:[] };
+        document.querySelectorAll('#builder .card-soal').forEach(c => {
+            let s = { tanya: c.querySelector('.q-t').value };
+            if(p.jenis==='pg') s.opsi = [c.querySelector('.o-a').value, c.querySelector('.o-b').value];
+            p.soal.push(s);
+        });
+        await fetch(API, {method:"POST", body:JSON.stringify(p)}); alert("Berhasil!"); location.reload();
+    }
+
+    function bukaPengerjaan(nama) {
+        if(!tugasAktif || tugasAktif.judul === "TIDAK ADA TUGAS") return;
+        namaTerpilih = nama; document.getElementById('sapaSiswa').innerText = "Halo, " + nama;
+        const area = document.getElementById('soalArea'); area.innerHTML = "";
+        tugasAktif.soal.forEach((s, i) => {
+            area.innerHTML += `<div class="card-soal"><p><b>${i+1}. ${s.tanya}</b></p></div>`;
+        });
+        document.getElementById('panelKerjakan').style.display='block';
+    }
+
+    async function simpanJawaban() {
+        const fileIn = document.getElementById('fileInput'); if(!fileIn.files[0]) return alert("Pilih foto!");
+        const btn = document.getElementById('btnKirim'); btn.innerText = "MENGIRIM..."; btn.disabled = true;
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const base64 = e.target.result.split(',')[1];
+            await fetch(API, { method: "POST", body: JSON.stringify({ action: "upload", nama: namaTerpilih, file: base64, filename: namaTerpilih + ".jpg", materi: tugasAktif.judul }) });
+            alert("Terkirim!"); location.reload();
+        };
+        reader.readAsDataURL(fileIn.files[0]);
+    }
+
+    async function resetTugas() { if(confirm("Hapus tugas?")) { await fetch(API, {method:"POST", body:JSON.stringify({action:"setTugas", judul:"TIDAK ADA TUGAS", jenis:"pg", soal:[]})}); location.reload(); } }
+</script>
+</body>
+</html>
