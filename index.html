@@ -19,18 +19,8 @@
     .foto-guru { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
     .status-banner { text-align:center; padding:15px; border-radius:15px; margin-bottom:25px; font-weight:700; border: 1px solid var(--primary); color: var(--primary); background: rgba(56,189,248,0.1); }
 
-    /* INPUTS - DIBUAT BESAR & TEGAS KEMBALI */
-    input[type="text"], input[type="password"], textarea, select { 
-        width: 100%; 
-        padding: 15px; 
-        font-size: 1.1rem; 
-        border-radius: 15px; 
-        border: 2px solid #e2e8f0; 
-        margin-top: 10px; 
-        margin-bottom: 10px;
-        background: white;
-        color: #1e293b;
-    }
+    /* INPUTS */
+    input[type="text"], input[type="password"], textarea, select { width: 100%; padding: 15px; font-size: 1.1rem; border-radius: 15px; border: 2px solid #e2e8f0; margin-top: 10px; margin-bottom: 10px; background: white; color: #1e293b; }
     input:focus, textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 10px rgba(56, 189, 248, 0.2); }
 
     /* GRID SISWA */
@@ -70,7 +60,7 @@
                 </div>
                 <div class="guru-btn" id="btnBukaLogin">
                     <img src="foto-guru.webp" class="foto-guru" onerror="this.src='https://via.placeholder.com/150'">
-                    <div style="text-align:left"><p style="font-size:0.8rem; font-weight:bold">Aditya W. W., S.Pd</p><p style="font-size:0.6rem; color:#94a3b8">NIP. 199304132022211007</p></div>
+                    <div style="text-align:left"><p style="font-size:0.8rem; font-weight:bold">Aditya W. W., S.Pd</p><p style="font-size:0.65rem; color:#94a3b8">NIP. 199304132022211007</p></div>
                 </div>
             </div>
         </div>
@@ -172,11 +162,12 @@
                 const d = [...dataRekap].reverse().find(rd => rd.nama === s.n && rd.materi === tugasAktif.judul);
                 body.innerHTML += `<tr><td style="padding:10px; border:1px solid #eee">${s.n}</td><td style="padding:10px; border:1px solid #eee">${d?'✅':'❌'}</td><td style="padding:10px; border:1px solid #eee">${d?`<a href="https://drive.google.com/uc?id=${d.link}" target="_blank">Lihat</a>`:'-'}</td><td style="padding:10px; border:1px solid #eee">${d?`<button onclick="alert('${d.jawaban}')">Cek</button>`:'-'}</td></tr>`;
             });
-        } catch(e) { console.error(e); }
+        } catch(e) { console.error("Error Muat Data:", e); }
     }
 
     function prosesLogin() { if(document.getElementById('passInput').value === "guru123") { document.getElementById('modalLogin').style.display='none'; document.getElementById('dashGuru').style.display='block'; } else { alert("Sandi Salah!"); } }
     async function resetTugas() { if(confirm("Reset status tugas hari ini?")){ await fetch(API, {method:"POST", body:JSON.stringify({action:"setTugas", judul:"TIDAK ADA TUGAS", jenis:"pg", soal:[]})}); location.reload(); } }
+    
     function bukaPengerjaan(nama) {
         if(!tugasAktif.judul || tugasAktif.judul === "TIDAK ADA TUGAS") return alert("Tidak ada tugas!");
         namaTerpilih = nama; document.getElementById('sapaSiswa').innerText = "Halo, " + nama.split(' ')[0]; document.getElementById('infoJudul').innerText = "Tugas: " + tugasAktif.judul;
@@ -188,6 +179,7 @@
         });
         document.getElementById('panelKerjakan').style.display='block';
     }
+
     function generateJPG() {
         const canvas = document.getElementById('canvasLJ'); const ctx = canvas.getContext('2d'); canvas.width = 800; canvas.height = 1000;
         ctx.fillStyle = "white"; ctx.fillRect(0,0,800,1000); ctx.fillStyle = "#38bdf8"; ctx.fillRect(0,0,800,100); ctx.fillStyle = "white"; ctx.font = "bold 25px Arial"; ctx.fillText("LEMBAR JAWAB - SDN PENGKOL", 50, 60);
@@ -198,71 +190,31 @@
         });
         const link = document.createElement('a'); link.download = 'LJ_' + namaTerpilih + '.jpg'; link.href = canvas.toDataURL('image/jpeg'); link.click();
     }
-   async function simpanJawabanSiswa() {
-    const f = document.getElementById('fileInput').files[0]; 
-    if(!f) return alert("Upload dulu gambarnya!");
-    
-    document.getElementById('btnKirim').innerText = "MENGOMPRES & MENGIRIM...";
-    document.getElementById('btnKirim').disabled = true; // Biar tidak diklik dua kali
 
-    const r = new FileReader();
-    r.onload = async (e) => {
-        const img = new Image();
-        img.src = e.target.result;
-        img.onload = async () => {
-            // PROSES KOMPRES: Kita buat gambar jadi ukuran maksimal 1000px saja
-            const canvas = document.createElement('canvas');
-            let width = img.width;
-            let height = img.height;
-            const max_size = 1000; 
-
-            if (width > height) {
-                if (width > max_size) { height *= max_size / width; width = max_size; }
-            } else {
-                if (height > max_size) { width *= max_size / height; height = max_size; }
-            }
-
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-
-            // Kita ubah kualitasnya jadi 0.7 (70%) agar file sangat ringan tapi tetap jelas
-            const b64 = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
-
-            try {
-                const response = await fetch(API, {
-                    method: "POST", 
-                    body: JSON.stringify({
-                        action: "upload", 
-                        nama: namaTerpilih, 
-                        file: b64, 
-                        filename: namaTerpilih + ".jpg", 
-                        materi: tugasAktif.judul, 
-                        jawaban: ansString() // Fungsi ambil jawaban
-                    })
-                });
-                alert("Berhasil Terkirim!");
-                location.reload();
-            } catch (err) {
-                alert("Gagal mengirim, coba lagi.");
-                document.getElementById('btnKirim').innerText = "KIRIM JAWABAN";
-                document.getElementById('btnKirim').disabled = false;
-            }
-        };
-    };
-    r.readAsDataURL(f);
-}
-
-// Tambahan fungsi pembantu agar kode lebih rapi
-function ansString() {
-    let ans = ""; 
-    document.querySelectorAll('#soalArea .card-soal').forEach((c, i) => { 
-        ans += (tugasAktif.jenis==='pg' ? c.querySelector(`input[name="r${i}"]:checked`)?.value : c.querySelector('.ans-txt').value) + " "; 
-    });
-    return ans;
-}
+    async function simpanJawabanSiswa() {
+        const f = document.getElementById('fileInput').files[0]; if(!f) return alert("Pilih file dulu!");
+        document.getElementById('btnKirim').innerText = "MENGOMPRES & MENGIRIM...";
+        document.getElementById('btnKirim').disabled = true;
+        const r = new FileReader();
+        r.onload = async (e) => {
+            const img = new Image(); img.src = e.target.result;
+            img.onload = async () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width, height = img.height, max_size = 1000;
+                if (width > height) { if (width > max_size) { height *= max_size / width; width = max_size; } }
+                else { if (height > max_size) { width *= max_size / height; height = max_size; } }
+                canvas.width = width; canvas.height = height;
+                const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
+                const b64 = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
+                let ans = ""; document.querySelectorAll('#soalArea .card-soal').forEach((c, i) => { ans += (tugasAktif.jenis==='pg' ? c.querySelector(`input[name="r${i}"]:checked`)?.value : c.querySelector('.ans-txt').value) + " "; });
+                try {
+                    await fetch(API, {method: "POST", body: JSON.stringify({action: "upload", nama: namaTerpilih, file: b64, filename: namaTerpilih + ".jpg", materi: tugasAktif.judul, jawaban: ans})});
+                    alert("Berhasil Terkirim!"); location.reload();
+                } catch (err) { alert("Gagal!"); document.getElementById('btnKirim').disabled = false; }
+            };
+        }; r.readAsDataURL(f);
     }
+
     let qCnt = 0;
     function tambahSoal() { qCnt++; const d = document.createElement('div'); d.className='card-soal'; d.innerHTML = `<b>Soal ${qCnt}</b><textarea class="q-t" style="height:80px"></textarea>`; if(document.getElementById('tipeTugas').value==='pg') d.innerHTML += `<input class="o-a" placeholder="Opsi A"> <input class="o-b" placeholder="Opsi B">`; document.getElementById('builder').appendChild(d); }
     function resetBuilder() { document.getElementById('builder').innerHTML=""; qCnt=0; tambahSoal(); }
@@ -277,4 +229,3 @@ function ansString() {
 </script>
 </body>
 </html>
-
