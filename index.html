@@ -11,7 +11,7 @@
     body { background: #0f172a; color: #f8fafc; min-height: 100vh; padding: 15px; }
     .container { max-width: 800px; margin: 0 auto; }
 
-    /* HEADER */
+    /* HEADER IDENTITAS */
     .header-card { background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid var(--border); padding: 20px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .sch-info h1 { font-size: 1rem; color: var(--primary); font-weight: 800; }
     .sch-info p { font-size: 0.65rem; opacity: 0.6; }
@@ -19,40 +19,37 @@
     .guru-profile img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
     .guru-name { font-size: 0.75rem; font-weight: 700; text-align: right; }
 
-    /* BANNER */
+    /* BANNER STATUS */
     .banner { text-align:center; padding:12px; border-radius:12px; margin-bottom:20px; font-weight:700; border: 1px solid var(--primary); background: rgba(14,165,233,0.1); font-size: 0.8rem; color: var(--primary); }
 
-    /* GRID */
+    /* GRID SISWA */
     .grid-siswa { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
     .card-siswa { background: var(--glass); border: 1px solid var(--border); padding: 15px 5px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
+    .card-siswa:hover { border-color: var(--primary); transform: translateY(-3px); }
     .card-siswa span { font-size: 1.8rem; display: block; margin-bottom: 5px; }
     .card-siswa p { font-size: 0.6rem; font-weight: 600; line-height: 1.2; }
 
-    /* PANEL */
+    /* PANEL MODAL */
     .panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f8fafc; color: #1e293b; z-index: 1000; overflow-y: auto; padding: 20px; }
     .soal-box { background: white; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     
     input, textarea, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; margin: 5px 0; font-size: 0.85rem; }
-    .btn { padding: 12px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; width: 100%; margin-top: 5px; font-size: 0.8rem; }
+    .btn { padding: 12px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; width: 100%; margin-top: 5px; font-size: 0.8rem; transition: 0.2s; }
     .btn-blue { background: var(--primary); color: white; }
     .btn-green { background: #10b981; color: white; }
     .btn-red { background: #ef4444; color: white; }
     .btn-outline { background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; }
+    .btn:active { transform: scale(0.98); }
 
     .opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.7rem; }
-    th, td { padding: 10px 5px; border-bottom: 1px solid #e2e8f0; text-align: left; }
-    th { background: #f1f5f9; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
-
-    /* STATUS BADGE */
-    .badge { padding: 4px 8px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; }
-    .bg-green { background: #dcfce7; color: #166534; }
-    .bg-blue { background: #e0f2fe; color: #075985; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.75rem; }
+    th, td { padding: 12px 8px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+    th { background: #f1f5f9; font-weight: 800; color: #64748b; }
   </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="mainHome">
   <div class="header-card">
     <div class="sch-info">
       <h1>SD N Pengkol</h1>
@@ -64,39 +61,50 @@
     </div>
   </div>
 
-  <div id="statusTugas" class="banner">Mengecek tugas...</div>
+  <div id="statusTugas" class="banner">Memuat data...</div>
   <div class="grid-siswa" id="gridSiswa"></div>
+</div>
+
+<div id="modalLogin" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:2000; align-items:center; justify-content:center;">
+  <div style="background:#1e293b; padding:25px; border-radius:20px; width:85%; max-width:300px;">
+    <h4 style="color:white; text-align:center; margin-bottom:15px">Sandi Guru</h4>
+    <input type="password" id="passGuru" placeholder="Masukkan Sandi" style="text-align:center">
+    <button class="btn btn-blue" onclick="login()">MASUK</button>
+    <button class="btn btn-outline" onclick="document.getElementById('modalLogin').style.display='none'">BATAL</button>
+  </div>
 </div>
 
 <div id="panelGuru" class="panel" style="background:#0f172a; color:white;">
   <div class="container" style="max-width:400px">
-    <h2 style="text-align:center; margin-bottom:20px">Menu Guru</h2>
+    <h2 style="text-align:center; margin-bottom:20px">Menu Utama Guru</h2>
     <button class="btn btn-blue" onclick="openView('panelBuat')">📝 Buat Tugas Baru</button>
     <button class="btn btn-green" onclick="openView('panelRekap')">📊 Rekap Tugas Aktif</button>
     <button class="btn btn-red" onclick="resetTugas()">🧹 Hapus Tugas Aktif</button>
-    <button class="btn btn-outline" style="margin-top:20px" onclick="location.reload()">KEMBALI</button>
+    <button class="btn btn-outline" style="margin-top:20px" onclick="location.reload()">KEMBALI KE BERANDA</button>
   </div>
 </div>
 
 <div id="panelBuat" class="panel">
   <div class="container" style="max-width:500px">
-    <h3>Setting Soal Baru</h3>
-    <input type="text" id="judulMateri" placeholder="Judul Materi (Contoh: Matematika Pecahan)">
-    <select id="jenisTugas" onchange="resetSoal()"><option value="pg">Pilihan Ganda (A-D)</option><option value="uraian">Uraian / Esai</option></select>
+    <h3>Konfigurasi Tugas</h3>
+    <input type="text" id="judulMateri" placeholder="Judul Materi (Misal: IPA - Ekosistem)">
+    <select id="jenisTugas" onchange="resetSoal()">
+      <option value="pg">Pilihan Ganda (A-D)</option>
+      <option value="uraian">Uraian / Esai</option>
+    </select>
     <div id="wadahSoal"></div>
     <button class="btn btn-outline" onclick="tambahSoal()">+ Tambah Baris Soal</button>
-    <button class="btn btn-blue" onclick="kirimTugas()" id="btnTerbit">TERBITKAN SEKARANG</button>
+    <button class="btn btn-blue" onclick="kirimTugas()" id="btnTerbit">TERBITKAN TUGAS</button>
     <button class="btn btn-red" onclick="closeView('panelBuat')">BATAL</button>
   </div>
 </div>
 
 <div id="panelRekap" class="panel">
   <div class="container">
-    <h3 id="rekapJudul" style="margin-bottom:5px">Rekap Siswa</h3>
-    <p id="rekapInfo" style="font-size:0.7rem; color:#64748b; margin-bottom:15px"></p>
+    <h3 id="rekapTitle">Rekap Hasil</h3>
     <div style="overflow-x:auto">
       <table>
-        <thead><tr><th>Nama Siswa</th><th>Hasil/Nilai</th><th>Bukti Kerja</th></tr></thead>
+        <thead><tr><th>Nama Siswa</th><th>Hasil/Nilai</th><th>Aksi</th></tr></thead>
         <tbody id="isiRekap"></tbody>
       </table>
     </div>
@@ -111,10 +119,10 @@
     <div id="areaSoalSiswa"></div>
     
     <div class="soal-box" style="background:#f0f9ff; border: 2px solid var(--primary);">
-      <b>Langkah Terakhir:</b>
+      <b>Penyelesaian:</b>
       <button class="btn btn-green" onclick="generateJPG()">1. DOWNLOAD LEMBAR JAWAB (JPG)</button>
       <div style="margin:15px 0; border-top: 1px dashed #cbd5e1;"></div>
-      <p style="font-size:0.7rem; margin-bottom:5px">Setelah download, kirim bukti foto hasil kerja:</p>
+      <p style="font-size:0.75rem; margin-bottom:5px">Lanjut kirim foto bukti kerja:</p>
       <input type="file" id="inputFoto" accept="image/*">
       <button class="btn btn-blue" id="btnKirimSiswa" onclick="prosesSelesai()">2. KIRIM KE GURU</button>
     </div>
@@ -122,19 +130,11 @@
   </div>
 </div>
 
-<div id="modalLogin" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:2000; align-items:center; justify-content:center;">
-  <div style="background:#1e293b; padding:25px; border-radius:20px; width:85%; max-width:300px;">
-    <h4 style="color:white; text-align:center; margin-bottom:15px">Akses Guru</h4>
-    <input type="password" id="passGuru" placeholder="Masukkan Sandi" style="text-align:center">
-    <button class="btn btn-blue" onclick="login()">MASUK</button>
-    <button class="btn btn-outline" onclick="document.getElementById('modalLogin').style.display='none'">BATAL</button>
-  </div>
-</div>
-
 <canvas id="canvasHasil" style="display:none;"></canvas>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbxS6aDyd7v-W5CKadPi6wsNYI1SSUi-1pAf53egfmzWjjqYx4ilFrE2Xk8h6rxK_jZyCw/exec";
+// --- KONFIGURASI ---
+const API = "https://script.google.com/macros/s/AKfycby_s_xdc5VG-qKHm5T2SG67OGTlIe0hhImoz__OQEWfn0SLZBisR8HMGO5SvMZQ5p0WJg/exec";
 const SISWA = [{n:"Alvaro Adnan Aji Pambudi",i:"👦"},{n:"Anantha Yudha Diztira",i:"👦"},{n:"Arifah Yhuan Nur Azizah",i:"👧"},{n:"Aurelia Gieni Lindria Putri",i:"👧"},{n:"Dhafitha Nizza Nur Azizah",i:"👧"},{n:"Dhian Rahmawati",i:"👧"},{n:"Dimas Rasyid Faristia",i:"👦"},{n:"Erfin Denu Setiawan",i:"👦"},{n:"Marsya Anindya Kiera",i:"👧"},{n:"Mikayla Ayuningtyas",i:"👧"},{n:"Muhammad Ozil Ramadhan",i:"👦"},{n:"Rhevan Nabil Yudanta",i:"👦"},{n:"Ridho Wicaksono",i:"👦"},{n:"Rizky Syam Dani",i:"👦"},{n:"Tanca Al Verosa",i:"👦"}];
 
 let dataWeb = null;
@@ -152,27 +152,29 @@ async function init() {
   try {
     const res = await fetch(API + "?action=getAllData");
     dataWeb = await res.json();
-    const tugas = dataWeb.tugas;
-    document.getElementById('statusTugas').innerText = tugas.judul === "TIDAK ADA TUGAS" ? "BELUM ADA TUGAS AKTIF" : "TUGAS: " + tugas.judul;
+    const tugasAktif = dataWeb.tugas.judul;
+    const tipeAktif = dataWeb.tugas.jenis;
     
-    // RENDER REKAP (FILTER HANYA UNTUK TUGAS AKTIF)
-    const rb = document.getElementById('isiRekap'); rb.innerHTML = "";
-    document.getElementById('rekapJudul').innerText = "Rekap: " + tugas.judul;
-    document.getElementById('rekapInfo').innerText = "Hanya menampilkan siswa yang sudah mengirim materi ini.";
-
-    const rekapFiltered = dataWeb.rekap.filter(r => r.materi === tugas.judul);
-
-    rekapFiltered.reverse().forEach(r => {
-      let statusHasil = (tugas.jenis === 'pg') ? `<span class="badge bg-blue">NILAI: ${r.nilai}</span>` : `<span class="badge bg-green">Selesai</span>`;
-      rb.innerHTML += `<tr>
-        <td><b>${r.nama}</b></td>
-        <td>${statusHasil}</td>
-        <td><a href="https://drive.google.com/uc?id=${r.link}" target="_blank" style="color:var(--primary); font-weight:800; text-decoration:none;">LIHAT FOTO</a></td>
-      </tr>`;
-    });
+    document.getElementById('statusTugas').innerText = tugasAktif === "TIDAK ADA TUGAS" ? "BELUM ADA TUGAS AKTIF" : "TUGAS: " + tugasAktif;
     
-    if(rekapFiltered.length === 0) {
-      rb.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:20px; opacity:0.5;'>Belum ada siswa yang mengerjakan materi ini.</td></tr>";
+    // RENDER REKAP (FILTER HANYA TUGAS AKTIF)
+    const rb = document.getElementById('isiRekap');
+    rb.innerHTML = "";
+    document.getElementById('rekapTitle').innerText = "Rekap: " + tugasAktif;
+
+    const filtered = dataWeb.rekap.filter(r => r.materi === tugasAktif);
+
+    if (filtered.length === 0) {
+      rb.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:20px; opacity:0.5'>Belum ada siswa mengirim tugas ini.</td></tr>";
+    } else {
+      filtered.reverse().forEach(r => {
+        let displayHasil = (tipeAktif === 'pg') ? `<b style="color:#0ea5e9">${r.nilai}</b>` : `<span style="color:#10b981; font-weight:bold">Sudah</span>`;
+        rb.innerHTML += `<tr>
+          <td>${r.nama}</td>
+          <td>${displayHasil}</td>
+          <td><a href="https://drive.google.com/uc?id=${r.link}" target="_blank" style="color:#0ea5e9; font-weight:bold; text-decoration:none">Lihat Foto</a></td>
+        </tr>`;
+      });
     }
   } catch(e) { console.log(e); }
 }
@@ -184,7 +186,7 @@ function tambahSoal() {
     <div class="soal-box" id="box-${id}">
       <button onclick="document.getElementById('box-${id}').remove()" style="position:absolute; top:10px; right:10px; color:red; border:none; background:none; font-weight:bold; cursor:pointer">X</button>
       <b>Soal:</b>
-      <textarea class="q-text" placeholder="Tulis soal..."></textarea>
+      <textarea class="q-text" placeholder="Tulis pertanyaan..."></textarea>
       ${tipe === 'pg' ? `
         <div class="opt-grid">
           <input class="oa" placeholder="Opsi A"> <input class="ob" placeholder="Opsi B">
@@ -199,7 +201,7 @@ function tambahSoal() {
 function resetSoal() { document.getElementById('wadahSoal').innerHTML = ""; tambahSoal(); }
 
 async function kirimTugas() {
-  const bTerbit = document.getElementById('btnTerbit'); bTerbit.innerText = "SEDANG MENERBITKAN..."; bTerbit.disabled = true;
+  const btn = document.getElementById('btnTerbit'); btn.innerText = "PROSES..."; btn.disabled = true;
   const p = { action:"setTugas", judul: document.getElementById('judulMateri').value, jenis: document.getElementById('jenisTugas').value, soal:[] };
   document.querySelectorAll('#wadahSoal .soal-box').forEach(b => {
     let s = { tanya: b.querySelector('.q-text').value };
@@ -210,7 +212,7 @@ async function kirimTugas() {
     p.soal.push(s);
   });
   await fetch(API, {method:"POST", body:JSON.stringify(p)}); 
-  alert("Tugas Terbit!"); location.reload();
+  alert("Tugas Berhasil Terbit!"); location.reload();
 }
 
 function bukaTugas(nama) {
@@ -222,52 +224,41 @@ function bukaTugas(nama) {
   dataWeb.tugas.soal.forEach((s, i) => {
     let inp = dataWeb.tugas.jenis === 'pg' ? 
       `<select class="ans-siswa"><option value="">-- Pilih Jawaban --</option><option value="A">A. ${s.opsi[0]}</option><option value="B">B. ${s.opsi[1]}</option><option value="C">C. ${s.opsi[2]}</option><option value="D">D. ${s.opsi[3]}</option></select>` : 
-      `<textarea class="ans-siswa" placeholder="Tulis jawabanmu..."></textarea>`;
+      `<textarea class="ans-siswa" placeholder="Ketik jawabanmu..."></textarea>`;
     area.innerHTML += `<div class="soal-box"><p><b>${i+1}. ${s.tanya}</b></p>${inp}</div>`;
   });
   openView('panelKerja');
 }
 
 function generateJPG() {
-  let skor = 0; const ans = document.querySelectorAll('.ans-siswa'); const daftarJwb = [];
+  let bnr = 0; const ans = document.querySelectorAll('.ans-siswa'); const list = [];
   dataWeb.tugas.soal.forEach((s, i) => {
-    const val = ans[i].value;
-    daftarJwb.push(`Soal ${i+1}: ${val || '-'}`);
-    if(dataWeb.tugas.jenis === 'pg' && val === s.kunci) skor++;
+    list.push(`No ${i+1}: ${ans[i].value || '-'}`);
+    if(dataWeb.tugas.jenis === 'pg' && ans[i].value === s.kunci) bnr++;
   });
-  const n = dataWeb.tugas.jenis === 'pg' ? Math.round((skor / dataWeb.tugas.soal.length) * 100) : "Uraian";
-  
-  const canvas = document.getElementById('canvasHasil'); const ctx = canvas.getContext('2d');
-  canvas.width = 600; canvas.height = 700;
-  ctx.fillStyle = "white"; ctx.fillRect(0,0,600,700);
+  const n = dataWeb.tugas.jenis === 'pg' ? Math.round((bnr / dataWeb.tugas.soal.length) * 100) : "Uraian";
+  const cvs = document.getElementById('canvasHasil'); const ctx = cvs.getContext('2d');
+  cvs.width = 600; cvs.height = 700; ctx.fillStyle = "white"; ctx.fillRect(0,0,600,700);
   ctx.fillStyle = "#0ea5e9"; ctx.fillRect(0,0,600,60);
-  ctx.fillStyle = "white"; ctx.font="bold 20px Arial"; ctx.fillText("LEMBAR JAWAB - SD N PENGKOL", 30, 38);
-  ctx.fillStyle = "#1e293b"; ctx.font="bold 15px Arial";
-  ctx.fillText(`Nama: ${userSekarang}`, 30, 100); ctx.fillText(`Materi: ${dataWeb.tugas.judul}`, 30, 125);
-  ctx.strokeStyle = "#eee"; ctx.strokeRect(30, 150, 540, 1);
-  ctx.font="13px Arial"; let y = 190;
-  daftarJwb.forEach(j => { ctx.fillText(j, 40, y); y += 25; });
-  ctx.fillStyle = "#f0f9ff"; ctx.fillRect(400, 80, 130, 60);
-  ctx.fillStyle = "#0ea5e9"; ctx.font="bold 10px Arial"; ctx.fillText("NILAI", 450, 95);
-  ctx.font="bold 30px Arial"; ctx.fillText(n, 445, 130);
-
-  const link = document.createElement('a'); link.download = `Hasil_${userSekarang}.jpg`;
-  link.href = canvas.toDataURL("image/jpeg"); link.click();
+  ctx.fillStyle = "white"; ctx.font="bold 20px Arial"; ctx.fillText("HASIL KERJA - SD N PENGKOL", 30, 40);
+  ctx.fillStyle = "#1e293b"; ctx.font="bold 15px Arial"; ctx.fillText(`Nama: ${userSekarang}`, 30, 100); ctx.fillText(`Materi: ${dataWeb.tugas.judul}`, 30, 125);
+  ctx.fillStyle = "#f0f9ff"; ctx.fillRect(420, 80, 120, 60); ctx.fillStyle = "#0ea5e9"; ctx.font="bold 12px Arial"; ctx.fillText("NILAI", 465, 100);
+  ctx.font="bold 30px Arial"; ctx.fillText(n, 455, 132);
+  ctx.font="14px Arial"; ctx.fillStyle="#475569"; let y=180; list.forEach(l => { ctx.fillText(l, 40, y); y+=25; });
+  const link = document.createElement('a'); link.download = `Siswa_${userSekarang}.jpg`; link.href = cvs.toDataURL("image/jpeg"); link.click();
 }
 
 async function prosesSelesai() {
   const f = document.getElementById('inputFoto').files[0];
-  if(!f) return alert("Upload foto bukti kerja!");
+  if(!f) return alert("Upload foto bukti dulu!");
   let bnr = 0; const ans = document.querySelectorAll('.ans-siswa');
-  if(dataWeb.tugas.jenis === 'pg') {
-    dataWeb.tugas.soal.forEach((s, i) => { if(ans[i].value === s.kunci) bnr++; });
-  }
+  if(dataWeb.tugas.jenis === 'pg') dataWeb.tugas.soal.forEach((s, i) => { if(ans[i].value === s.kunci) bnr++; });
   const nFinal = dataWeb.tugas.jenis === 'pg' ? Math.round((bnr / dataWeb.tugas.soal.length) * 100) : "Uraian";
   const btn = document.getElementById('btnKirimSiswa'); btn.innerText = "MENGIRIM..."; btn.disabled = true;
   const rd = new FileReader();
   rd.onload = async (e) => {
     await fetch(API, { method: "POST", body: JSON.stringify({ action: "upload", nama: userSekarang, materi: dataWeb.tugas.judul, nilai: nFinal, file: e.target.result.split(',')[1], filename: userSekarang + ".jpg" }) });
-    alert("Berhasil Terkirim!"); location.reload();
+    alert("Berhasil Dikirim!"); location.reload();
   };
   rd.readAsDataURL(f);
 }
@@ -275,7 +266,7 @@ async function prosesSelesai() {
 function login() { if(document.getElementById('passGuru').value === "guru123") { document.getElementById('modalLogin').style.display='none'; openView('panelGuru'); } else { alert("Sandi Salah!"); } }
 function openView(id) { document.getElementById(id).style.display='block'; }
 function closeView(id) { document.getElementById(id).style.display='none'; }
-async function resetTugas() { if(confirm("Hapus tugas aktif?")) { await fetch(API, {method:"POST", body:JSON.stringify({action:"setTugas", judul:"TIDAK ADA TUGAS", jenis:"pg", soal:[]})}); location.reload(); } }
+async function resetTugas() { if(confirm("Hapus tugas?")) { await fetch(API, {method:"POST", body:JSON.stringify({action:"setTugas", judul:"TIDAK ADA TUGAS", jenis:"pg", soal:[]})}); location.reload(); } }
 </script>
 </body>
 </html>
