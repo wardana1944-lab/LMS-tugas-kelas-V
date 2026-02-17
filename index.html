@@ -25,18 +25,18 @@
     .guru-btn { cursor: pointer; transition: 0.3s; }
     .guru-btn:hover { border-color: var(--primary); background: rgba(56,189,248,0.1); }
     .foto-guru { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
-    .text-nama { font-weight: 700; color: var(--primary); font-size: 0.9rem; }
-    .text-nip { font-size: 0.7rem; color: #94a3b8; }
+    .text-nama { font-weight: 700; color: var(--primary); font-size: 0.85rem; }
+    .text-nip { font-size: 0.65rem; color: #94a3b8; }
 
     /* --- ALERT & TUGAS --- */
-    .empty-state { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); padding: 15px; border-radius: 12px; text-align: center; color: #fca5a5; margin-bottom: 30px; font-weight: 600; }
+    .empty-state { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); padding: 15px; border-radius: 12px; text-align: center; color: #fca5a5; margin-bottom: 30px; font-weight: 600; font-size: 0.85rem; }
     .tugas-aktif { text-align:center; color:var(--primary); font-weight:800; border:1px solid var(--primary); padding:10px; border-radius:10px; margin-bottom:25px; background: rgba(56,189,248,0.05); }
 
     /* --- GRID SISWA --- */
-    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
     .student-card { background: var(--glass); border: 1px solid var(--border); border-radius: 25px; padding: 25px 10px; text-align: center; position: relative; transition: 0.3s; }
-    .student-icon { font-size: 3.5rem; margin-bottom: 10px; display: block; }
-    .status-badge { position: absolute; top: 0; right: 0; padding: 5px 12px; font-size: 0.65rem; font-weight: 800; border-bottom-left-radius: 15px; text-transform: uppercase; }
+    .student-icon { font-size: 3.2rem; margin-bottom: 10px; display: block; }
+    .status-badge { position: absolute; top: 0; right: 0; padding: 5px 12px; font-size: 0.6rem; font-weight: 800; border-bottom-left-radius: 15px; text-transform: uppercase; letter-spacing: 1px; }
     .status-belum { background: #ef4444; color: white; }
     .status-sudah { background: #10b981; color: white; }
 
@@ -45,34 +45,35 @@
     .modal-content { background: #1e293b; padding: 35px; border-radius: 30px; width: 90%; max-width: 380px; border: 1px solid var(--border); text-align: center; }
     .modal-content input { width: 100%; padding: 15px; margin: 20px 0; border-radius: 15px; border: 1px solid var(--border); background: #0f172a; color: white; text-align: center; font-size: 1.1rem; }
 
-    /* --- DASHBOARD MENU --- */
+    /* --- DASHBOARD MENU (2 KOLOM) --- */
     #dashboardGuru { display: none; padding: 40px 20px; text-align: center; }
-    .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 900px; margin: 40px auto; }
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 800px; margin: 40px auto; }
     .menu-card { background: white; color: #0f172a; padding: 40px 20px; border-radius: 30px; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 2px solid transparent; }
     .menu-card:hover { transform: translateY(-10px); border-color: var(--primary); background: #f0f9ff; }
 
-    /* --- HALAMAN FUNGSIONAL --- */
+    /* --- HALAMAN FUNGSIONAL (FULL SCREEN) --- */
     .hal-fungsi { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: #f8fafc; color: #1e293b; z-index: 4000; overflow-y: auto; padding: 30px 15px; }
-    .header-fungsi { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto 30px; }
-    .content-fungsi { max-width: 1000px; margin: 0 auto; }
+    .header-fungsi { display: flex; justify-content: space-between; align-items: center; max-width: 900px; margin: 0 auto 30px; }
+    .content-fungsi { max-width: 900px; margin: 0 auto; }
     .soal-card { background: white; padding: 25px; border-radius: 20px; border: 1px solid #e2e8f0; margin-bottom: 20px; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     .btn-hapus { position: absolute; top: 15px; right: 15px; background: #fee2e2; color: #ef4444; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
     
     input, textarea, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #cbd5e1; margin-bottom: 10px; font-size: 1rem; }
-    .btn { padding: 12px 25px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; }
+    .btn { padding: 12px 25px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; transition: 0.2s; }
+    .btn:active { transform: scale(0.95); }
     .btn-blue { background: var(--primary); color: white; width: 100%; }
     .btn-green { background: #10b981; color: white; width: 100%; margin-top: 10px; }
     .btn-back { background: #64748b; color: white; }
 
-    /* TABLE */
+    /* TABLE REKAP */
     .rekap-table { width: 100%; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden; }
     .rekap-table th { background: #f1f5f9; padding: 15px; text-align: left; color: #64748b; font-size: 0.8rem; }
-    .rekap-table td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+    .rekap-table td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; }
 
     @media (max-width: 768px) {
         .header-main h1 { font-size: 1.5rem; }
         .menu-grid { grid-template-columns: 1fr; }
-        .identity-row { flex-direction: column; align-items: center; }
+        .cards-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
     }
   </style>
 </head>
@@ -83,8 +84,8 @@
         <h1>RUANG BELAJAR</h1>
         <div class="identity-row">
             <div class="identitas-box">
-                <img src="logo-putih.png" style="width:35px">
-                <div style="text-align:left"><p class="text-nama" style="color:#fff">SDN Pengkol</p><p class="text-nip">Tahun Pelajaran 2025/2026</p></div>
+                <img src="logo-putih.png" style="width:30px">
+                <div style="text-align:left"><p class="text-nama" style="color:#fff">SDN Pengkol</p><p class="text-nip">TP 2025/2026</p></div>
             </div>
             <div class="guru-btn" onclick="tampilLogin()">
                 <img src="foto-guru.webp" class="foto-guru">
@@ -102,15 +103,15 @@
 
 <div class="modal-overlay" id="modalLogin">
     <div class="modal-content">
-        <h2 style="color:var(--primary)">Keamanan Guru</h2><br>
-        <input type="password" id="passInput" placeholder="Masukkan Sandi">
-        <button class="btn btn-blue" onclick="prosesLogin()">MASUK DASHBOARD</button>
+        <h2 style="color:var(--primary)">Pintu Guru</h2><br>
+        <input type="password" id="passInput" placeholder="Sandi Dashboard">
+        <button class="btn btn-blue" onclick="prosesLogin()">MASUK</button>
         <p style="margin-top:15px; font-size:0.8rem; cursor:pointer; color:#94a3b8" onclick="tutupLogin()">Kembali</p>
     </div>
 </div>
 
 <div id="dashboardGuru" class="container">
-    <h1 style="color:var(--primary); font-weight:800">CENTRAL KENDALI</h1>
+    <h1 style="color:var(--primary); font-weight:800">DASHBOARD GURU</h1>
     <div class="menu-grid">
         <div class="menu-card" onclick="bukaHalaman('halBuatSoal')">
             <span style="font-size:4rem">📝</span>
@@ -121,19 +122,19 @@
             <h2 style="margin-top:15px">Rekapitulasi</h2>
         </div>
     </div>
-    <button class="btn btn-back" onclick="location.reload()">← Keluar Dashboard</button>
+    <button class="btn btn-back" onclick="location.reload()">← Kembali ke Halaman Utama</button>
 </div>
 
 <div id="halBuatSoal" class="hal-fungsi">
     <div class="header-fungsi">
-        <h2>🛠️ Modul Pembuat Tugas</h2>
+        <h2>📝 Modul Tugas</h2>
         <button class="btn btn-back" onclick="tutupHalaman('halBuatSoal')">Tutup</button>
     </div>
     <div class="content-fungsi">
         <div class="soal-card">
             <label><b>Judul Materi:</b></label>
-            <input type="text" id="inJudul" placeholder="Contoh: Bab 1 Perkalian">
-            <label><b>Format Jawaban:</b></label>
+            <input type="text" id="inJudul" placeholder="Contoh: Matematika Perkalian">
+            <label><b>Jenis Jawaban:</b></label>
             <select id="inJenis" onchange="resetBuilder()">
                 <option value="pg">Pilihan Ganda</option>
                 <option value="uraian">Uraian / Esai</option>
@@ -141,19 +142,19 @@
         </div>
         <div id="areaSoal"></div>
         <button class="btn btn-green" onclick="tambahSoal()">+ Tambah Baris Pertanyaan</button>
-        <button class="btn btn-blue" style="margin-top:30px" onclick="kirimKeDatabase()">PUBLIKASIKAN SEKARANG</button>
+        <button class="btn btn-blue" style="margin-top:30px" onclick="kirimKeDatabase()">TERBITKAN TUGAS</button>
     </div>
 </div>
 
 <div id="halRekapSiswa" class="hal-fungsi">
     <div class="header-fungsi">
-        <h2>📊 Rekapitulasi Jawaban</h2>
+        <h2>📊 Hasil Pengerjaan</h2>
         <button class="btn btn-back" onclick="tutupHalaman('halRekapSiswa')">Tutup</button>
     </div>
     <div class="content-fungsi">
         <div style="overflow-x: auto;">
             <table class="rekap-table">
-                <thead><tr><th>Nama Lengkap</th><th>Status</th><th>File Bukti</th></tr></thead>
+                <thead><tr><th>Nama Siswa</th><th>Status</th><th>Link Bukti</th></tr></thead>
                 <tbody id="bodyRekap"></tbody>
             </table>
         </div>
@@ -175,44 +176,53 @@
     ];
 
     async function init() {
-        const [resTugas, resRekap] = await Promise.all([
-            fetch(scriptURL + "?action=getTugas").then(r => r.json()),
-            fetch(scriptURL + "?action=getRekap").then(r => r.json())
-        ]);
+        try {
+            const [resTugas, resRekap] = await Promise.all([
+                fetch(scriptURL + "?action=getTugas").then(r => r.json()),
+                fetch(scriptURL + "?action=getRekap").then(r => r.json())
+            ]);
 
-        // LOGIKA ALERT TUGAS
-        const area = document.getElementById('statusTugasArea');
-        if(!resTugas.judul || resTugas.judul === "TIDAK ADA TUGAS") {
-            area.innerHTML = `<div class="empty-state">⚠️ Belum ada tugas, pengerjaan sudah ditutup.</div>`;
-        } else {
-            area.innerHTML = `<div class="tugas-aktif">TUGAS AKTIF: ${resTugas.judul.toUpperCase()}</div>`;
+            // --- PERBAIKAN LOGIKA STATUS TUGAS ---
+            const area = document.getElementById('statusTugasArea');
+            if(!resTugas.judul || resTugas.judul === "TIDAK ADA TUGAS") {
+                area.innerHTML = `<div class="empty-state">⚠️ Belum ada tugas, pengerjaan sudah ditutup.</div>`;
+            } else {
+                area.innerHTML = `<div class="tugas-aktif">TUGAS AKTIF: ${resTugas.judul.toUpperCase()}</div>`;
+            }
+
+            // --- PERBAIKAN LOGIKA STATUS SISWA (WAJIB BELUM JIKA TIDAK ADA DATA) ---
+            const grid = document.getElementById('gridSiswa');
+            grid.innerHTML = "";
+            SISWA.forEach(s => {
+                // Cari data di rekap. Jika resRekap bukan array atau kosong, m akan undefined.
+                const m = (Array.isArray(resRekap) && resRekap.length > 0) 
+                          ? resRekap.find(d => d.nama && d.nama.trim().toLowerCase() === s.n.trim().toLowerCase())
+                          : null;
+
+                grid.innerHTML += `
+                    <div class="student-card">
+                        <div class="status-badge ${m ? 'status-sudah' : 'status-belum'}">${m ? 'Sudah' : 'Belum'}</div>
+                        <span class="student-icon">${s.i}</span>
+                        <div class="text-nama" style="color:#fff; font-size:0.7rem">${s.n}</div>
+                    </div>`;
+            });
+
+            // --- REKAP DI DASHBOARD ---
+            const body = document.getElementById('bodyRekap');
+            body.innerHTML = "";
+            SISWA.forEach(s => {
+                const m = (Array.isArray(resRekap) && resRekap.length > 0)
+                          ? resRekap.find(d => d.nama && d.nama.trim().toLowerCase() === s.n.trim().toLowerCase())
+                          : null;
+                body.innerHTML += `<tr>
+                    <td><b>${s.n}</b></td>
+                    <td><span style="color:${m ? '#10b981' : '#ef4444'}; font-weight:bold">${m ? '✅ Sudah' : '❌ Belum'}</span></td>
+                    <td>${m ? `<button class="btn" style="background:#f1f5f9; padding:5px 10px; font-size:0.7rem" onclick="window.open('https://drive.google.com/uc?id=${m.link}')">Lihat</button>` : '-'}</td>
+                </tr>`;
+            });
+        } catch(e) {
+            console.error("Gagal ambil data:", e);
         }
-
-        // LOGIKA STATUS SISWA (DIPERBAIKI)
-        const grid = document.getElementById('gridSiswa');
-        grid.innerHTML = "";
-        SISWA.forEach(s => {
-            // Hanya bernilai 'true' jika nama ditemukan di data rekapitulasi Google Sheet
-            const m = resRekap.find(d => d.nama.trim().toLowerCase() === s.n.trim().toLowerCase());
-            grid.innerHTML += `
-                <div class="student-card">
-                    <div class="status-badge ${m ? 'status-sudah' : 'status-belum'}">${m ? 'Sudah' : 'Belum'}</div>
-                    <span class="student-icon">${s.i}</span>
-                    <div class="text-nama" style="color:#fff; font-size:0.75rem">${s.n}</div>
-                </div>`;
-        });
-
-        // REKAP DI DASHBOARD
-        const body = document.getElementById('bodyRekap');
-        body.innerHTML = "";
-        SISWA.forEach(s => {
-            const m = resRekap.find(d => d.nama.trim().toLowerCase() === s.n.trim().toLowerCase());
-            body.innerHTML += `<tr>
-                <td><b>${s.n}</b></td>
-                <td><span style="color:${m ? '#10b981' : '#ef4444'}; font-weight:bold">${m ? '✅ Sudah' : '❌ Belum'}</span></td>
-                <td>${m ? `<button class="btn" style="background:#f1f5f9; padding:5px 10px; font-size:0.7rem" onclick="window.open('https://drive.google.com/uc?id=${m.link}')">Lihat Bukti</button>` : '-'}</td>
-            </tr>`;
-        });
     }
 
     function tampilLogin() { document.getElementById('modalLogin').style.display='flex'; }
@@ -227,7 +237,6 @@
     function bukaHalaman(id) { document.getElementById(id).style.display='block'; }
     function tutupHalaman(id) { document.getElementById(id).style.display='none'; }
 
-    // BUILDER SOAL
     let count = 0;
     function tambahSoal() {
         count++;
@@ -236,12 +245,12 @@
         div.id = 'soal-' + count;
         div.innerHTML = `
             <button class="btn-hapus" onclick="hapusSoal('${div.id}')">Hapus</button>
-            <p style="margin-bottom:10px; font-weight:bold; color:var(--primary)">No. ${count}</p>
-            <textarea class="q-t" placeholder="Pertanyaan..."></textarea>`;
+            <p style="margin-bottom:10px; font-weight:bold; color:var(--primary)">Pertanyaan #${count}</p>
+            <textarea class="q-t" placeholder="Tulis soal di sini..."></textarea>`;
         if(document.getElementById('inJenis').value === 'pg') {
             div.innerHTML += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
-                <input type="text" class="q-a" placeholder="A"><input type="text" class="q-b" placeholder="B">
-                <input type="text" class="q-c" placeholder="C"><input type="text" class="q-d" placeholder="D">
+                <input type="text" class="q-a" placeholder="Opsi A"><input type="text" class="q-b" placeholder="Opsi B">
+                <input type="text" class="q-c" placeholder="Opsi C"><input type="text" class="q-d" placeholder="Opsi D">
             </div>`;
         }
         document.getElementById('areaSoal').appendChild(div);
@@ -258,7 +267,7 @@
             payload.soal.push(s);
         });
         await fetch(scriptURL, { method: "POST", body: JSON.stringify(payload) });
-        alert("Berhasil!"); location.reload();
+        alert("Tugas Berhasil Terbit!"); location.reload();
     }
 
     init();
