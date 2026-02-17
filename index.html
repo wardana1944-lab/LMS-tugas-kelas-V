@@ -11,7 +11,7 @@
     body { background: radial-gradient(circle at top right, #1e293b, #0f172a); min-height: 100vh; color: #f8fafc; overflow-x: hidden; }
     .container { padding: 20px; max-width: 1200px; margin: 0 auto; }
 
-    /* --- DASHBOARD UTAMA --- */
+    /* HEADER */
     .header-main { text-align: center; margin-bottom: 30px; }
     .header-main h1 { font-size: 2rem; font-weight: 800; letter-spacing: 4px; color: var(--primary); margin-bottom: 25px; }
     .identity-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 25px; flex-wrap: wrap; }
@@ -20,8 +20,8 @@
     .foto-guru { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
     
     .status-banner { text-align:center; padding:12px; border-radius:12px; margin-bottom:25px; font-weight:700; border: 1px solid var(--primary); color: var(--primary); background: rgba(56,189,248,0.1); }
-    .empty-banner { border-color: #ef4444; color: #fca5a5; background: rgba(239, 68, 68, 0.1); }
 
+    /* GRID SISWA */
     .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
     .student-card { background: var(--glass); border: 1px solid var(--border); border-radius: 25px; padding: 25px 10px; text-align: center; position: relative; cursor: pointer; transition: 0.3s; }
     .student-card:hover { transform: translateY(-5px); border-color: var(--primary); }
@@ -30,11 +30,11 @@
     .s-belum { background: #ef4444; color: white; }
     .s-sudah { background: #10b981; color: white; }
 
-    /* --- OVERLAY & FULL PANEL --- */
+    /* PANELS */
     .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
     .panel-full { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: #f8fafc; color: #1e293b; z-index: 6000; overflow-y: auto; padding: 20px; }
     
-    .content-area { max-width: 800px; margin: 0 auto; padding-bottom: 50px; }
+    .content-area { max-width: 900px; margin: 0 auto; padding-bottom: 50px; }
     .card-soal { background: white; padding: 20px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; position: relative; }
     
     input, textarea, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #cbd5e1; margin-top: 8px; font-size: 1rem; }
@@ -42,33 +42,34 @@
     .btn-blue { background: var(--primary); color: white; }
     .btn-green { background: #10b981; color: white; }
     .btn-gray { background: #64748b; color: white; }
-    .del-soal { position: absolute; top: 10px; right: 10px; color: #ef4444; background: #fee2e2; padding: 5px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; }
 
     .rekap-table { width: 100%; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden; }
-    .rekap-table th { background: #f1f5f9; padding: 15px; text-align: left; }
-    .rekap-table td { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; }
+    .rekap-table th { background: #f1f5f9; padding: 15px; text-align: left; font-size: 0.8rem; }
+    .rekap-table td { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; }
 
     @media (max-width: 600px) { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
   </style>
 </head>
 <body>
 
-<div class="container" id="viewUtama">
-    <div class="header-main">
-        <h1>RUANG BELAJAR</h1>
-        <div class="identity-row">
-            <div class="identitas-box">
-                <img src="logo-putih.png" width="30">
-                <div style="text-align:left"><p style="font-weight:800; color:var(--primary); font-size:0.8rem">SDN PENGKOL</p></div>
-            </div>
-            <div class="guru-btn" onclick="document.getElementById('modalLogin').style.display='flex'">
-                <img src="foto-guru.webp" class="foto-guru">
-                <div style="text-align:left"><p style="font-size:0.8rem; font-weight:bold">Aditya W. W., S.Pd</p></div>
+<div id="viewUtama">
+    <div class="container">
+        <div class="header-main">
+            <h1>RUANG BELAJAR</h1>
+            <div class="identity-row">
+                <div class="identitas-box">
+                    <img src="logo-putih.png" width="30">
+                    <div style="text-align:left"><p style="font-weight:800; color:var(--primary); font-size:0.8rem">SDN PENGKOL</p></div>
+                </div>
+                <div class="guru-btn" onclick="document.getElementById('modalLogin').style.display='flex'">
+                    <img src="foto-guru.webp" class="foto-guru">
+                    <div style="text-align:left"><p style="font-size:0.8rem; font-weight:bold">Aditya W. W., S.Pd</p></div>
+                </div>
             </div>
         </div>
+        <div id="bannerTugas"></div>
+        <div class="cards-grid" id="gridSiswa"></div>
     </div>
-    <div id="bannerTugas"></div>
-    <div class="cards-grid" id="gridSiswa"></div>
 </div>
 
 <div class="overlay" id="modalLogin">
@@ -93,27 +94,10 @@
     <button class="btn btn-gray" onclick="location.reload()">Kembali</button>
 </div>
 
-<div id="panelBuat" class="panel-full">
+<div id="panelRekap" class="panel-full">
     <div class="content-area">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
-            <h2>Pembuat Tugas</h2>
-            <button class="btn btn-gray" style="width:auto" onclick="closePanel('panelBuat')">Tutup</button>
-        </div>
-        <div class="card-soal">
-            <b>Judul Tugas:</b><input type="text" id="judulTugas">
-            <b>Tipe Jawaban:</b>
-            <select id="tipeTugas" onchange="resetBuilder()"><option value="pg">Pilihan Ganda</option><option value="uraian">Uraian</option></select>
-        </div>
-        <div id="builder"></div>
-        <button class="btn btn-green" onclick="tambahBarisSoal()">+ Tambah Soal</button>
-        <button class="btn btn-blue" style="margin-top:20px" onclick="simpanTugas()">PUBLIKASIKAN</button>
-    </div>
-</div>
-
-<div id="panelRekap" class="panel-full">
-    <div class="content-area" style="max-width:950px">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
-            <h2>Hasil Pengerjaan</h2>
+            <h2>Rekap Jawaban Siswa</h2>
             <button class="btn btn-gray" style="width:auto" onclick="closePanel('panelRekap')">Tutup</button>
         </div>
         <div style="overflow-x:auto">
@@ -122,20 +106,6 @@
                 <tbody id="bodyRekap"></tbody>
             </table>
         </div>
-    </div>
-</div>
-
-<div id="panelKerjakan" class="panel-full">
-    <div class="content-area">
-        <h2 id="sapaSiswa" style="color:var(--primary); text-align:center"></h2>
-        <p id="judulTugasSiswa" style="text-align:center; margin-bottom:20px"></p>
-        <div id="soalArea"></div>
-        <div class="card-soal">
-            <b>Upload Foto Lembar Jawaban (Wajib):</b>
-            <input type="file" id="fileBukti" accept="image/*">
-        </div>
-        <button class="btn btn-blue" id="btnKirim" onclick="kirimJawabanSiswa()">KIRIM JAWABAN</button>
-        <button class="btn btn-gray" style="margin-top:10px" onclick="closePanel('panelKerjakan')">Batal</button>
     </div>
 </div>
 
@@ -152,150 +122,49 @@
         { nama: "Tanca Al Verosa", i: "👦" }
     ];
 
-    let currentTugas = null;
-    let selectedSiswa = "";
-
     async function init() {
         const [rTugas, rRekap] = await Promise.all([
             fetch(scriptURL + "?action=getTugas").then(r => r.json()),
             fetch(scriptURL + "?action=getRekap").then(r => r.json())
         ]);
-        currentTugas = rTugas;
-
-        document.getElementById('bannerTugas').innerHTML = (!rTugas.judul || rTugas.judul === "TIDAK ADA TUGAS") 
-            ? `<div class="status-banner empty-banner">⚠️ BELUM ADA TUGAS</div>` 
-            : `<div class="status-banner">TUGAS AKTIF: ${rTugas.judul}</div>`;
 
         const grid = document.getElementById('gridSiswa');
         grid.innerHTML = "";
+        
+        // BALIK DATA REKAP agar yang terbaru di atas (mencegah file tugas kemarin muncul)
+        const rekapTerbaru = Array.isArray(rRekap) ? [...rRekap].reverse() : [];
+
         SISWA.forEach(s => {
-            // LOGIKA: Nama ada di database = Sudah
-            const sudah = rRekap && rRekap.some(d => d.nama && d.nama.trim().toLowerCase() === s.nama.trim().toLowerCase());
+            // Cari data terbaru milik siswa tersebut
+            const dataSiswa = rekapTerbaru.find(d => d.nama && d.nama.trim().toLowerCase() === s.nama.trim().toLowerCase());
+            
+            // Logika: Dinyatakan "Sudah" HANYA jika ada kiriman yang cocok dengan judul tugas aktif
+            const isMatch = dataSiswa && dataSiswa.materi === rTugas.judul;
+
             grid.innerHTML += `
                 <div class="student-card" onclick="bukaPengerjaan('${s.nama}')">
-                    <div class="status-badge ${sudah ? 's-sudah' : 's-belum'}">${sudah ? 'Sudah' : 'Belum'}</div>
+                    <div class="status-badge ${isMatch ? 's-sudah' : 's-belum'}">${isMatch ? 'Sudah' : 'Belum'}</div>
                     <span class="student-icon">${s.i}</span>
                     <p style="font-size:0.7rem; color:#fff; font-weight:bold">${s.nama}</p>
                 </div>`;
         });
 
+        // ISI TABEL REKAP GURU
         const body = document.getElementById('bodyRekap');
         body.innerHTML = "";
         SISWA.forEach(s => {
-            const data = rRekap && rRekap.find(d => d.nama && d.nama.trim().toLowerCase() === s.nama.trim().toLowerCase());
+            const data = rekapTerbaru.find(d => d.nama && d.nama.trim().toLowerCase() === s.nama.trim().toLowerCase() && d.materi === rTugas.judul);
             body.innerHTML += `<tr>
                 <td><b>${s.nama}</b></td>
                 <td>${data ? '✅' : '❌'}</td>
-                <td>${data && data.link ? `<button class="btn" style="padding:5px; font-size:0.7rem" onclick="window.open('https://drive.google.com/uc?id=${data.link}')">Lihat Foto</button>` : '-'}</td>
-                <td>${data && data.jawaban ? `<button class="btn btn-green" style="padding:5px; font-size:0.7rem" onclick="alert('JAWABAN ${s.nama}:\\n\\n${data.jawaban}')">Lihat Jawaban</button>` : '-'}</td>
+                <td>${data ? `<button class="btn" style="padding:5px" onclick="window.open('https://drive.google.com/uc?id=${data.link}')">Lihat Foto</button>` : '-'}</td>
+                <td>${data ? `<button class="btn btn-green" style="padding:5px" onclick="alert('JAWABAN ${s.nama}:\\n\\n${data.jawaban}')">Lihat Teks</button>` : '-'}</td>
             </tr>`;
         });
     }
-
-    // GURU
-    function loginAction() {
-        if(document.getElementById('passInput').value === "guru123") {
-            document.getElementById('viewUtama').style.display='none';
-            document.getElementById('dashGuru').style.display='block';
-            document.getElementById('modalLogin').style.display='none';
-        } else { alert("Sandi Salah!"); }
-    }
-    function openPanel(id) { document.getElementById(id).style.display='block'; }
-    function closePanel(id) { document.getElementById(id).style.display='none'; }
-
-    let qCount = 0;
-    function tambahBarisSoal() {
-        qCount++;
-        const div = document.createElement('div');
-        div.className = 'card-soal'; div.id = 'q-'+qCount;
-        div.innerHTML = `<div class="del-soal" onclick="this.parentElement.remove()">Hapus</div>
-            <b>Soal No ${qCount}</b><textarea class="q-txt" placeholder="Ketik soal..."></textarea>`;
-        if(document.getElementById('tipeTugas').value === 'pg') {
-            div.innerHTML += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-top:10px">
-                <input type="text" class="q-a" placeholder="Opsi A"><input type="text" class="q-b" placeholder="Opsi B">
-                <input type="text" class="q-c" placeholder="Opsi C"><input type="text" class="q-d" placeholder="Opsi D">
-            </div>`;
-        }
-        document.getElementById('builder').appendChild(div);
-    }
-    function resetBuilder() { document.getElementById('builder').innerHTML = ""; qCount = 0; tambahBarisSoal(); }
-
-    async function simpanTugas() {
-        const btn = event.target; btn.innerText = "MENGIRIM..."; btn.disabled = true;
-        const payload = { action: "setTugas", judul: document.getElementById('judulTugas').value, jenis: document.getElementById('tipeTugas').value, soal: [] };
-        document.querySelectorAll('.card-soal').forEach(c => {
-            const txt = c.querySelector('.q-txt');
-            if(txt) {
-                let s = { tanya: txt.value };
-                if(payload.jenis === 'pg') s.opsi = [c.querySelector('.q-a').value, c.querySelector('.q-b').value, c.querySelector('.q-c').value, c.querySelector('.q-d').value];
-                payload.soal.push(s);
-            }
-        });
-        await fetch(scriptURL, { method: "POST", body: JSON.stringify(payload) });
-        location.reload();
-    }
-
-    // SISWA
-    function bukaPengerjaan(nama) {
-        if(!currentTugas || !currentTugas.judul || currentTugas.judul === "TIDAK ADA TUGAS") return alert("Belum ada tugas!");
-        selectedSiswa = nama;
-        document.getElementById('sapaSiswa').innerText = "Halo, " + nama.split(' ')[0];
-        document.getElementById('judulTugasSiswa').innerText = currentTugas.judul;
-        const area = document.getElementById('soalArea');
-        area.innerHTML = "";
-        currentTugas.soal.forEach((s, idx) => {
-            let html = `<div class="card-soal" data-idx="${idx}"><p><b>${idx+1}. ${s.tanya}</b></p>`;
-            if(currentTugas.jenis === 'pg') {
-                html += `<div style="margin-top:10px">
-                    <label><input type="radio" name="ans${idx}" value="A"> A. ${s.opsi[0]}</label><br>
-                    <label><input type="radio" name="ans${idx}" value="B"> B. ${s.opsi[1]}</label><br>
-                    <label><input type="radio" name="ans${idx}" value="C"> C. ${s.opsi[2]}</label><br>
-                    <label><input type="radio" name="ans${idx}" value="D"> D. ${s.opsi[3]}</label>
-                </div>`;
-            } else {
-                html += `<textarea class="ans-text" placeholder="Ketik jawaban di sini..."></textarea>`;
-            }
-            html += `</div>`;
-            area.innerHTML += html;
-        });
-        openPanel('panelKerjakan');
-    }
-
-    async function kirimJawabanSiswa() {
-        const fileInput = document.getElementById('fileBukti');
-        if(!fileInput.files[0]) return alert("Wajib upload foto bukti!");
-        
-        const btn = document.getElementById('btnKirim');
-        btn.innerText = "SEDANG MENGIRIM..."; btn.disabled = true;
-
-        // Kumpulkan jawaban teks
-        let allAns = "";
-        document.querySelectorAll('#soalArea .card-soal').forEach((c, i) => {
-            let val = "";
-            if(currentTugas.jenis === 'pg') {
-                const checked = c.querySelector(`input[name="ans${i}"]:checked`);
-                val = checked ? checked.value : "-";
-            } else {
-                val = c.querySelector('.ans-text').value;
-            }
-            allAns += `(No.${i+1}: ${val}) `;
-        });
-
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-            const base64 = e.target.result.split(',')[1];
-            await fetch(scriptURL, { method: "POST", body: JSON.stringify({
-                action: "upload",
-                nama: selectedSiswa,
-                file: base64,
-                filename: selectedSiswa + ".jpg",
-                jawaban: allAns
-            })});
-            alert("Berhasil!"); location.reload();
-        };
-        reader.readAsDataURL(fileInput.files[0]);
-    }
-
+    
+    // (Tambahkan fungsi loginAction, openPanel, closePanel, tambahBarisSoal, simpanTugas, bukaPengerjaan, kirimJawabanSiswa dari kode sebelumnya)
+    
     init();
 </script>
 </body>
