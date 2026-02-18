@@ -11,7 +11,7 @@
     body { background: var(--bg); color: #f8fafc; min-height: 100vh; padding: 20px 15px; }
     .container { max-width: 800px; margin: 0 auto; }
     
-    /* DESAIN HEADER TETAP */
+    /* HEADER TETAP */
     .brand-header { text-align: center; margin-bottom: 30px; }
     .brand-header h1 { font-size: 2.2rem; font-weight: 800; background: linear-gradient(to bottom, #ffffff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; }
     .brand-header p { font-size: 0.8rem; letter-spacing: 3px; color: var(--primary); font-weight: 700; }
@@ -23,7 +23,7 @@
     .guru-info .nip { font-size: 0.55rem; color: #94a3b8; font-family: monospace; }
     .banner { text-align:center; padding:12px; border-radius:12px; margin-bottom:25px; border: 1px solid rgba(14,165,233,0.3); background: rgba(14,165,233,0.05); color: var(--primary); font-weight: 700; font-size: 0.8rem; }
 
-    /* GRID SISWA 3 KOLOM TETAP */
+    /* GRID SISWA 3 KOLOM */
     .grid-siswa { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
     .card-siswa { background: var(--glass); border: 1px solid var(--border); padding: 15px 5px; border-radius: 20px; text-align: center; cursor: pointer; min-height: 140px; display: flex; flex-direction: column; justify-content: center; }
     .card-siswa span { font-size: 2.2rem; display: block; margin-bottom: 8px; }
@@ -107,7 +107,10 @@ let dataWeb = null;
 
 window.onload = async () => {
   const grid = document.getElementById('gridSiswa');
-  SISWA.forEach(s => { grid.innerHTML += `<div class="card-siswa"><span>${s.i}</span><p>${s.n}</p></div>`; });
+  SISWA.forEach(s => { 
+    // FUNGSI KLIK SISWA SUDAH DIPASANG KEMBALI
+    grid.innerHTML += `<div class="card-siswa" onclick="alert('Membuka tugas untuk: ${s.n}')"><span>${s.i}</span><p>${s.n}</p></div>`; 
+  });
   loadData();
 };
 
@@ -116,25 +119,33 @@ async function loadData() {
     const res = await fetch(API + "?action=getAllData");
     dataWeb = await res.json();
     document.getElementById('statusTugas').innerText = dataWeb.tugas.judul === "TIDAK ADA TUGAS" ? "BELUM ADA TUGAS" : "TUGAS: " + dataWeb.tugas.judul;
-  } catch(e) { }
+  } catch(e) { console.error(e); }
 }
 
-function openView(id) { document.getElementById(id).style.display = 'block'; if(id === 'panelRekap') renderRekap(); }
+function openView(id) { 
+  document.getElementById(id).style.display = 'block'; 
+  if(id === 'panelRekap') renderRekap(); 
+}
 function closeView(id) { document.getElementById(id).style.display = 'none'; }
 function closeAllPanels() { document.querySelectorAll('.panel-overlay').forEach(p => p.style.display = 'none'); }
 
-async function renderRekap() {
+// REKAP NILAI LEBIH CEPAT (Menggunakan data yang sudah ada)
+function renderRekap() {
   const tb = document.getElementById('isiRekapTabel');
-  tb.innerHTML = "<tr><td colspan='4' style='text-align:center; padding:20px;'>Sync Data...</td></tr>";
-  try {
-    const res = await fetch(API + "?action=getAllData");
-    const fresh = await res.json();
-    tb.innerHTML = "";
-    SISWA.forEach((s, idx) => {
-      const r = fresh.rekap.find(item => item.nama === s.n && item.materi === fresh.tugas.judul);
-      tb.innerHTML += `<tr><td>${idx+1}</td><td><b>${s.n}</b></td><td style="color:var(--primary); font-weight:800;">${r?r.nilai:'-'}</td><td>${r?`<a href="https://drive.google.com/uc?id=${r.link}" target="_blank" style="color:green;font-weight:bold;text-decoration:none;">LIHAT</a>`:'-'}</td></tr>`;
-    });
-  } catch(e) { tb.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Gagal.</td></tr>"; }
+  tb.innerHTML = "";
+  if(!dataWeb || !dataWeb.rekap) {
+    tb.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Data kosong atau belum dimuat.</td></tr>";
+    return;
+  }
+  SISWA.forEach((s, idx) => {
+    const r = dataWeb.rekap.find(item => item.nama === s.n);
+    tb.innerHTML += `<tr>
+      <td>${idx+1}</td>
+      <td><b>${s.n}</b></td>
+      <td style="color:var(--primary); font-weight:800;">${r ? r.nilai : '-'}</td>
+      <td>${r ? `<a href="https://drive.google.com/uc?id=${r.link}" target="_blank" style="color:green;font-weight:bold;text-decoration:none;">LIHAT</a>` : '-'}</td>
+    </tr>`;
+  });
 }
 
 function openLogin() { document.getElementById('modalLogin').style.display = 'flex'; }
@@ -149,11 +160,18 @@ function resetFormSoal() { document.getElementById('wadahSoal').innerHTML = ""; 
 async function terbitkanTugas() {
   const p = { action: "setTugas", judul: document.getElementById('judulMateri').value, jenis: document.getElementById('jenisTugas').value, soal: [] };
   document.querySelectorAll('#wadahSoal > div').forEach(el => { p.soal.push({ tanya: el.querySelector('.q-tanya').value }); });
-  await fetch(API, { method: "POST", body: JSON.stringify(p) });
-  alert("Tugas Terbit!"); location.reload();
+  try {
+    await fetch(API, { method: "POST", body: JSON.stringify(p) });
+    alert("Tugas Terbit!"); location.reload();
+  } catch(e) { alert("Gagal terbit."); }
 }
 
-async function resetTugas() { if(confirm("Hapus?")) { await fetch(API, { method: "POST", body: JSON.stringify({ action: "setTugas", judul: "TIDAK ADA TUGAS", jenis: "pg", soal: [] }) }); location.reload(); } }
+async function resetTugas() { 
+  if(confirm("Hapus?")) { 
+    await fetch(API, { method: "POST", body: JSON.stringify({ action: "setTugas", judul: "TIDAK ADA TUGAS", jenis: "pg", soal: [] }) }); 
+    location.reload(); 
+  } 
+}
 </script>
 </body>
 </html>
