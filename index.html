@@ -21,8 +21,26 @@
 
     .banner { text-align:center; padding:12px; border-radius:12px; margin-bottom:20px; font-weight:700; border: 1px solid var(--primary); background: rgba(14,165,233,0.1); font-size: 0.8rem; color: var(--primary); }
 
-    .grid-siswa { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
-    .card-siswa { background: var(--glass); border: 1px solid var(--border); padding: 15px 5px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
+    /* GRID 3 KOLOM X 5 BARIS */
+    .grid-siswa { 
+      display: grid; 
+      grid-template-columns: repeat(3, 1fr); 
+      gap: 12px; 
+    }
+    .card-siswa { 
+      background: var(--glass); 
+      border: 1px solid var(--border); 
+      padding: 15px 5px; 
+      border-radius: 15px; 
+      text-align: center; 
+      cursor: pointer; 
+      transition: 0.2s;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
     .card-siswa span { font-size: 1.8rem; display: block; margin-bottom: 5px; }
     .card-siswa p { font-size: 0.6rem; font-weight: 600; line-height: 1.2; }
 
@@ -53,7 +71,7 @@
       <p>LMS Kelas V TP 2025/2026</p>
     </div>
     <div class="guru-profile" onclick="document.getElementById('modalLogin').style.display='flex'">
-      <div class="guru-name"><p>Aditya W. W., S.Pd</p><p style="font-size: 0.55rem; opacity: 0.6;">Guru Kelas V</p></div>
+      <div class="guru-name"><p>Aditya W. W., S.Pd</p><p style="font-size: 0.55rem; opacity: 0.6;">NIP 19940319 202321 1 005</p></div>
       <img src="https://ui-avatars.com/api/?name=Aditya+WW&background=0ea5e9&color=fff" alt="Guru">
     </div>
   </div>
@@ -105,7 +123,7 @@
     <div class="soal-box" style="background:#f0f9ff; border: 2px solid var(--primary); text-align: center;">
       <p style="font-size:0.85rem; margin-bottom:10px; font-weight: bold; color: #1e293b;">Sudah Selesai?</p>
       <button class="btn btn-blue" id="btnKirimSiswa" onclick="prosesOtomatis()">KIRIM JAWABAN KE GURU</button>
-      <p style="font-size:0.65rem; margin-top:8px; opacity:0.7;">Jawaban akan otomatis dibuat menjadi gambar ringan.</p>
+      <p style="font-size:0.65rem; margin-top:8px; opacity:0.7;">Jawaban otomatis terkirim sebagai gambar ringan.</p>
     </div>
     <button class="btn btn-outline" onclick="closeView('panelKerja')">BATAL</button>
   </div>
@@ -123,7 +141,9 @@
 <canvas id="canvasHasil" style="display:none;"></canvas>
 
 <script>
+// PENTING: GANTI URL DI BAWAH INI DENGAN URL DEPLOY TERBARU BAPAK
 const API = "https://script.google.com/macros/s/AKfycbzKSeF0P2w2x1sszm09pLl1lEzApYHH9xbG1UISa5SoiDWfrle5L4iF7jbh8LtdqgyHvA/exec";
+
 const SISWA = [{n:"Alvaro Adnan Aji Pambudi",i:"👦"},{n:"Anantha Yudha Diztira",i:"👦"},{n:"Arifah Yhuan Nur Azizah",i:"👧"},{n:"Aurelia Gieni Lindria Putri",i:"👧"},{n:"Dhafitha Nizza Nur Azizah",i:"👧"},{n:"Dhian Rahmawati",i:"👧"},{n:"Dimas Rasyid Faristia",i:"👦"},{n:"Erfin Denu Setiawan",i:"👦"},{n:"Marsya Anindya Kiera",i:"👧"},{n:"Mikayla Ayuningtyas",i:"👧"},{n:"Muhammad Ozil Ramadhan",i:"👦"},{n:"Rhevan Nabil Yudanta",i:"👦"},{n:"Ridho Wicaksono",i:"👦"},{n:"Rizky Syam Dani",i:"👦"},{n:"Tanca Al Verosa",i:"👦"}];
 
 let dataWeb = null;
@@ -185,7 +205,6 @@ function bukaTugas(nama) {
   dataWeb.tugas.soal.forEach((s, i) => {
     let inp = "";
     if (dataWeb.tugas.jenis === 'pg') {
-      // BAGIAN INI SUDAH DIPERBAIKI: Teks opsi A, B, C, D muncul kembali
       inp = `<select class="ans-siswa">
                <option value="">-- Pilih Jawaban --</option>
                <option value="A">A. ${s.opsi[0]}</option>
@@ -201,7 +220,6 @@ function bukaTugas(nama) {
   openView('panelKerja');
 }
 
-// LOGIKA OTOMATIS: GENERATE JPG + KOMPRES + KIRIM
 async function prosesOtomatis() {
   const btn = document.getElementById('btnKirimSiswa');
   btn.innerText = "MENGOMPRES & MENGIRIM...";
@@ -218,13 +236,10 @@ async function prosesOtomatis() {
 
   const nFinal = dataWeb.tugas.jenis === 'pg' ? Math.round((bnr / dataWeb.tugas.soal.length) * 100) : "Uraian";
 
-  // Create Image on Canvas
   const cvs = document.getElementById('canvasHasil'); 
   const ctx = cvs.getContext('2d');
-  cvs.width = 500; 
-  cvs.height = 600; 
-  ctx.fillStyle = "white"; 
-  ctx.fillRect(0,0,500,600);
+  cvs.width = 500; cvs.height = 650; 
+  ctx.fillStyle = "white"; ctx.fillRect(0,0,500,650);
   
   ctx.fillStyle = "#0ea5e9"; ctx.fillRect(0,0,500,50);
   ctx.fillStyle = "white"; ctx.font="bold 18px Arial"; ctx.fillText("HASIL JAWABAN SISWA", 20, 32);
@@ -239,7 +254,6 @@ async function prosesOtomatis() {
   ctx.font="13px Arial"; let y=180;
   list.forEach(l => { ctx.fillText(l, 30, y); y+=22; });
 
-  // Kompresi: quality 0.5 (50%) agar file sangat kecil tapi tetap terbaca
   const dataGambar = cvs.toDataURL("image/jpeg", 0.5).split(',')[1];
 
   try {
@@ -270,5 +284,3 @@ async function resetTugas() { if(confirm("Hapus tugas aktif?")) { await fetch(AP
 </script>
 </body>
 </html>
-
-
