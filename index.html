@@ -179,9 +179,23 @@ function bukaTugas(nama) {
   userSekarang = nama;
   document.getElementById('namaSiswaHi').innerText = "Halo, " + nama;
   document.getElementById('materiHi').innerText = "Materi: " + dataWeb.tugas.judul;
-  const area = document.getElementById('areaSoalSiswa'); area.innerHTML = "";
+  const area = document.getElementById('areaSoalSiswa'); 
+  area.innerHTML = "";
+
   dataWeb.tugas.soal.forEach((s, i) => {
-    let inp = dataWeb.tugas.jenis === 'pg' ? `<select class="ans-siswa"><option value="">-- Pilih Jawaban --</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>` : `<textarea class="ans-siswa" placeholder="Ketik jawabanmu..."></textarea>`;
+    let inp = "";
+    if (dataWeb.tugas.jenis === 'pg') {
+      // BAGIAN INI SUDAH DIPERBAIKI: Teks opsi A, B, C, D muncul kembali
+      inp = `<select class="ans-siswa">
+               <option value="">-- Pilih Jawaban --</option>
+               <option value="A">A. ${s.opsi[0]}</option>
+               <option value="B">B. ${s.opsi[1]}</option>
+               <option value="C">C. ${s.opsi[2]}</option>
+               <option value="D">D. ${s.opsi[3]}</option>
+             </select>`;
+    } else {
+      inp = `<textarea class="ans-siswa" placeholder="Ketik jawabanmu..."></textarea>`;
+    }
     area.innerHTML += `<div class="soal-box"><p><b>${i+1}. ${s.tanya}</b></p>${inp}</div>`;
   });
   openView('panelKerja');
@@ -256,3 +270,4 @@ async function resetTugas() { if(confirm("Hapus tugas aktif?")) { await fetch(AP
 </script>
 </body>
 </html>
+
