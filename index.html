@@ -42,7 +42,12 @@
       align-items: center;
     }
     .card-siswa span { font-size: 2.8rem; display: block; margin-bottom: 5px; }
-    .card-siswa p { font-size: 0.6rem; font-weight: 600; line-height: 1.2; }
+    .card-siswa p { 
+  font-size: 0.75rem; /* Ukuran diperbesar dari 0.6 ke 0.75 */
+  font-weight: 700;    /* Tulisan jadi lebih tebal */
+  line-height: 1.2; 
+  padding: 0 5px;      /* Jarak sedikit agar tidak mepet pinggir kotak */
+}
 
     .panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f8fafc; color: #1e293b; z-index: 1000; overflow-y: auto; padding: 20px; }
     .soal-box { background: white; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
@@ -284,4 +289,5 @@ async function resetTugas() { if(confirm("Hapus tugas aktif?")) { await fetch(AP
 </script>
 </body>
 </html>
+
 
