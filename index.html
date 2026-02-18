@@ -40,7 +40,6 @@
       background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 20px; 
       border-radius: 24px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; gap: 12px; text-align: left;
     }
-    .bento-card:active { transform: scale(0.95); }
     .icon-box { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
     .bento-card h4 { font-size: 0.9rem; font-weight: 800; color: white; }
     .bento-card p { font-size: 0.65rem; color: #94a3b8; }
@@ -59,7 +58,7 @@
     /* PANELS */
     .panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; overflow-y: auto; padding: 20px; background: var(--bg); }
     .btn-blue { background: var(--primary); color: white; padding: 16px; border-radius: 14px; border: none; font-weight: 700; width: 100%; margin-top: 10px; cursor: pointer; }
-    input, textarea, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #cbd5e1; margin: 8px 0; }
+    input, textarea, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #cbd5e1; margin: 8px 0; font-size: 0.85rem; }
   </style>
 </head>
 <body>
@@ -88,8 +87,6 @@
 <div id="panelGuru" class="panel">
   <div class="container" style="max-width:500px; padding-top: 50px;">
     <h2 style="text-align:center; font-weight:800; margin-bottom:10px;">MENU UTAMA GURU</h2>
-    <p style="text-align:center; color:#94a3b8; font-size: 0.8rem; margin-bottom: 30px;">Kelola materi dan pantau progres siswa.</p>
-    
     <div class="bento-grid">
       <div class="bento-card" onclick="openView('panelBuat')">
         <div class="icon-box" style="background:#6366f1;">📝</div>
@@ -136,10 +133,12 @@
 <div id="panelRekap" class="panel" style="background:#f8fafc; color:#1e293b;">
     <div class="container">
         <h3>📊 Rekap Nilai</h3>
-        <table style="width:100%; margin-top:20px; border-collapse:collapse; font-size:0.8rem;">
-            <thead><tr style="background:#f1f5f9;"><th>No</th><th>Nama</th><th>Nilai</th><th>Link</th></tr></thead>
-            <tbody id="isiRekap"></tbody>
-        </table>
+        <div style="overflow-x:auto">
+          <table style="width:100%; margin-top:20px; border-collapse:collapse; font-size:0.8rem; background:white;">
+              <thead><tr style="background:#f1f5f9;"><th>No</th><th>Nama</th><th>Nilai</th><th>Link</th></tr></thead>
+              <tbody id="isiRekap"></tbody>
+          </table>
+        </div>
         <button class="btn-blue" onclick="closeView('panelRekap')">KEMBALI</button>
     </div>
 </div>
@@ -184,7 +183,7 @@ async function init() {
         const rb = document.getElementById('isiRekap'); rb.innerHTML = "";
         SISWA.forEach((s, idx) => {
             const d = dataWeb.rekap.find(r => r.nama === s.n && r.materi === dataWeb.tugas.judul);
-            rb.innerHTML += `<tr style="border-bottom:1px solid #ddd"><td style="padding:10px">${idx+1}</td><td>${s.n}</td><td>${d?d.nilai:'-'}</td><td>${d?`<a href="https://drive.google.com/uc?id=${d.link}" target="_blank">LIHAT</a>`:'-'}</td></tr>`;
+            rb.innerHTML += `<tr style="border-bottom:1px solid #ddd"><td style="padding:10px">${idx+1}</td><td>${s.n}</td><td style="font-weight:bold; color:blue">${d?d.nilai:'-'}</td><td>${d?`<a href="https://drive.google.com/uc?id=${d.link}" target="_blank">LIHAT</a>`:'-'}</td></tr>`;
         });
     } catch(e) { }
 }
@@ -217,7 +216,7 @@ function renderSoal() {
             opsiContainer.innerHTML += `<div class="opsi-item ${sel}" onclick="pilihJawaban('${l}')"><b>${l}.</b> ${s.opsi[i]}</div>`;
         });
     } else {
-        opsiContainer.innerHTML = `<textarea oninput="pilihJawaban(this.value)" style="height:120px">${jawabanSiswa[indeksSoal]}</textarea>`;
+        opsiContainer.innerHTML = `<textarea oninput="pilihJawaban(this.value)" placeholder="Tulis jawaban..." style="height:120px">${jawabanSiswa[indeksSoal]}</textarea>`;
     }
     document.getElementById('btnFinish').style.display = (indeksSoal === dataWeb.tugas.soal.length - 1) ? 'block' : 'none';
 }
@@ -227,12 +226,11 @@ function geserSoal(a) { let n = indeksSoal + a; if(n >= 0 && n < dataWeb.tugas.s
 function lompatSoal(i) { indeksSoal = i; renderNomorGrid(); renderSoal(); }
 
 async function prosesOtomatis() {
-    if(!confirm("Kirim sekarang?")) return;
+    if(!confirm("Kirim jawaban sekarang?")) return;
     const btn = document.getElementById('btnFinish'); btn.innerText = "MENGIRIM..."; btn.disabled = true;
     let bnr = 0;
     dataWeb.tugas.soal.forEach((s, i) => { if(dataWeb.tugas.jenis === 'pg' && jawabanSiswa[i] === s.kunci) bnr++; });
-    const nFinal = dataWeb.tugas.jenis === 'pg' ? Math.round((bnr / dataWeb.tugas.soal.length) * 100) : "Uraian";
-    
+    const nFinal = dataWeb.tugas.jenis === 'pg' ? Math.round((bnr / dataWeb.tugas.soal.length) * 100) : "Selesai";
     const cvs = document.getElementById('canvasHasil'); const ctx = cvs.getContext('2d');
     cvs.width = 500; cvs.height = 700; ctx.fillStyle = "white"; ctx.fillRect(0,0,500,700);
     ctx.fillStyle = "#0ea5e9"; ctx.fillRect(0,0,500,60); ctx.fillStyle = "white"; ctx.font="bold 20px Arial"; ctx.fillText("HASIL JAWABAN", 20, 40);
@@ -243,12 +241,12 @@ async function prosesOtomatis() {
     alert("Terkirim!"); location.reload();
 }
 
-function login() { if(document.getElementById('passGuru').value === "guru123") { closeView('modalLogin'); openView('panelGuru'); } else alert("Salah!"); }
+function login() { if(document.getElementById('passGuru').value === "guru123") { closeView('modalLogin'); openView('panelGuru'); } else alert("Sandi Salah!"); }
 function openView(id) { document.getElementById(id).style.display='block'; }
 function closeView(id) { document.getElementById(id).style.display='none'; }
 function tambahSoal() {
     const id = Date.now(); const tipe = document.getElementById('jenisTugas').value;
-    const html = `<div id="box-${id}" style="background:white; padding:15px; margin-top:10px; border-radius:10px;"><b>Soal:</b><textarea class="q-text"></textarea>${tipe === 'pg' ? `<input class="oa" placeholder="A"><input class="ob" placeholder="B"><input class="oc" placeholder="C"><input class="od" placeholder="D"><select class="q-kunci"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>` : ''}<button onclick="this.parentElement.remove()" style="color:red">Hapus</button></div>`;
+    const html = `<div id="box-${id}" style="background:white; padding:15px; margin-top:10px; border-radius:10px; border:1px solid #ddd;"><b>Soal:</b><textarea class="q-text"></textarea>${tipe === 'pg' ? `<div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;"><input class="oa" placeholder="Opsi A"><input class="ob" placeholder="Opsi B"><input class="oc" placeholder="Opsi C"><input class="od" placeholder="Opsi D"></div><b>Kunci Jawaban:</b><select class="q-kunci"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>` : ''}<button onclick="this.parentElement.remove()" style="color:red; background:none; border:none; font-weight:bold; margin-top:10px;">HAPUS SOAL</button></div>`;
     document.getElementById('wadahSoal').insertAdjacentHTML('beforeend', html);
 }
 function resetSoal() { document.getElementById('wadahSoal').innerHTML = ""; tambahSoal(); }
@@ -261,7 +259,7 @@ async function kirimTugas() {
     });
     await fetch(API, {method:"POST", body:JSON.stringify(p)}); location.reload();
 }
-async function resetTugas() { if(confirm("Hapus?")) { await fetch(API, {method:"POST", body:JSON.stringify({action:"setTugas", judul:"TIDAK ADA TUGAS", jenis:"pg", soal:[]})}); location.reload(); } }
+async function resetTugas() { if(confirm("Hapus tugas aktif?")) { await fetch(API, {method:"POST", body:JSON.stringify({action:"setTugas", judul:"TIDAK ADA TUGAS", jenis:"pg", soal:[]})}); location.reload(); } }
 </script>
 </body>
 </html>
