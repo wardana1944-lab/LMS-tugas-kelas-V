@@ -17,16 +17,12 @@
     .sch-info p { font-size: 0.65rem; opacity: 0.6; }
     .guru-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; }
     .guru-profile img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
-    .guru-name { font-size: 0.75rem; font-weight: 700; text-align: right; }
+    .guru-name { font-size: 0.75rem; font-weight: 700; text-align: right; line-height: 1.2; }
 
     .banner { text-align:center; padding:12px; border-radius:12px; margin-bottom:20px; font-weight:700; border: 1px solid var(--primary); background: rgba(14,165,233,0.1); font-size: 0.8rem; color: var(--primary); }
 
-    /* GRID 3 KOLOM X 5 BARIS */
-    .grid-siswa { 
-      display: grid; 
-      grid-template-columns: repeat(3, 1fr); 
-      gap: 12px; 
-    }
+    /* GRID SISWA (3x5) */
+    .grid-siswa { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
     .card-siswa { 
       background: var(--glass); 
       border: 1px solid var(--border); 
@@ -35,29 +31,52 @@
       text-align: center; 
       cursor: pointer; 
       transition: 0.2s;
-      min-height: 110px;
+      min-height: 130px; /* Disesuaikan agar muat icon besar */
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
     }
     .card-siswa span { font-size: 2.8rem; display: block; margin-bottom: 5px; }
-    .card-siswa p { 
-  font-size: 0.75rem; /* Ukuran diperbesar dari 0.6 ke 0.75 */
-  font-weight: 700;    /* Tulisan jadi lebih tebal */
-  line-height: 1.2; 
-  padding: 0 5px;      /* Jarak sedikit agar tidak mepet pinggir kotak */
-}
+    .card-siswa p { font-size: 0.75rem; font-weight: 700; line-height: 1.2; padding: 0 5px; }
 
+    /* MENU GURU MODERN */
+    #panelGuru { background: radial-gradient(circle at top, #1e293b, #0f172a) !important; }
+    .menu-title { text-align:center; margin-bottom:40px; font-weight:800; letter-spacing: 1px; color: white; }
+    
     .panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f8fafc; color: #1e293b; z-index: 1000; overflow-y: auto; padding: 20px; }
     .soal-box { background: white; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     
     input, textarea, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; margin: 5px 0; font-size: 0.85rem; }
-    .btn { padding: 12px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; width: 100%; margin-top: 5px; font-size: 0.8rem; }
-    .btn-blue { background: var(--primary); color: white; }
-    .btn-green { background: #10b981; color: white; }
-    .btn-red { background: #ef4444; color: white; }
-    .btn-outline { background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; }
+    
+    /* BUTTONS STYLE */
+    .btn { 
+      padding: 15px; 
+      border-radius: 12px; 
+      border: none; 
+      font-weight: 700; 
+      cursor: pointer; 
+      width: 100%; 
+      margin-bottom: 15px; 
+      font-size: 0.9rem; 
+      transition: all 0.3s ease; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .btn:active { transform: scale(0.95); }
+    .btn-blue { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; }
+    .btn-green { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+    .btn-red { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+    .btn-outline { 
+      background: rgba(255, 255, 255, 0.05); 
+      color: white !important; 
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
+    }
+    .btn-back { background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; }
 
     table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.75rem; }
     th, td { padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: left; }
@@ -76,7 +95,10 @@
       <p>LMS Kelas V TP 2025/2026</p>
     </div>
     <div class="guru-profile" onclick="document.getElementById('modalLogin').style.display='flex'">
-      <div class="guru-name"><p>Aditya W. W., S.Pd</p><p style="font-size: 0.55rem; opacity: 0.6;">NIP 19940319 202321 1 005</p></div>
+      <div class="guru-name">
+        <p>Aditya W. W., S.Pd</p>
+        <p style="font-size: 0.55rem; opacity: 0.7;">NIP 19940319 202321 1 005</p>
+      </div>
       <img src="https://ui-avatars.com/api/?name=Aditya+WW&background=0ea5e9&color=fff" alt="Guru">
     </div>
   </div>
@@ -85,13 +107,15 @@
   <div class="grid-siswa" id="gridSiswa"></div>
 </div>
 
-<div id="panelGuru" class="panel" style="background:#0f172a; color:white;">
-  <div class="container" style="max-width:400px">
-    <h2 style="text-align:center; margin-bottom:20px">Menu Guru</h2>
-    <button class="btn btn-blue" onclick="openView('panelBuat')">📝 Buat Tugas Baru</button>
-    <button class="btn btn-green" onclick="openView('panelRekap')">📊 Rekap Tugas Siswa</button>
-    <button class="btn btn-red" onclick="resetTugas()">🧹 Hapus Tugas Aktif</button>
-    <button class="btn btn-outline" style="margin-top:20px" onclick="location.reload()">LOGOUT</button>
+<div id="panelGuru" class="panel">
+  <div class="container" style="max-width:400px; padding-top: 50px;">
+    <h2 class="menu-title">MENU UTAMA GURU</h2>
+    <button class="btn btn-blue" onclick="openView('panelBuat')"><span>📝</span> Buat Tugas Baru</button>
+    <button class="btn btn-green" onclick="openView('panelRekap')"><span>📊</span> Rekap Tugas Siswa</button>
+    <button class="btn btn-red" onclick="resetTugas()"><span>🧹</span> Hapus Tugas Aktif</button>
+    <div style="margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+      <button class="btn btn-outline" onclick="location.reload()">🚪 KELUAR SISTEM</button>
+    </div>
   </div>
 </div>
 
@@ -104,7 +128,7 @@
         <tbody id="isiRekap"></tbody>
       </table>
     </div>
-    <button class="btn btn-outline" onclick="closeView('panelRekap')" style="margin-top:20px">KEMBALI</button>
+    <button class="btn btn-back" onclick="closeView('panelRekap')" style="margin-top:20px">KEMBALI</button>
   </div>
 </div>
 
@@ -114,9 +138,9 @@
     <input type="text" id="judulMateri" placeholder="Judul Materi">
     <select id="jenisTugas" onchange="resetSoal()"><option value="pg">Pilihan Ganda (A-D)</option><option value="uraian">Uraian / Esai</option></select>
     <div id="wadahSoal"></div>
-    <button class="btn btn-outline" onclick="tambahSoal()">+ Tambah Baris Soal</button>
+    <button class="btn btn-back" onclick="tambahSoal()">+ Tambah Baris Soal</button>
     <button class="btn btn-blue" onclick="kirimTugas()" id="btnTerbit">TERBITKAN TUGAS</button>
-    <button class="btn btn-red" onclick="closeView('panelBuat')">BATAL</button>
+    <button class="btn btn-red" onclick="closeView('panelBuat')" style="color:white">BATAL</button>
   </div>
 </div>
 
@@ -130,7 +154,7 @@
       <button class="btn btn-blue" id="btnKirimSiswa" onclick="prosesOtomatis()">KIRIM JAWABAN KE GURU</button>
       <p style="font-size:0.65rem; margin-top:8px; opacity:0.7;">Jawaban otomatis terkirim sebagai gambar ringan.</p>
     </div>
-    <button class="btn btn-outline" onclick="closeView('panelKerja')">BATAL</button>
+    <button class="btn btn-back" onclick="closeView('panelKerja')">BATAL</button>
   </div>
 </div>
 
@@ -146,7 +170,6 @@
 <canvas id="canvasHasil" style="display:none;"></canvas>
 
 <script>
-// PENTING: GANTI URL DI BAWAH INI DENGAN URL DEPLOY TERBARU BAPAK
 const API = "https://script.google.com/macros/s/AKfycbzKSeF0P2w2x1sszm09pLl1lEzApYHH9xbG1UISa5SoiDWfrle5L4iF7jbh8LtdqgyHvA/exec";
 
 const SISWA = [{n:"Alvaro Adnan Aji Pambudi",i:"👦"},{n:"Anantha Yudha Diztira",i:"👦"},{n:"Arifah Yhuan Nur Azizah",i:"👧"},{n:"Aurelia Gieni Lindria Putri",i:"👧"},{n:"Dhafitha Nizza Nur Azizah",i:"👧"},{n:"Dhian Rahmawati",i:"👧"},{n:"Dimas Rasyid Faristia",i:"👦"},{n:"Erfin Denu Setiawan",i:"👦"},{n:"Marsya Anindya Kiera",i:"👧"},{n:"Mikayla Ayuningtyas",i:"👧"},{n:"Muhammad Ozil Ramadhan",i:"👦"},{n:"Rhevan Nabil Yudanta",i:"👦"},{n:"Ridho Wicaksono",i:"👦"},{n:"Rizky Syam Dani",i:"👦"},{n:"Tanca Al Verosa",i:"👦"}];
@@ -289,5 +312,3 @@ async function resetTugas() { if(confirm("Hapus tugas aktif?")) { await fetch(AP
 </script>
 </body>
 </html>
-
-
