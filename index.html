@@ -19,16 +19,13 @@
     .guru-profile img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
     .guru-name { font-size: 0.75rem; font-weight: 700; text-align: right; }
 
-    /* BANNER */
     .banner { text-align:center; padding:12px; border-radius:12px; margin-bottom:20px; font-weight:700; border: 1px solid var(--primary); background: rgba(14,165,233,0.1); font-size: 0.8rem; color: var(--primary); }
 
-    /* GRID */
     .grid-siswa { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
     .card-siswa { background: var(--glass); border: 1px solid var(--border); padding: 15px 5px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
     .card-siswa span { font-size: 1.8rem; display: block; margin-bottom: 5px; }
     .card-siswa p { font-size: 0.6rem; font-weight: 600; line-height: 1.2; }
 
-    /* PANEL */
     .panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f8fafc; color: #1e293b; z-index: 1000; overflow-y: auto; padding: 20px; }
     .soal-box { background: white; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     
@@ -53,15 +50,15 @@
   <div class="header-card">
     <div class="sch-info">
       <h1>SD N Pengkol</h1>
-      <p>LMS Kelas V TP 2025/2026</p>
+      <p>LMS Kelas IV TP 2025/2026</p>
     </div>
     <div class="guru-profile" onclick="document.getElementById('modalLogin').style.display='flex'">
-      <div class="guru-name"><p>Aditya W. W., S.Pd</p><p style="font-size: 0.55rem; opacity: 0.6;">NIP 19940319 202321 1 005</p></div>
+      <div class="guru-name"><p>Aditya W. W., S.Pd</p><p style="font-size: 0.55rem; opacity: 0.6;">Guru Kelas IV</p></div>
       <img src="https://ui-avatars.com/api/?name=Aditya+WW&background=0ea5e9&color=fff" alt="Guru">
     </div>
   </div>
 
-  <div id="statusTugas" class="banner">Memuat data pengerjaan...</div>
+  <div id="statusTugas" class="banner">Memuat data...</div>
   <div class="grid-siswa" id="gridSiswa"></div>
 </div>
 
@@ -105,13 +102,10 @@
     <h2 id="namaSiswaHi"></h2>
     <p id="materiHi" style="font-weight:bold; color:var(--primary); margin-bottom:15px"></p>
     <div id="areaSoalSiswa"></div>
-    <div class="soal-box" style="background:#f0f9ff; border: 2px solid var(--primary);">
-      <b>Langkah Terakhir:</b>
-      <button class="btn btn-green" onclick="generateJPG()">1. DOWNLOAD LEMBAR JAWAB (JPG)</button>
-      <hr style="margin:15px 0; border:0; border-top:1px dashed #ccc;">
-      <p style="font-size:0.75rem; margin-bottom:5px">Kirim bukti foto pengerjaan:</p>
-      <input type="file" id="inputFoto" accept="image/*">
-      <button class="btn btn-blue" id="btnKirimSiswa" onclick="prosesSelesai()">2. KIRIM KE GURU</button>
+    <div class="soal-box" style="background:#f0f9ff; border: 2px solid var(--primary); text-align: center;">
+      <p style="font-size:0.85rem; margin-bottom:10px; font-weight: bold; color: #1e293b;">Sudah Selesai?</p>
+      <button class="btn btn-blue" id="btnKirimSiswa" onclick="prosesOtomatis()">KIRIM JAWABAN KE GURU</button>
+      <p style="font-size:0.65rem; margin-top:8px; opacity:0.7;">Jawaban akan otomatis dibuat menjadi gambar ringan.</p>
     </div>
     <button class="btn btn-outline" onclick="closeView('panelKerja')">BATAL</button>
   </div>
@@ -140,9 +134,7 @@ window.onload = init;
 async function init() {
   const grid = document.getElementById('gridSiswa');
   grid.innerHTML = "";
-  SISWA.forEach(s => {
-    grid.innerHTML += `<div class="card-siswa" onclick="bukaTugas('${s.n}')"><span>${s.i}</span><p>${s.n}</p></div>`;
-  });
+  SISWA.forEach(s => { grid.innerHTML += `<div class="card-siswa" onclick="bukaTugas('${s.n}')"><span>${s.i}</span><p>${s.n}</p></div>`; });
   
   try {
     const res = await fetch(API + "?action=getAllData");
@@ -150,57 +142,24 @@ async function init() {
     const t = dataWeb.tugas;
     document.getElementById('statusTugas').innerText = t.judul === "TIDAK ADA TUGAS" ? "BELUM ADA TUGAS AKTIF" : "TUGAS: " + t.judul;
     
-    // RENDER TABEL REKAP (15 SISWA URUT)
     const rb = document.getElementById('isiRekap');
     rb.innerHTML = "";
-    document.getElementById('rekapJudul').innerText = "Rekap: " + t.judul;
-
     SISWA.forEach((s, idx) => {
-      // Filter data rekap: Harus Nama sama DAN Materi sama dengan tugas aktif
       const dSiswa = dataWeb.rekap.find(r => r.nama === s.n && r.materi === t.judul);
-      
-      let statusHtml = "";
-      let aksiHtml = "-";
-
-      if (dSiswa) {
-        statusHtml = (t.jenis === 'pg') ? `<b class="status-sudah">Nilai: ${dSiswa.nilai}</b>` : `<span class="status-sudah">Sudah</span>`;
-        aksiHtml = `<a href="https://drive.google.com/uc?id=${dSiswa.link}" target="_blank" style="color:var(--primary); font-weight:bold; text-decoration:none">LIHAT FOTO</a>`;
-      } else {
-        statusHtml = `<span class="status-belum">Belum</span>`;
-        aksiHtml = `<span style="opacity:0.3">Tidak ada</span>`;
-      }
-
-      rb.innerHTML += `<tr>
-        <td>${idx + 1}</td>
-        <td>${s.n}</td>
-        <td>${statusHtml}</td>
-        <td>${aksiHtml}</td>
-      </tr>`;
+      let statusHtml = dSiswa ? ((t.jenis === 'pg') ? `<b class="status-sudah">Nilai: ${dSiswa.nilai}</b>` : `<span class="status-sudah">Sudah</span>`) : `<span class="status-belum">Belum</span>`;
+      let aksiHtml = dSiswa ? `<a href="https://drive.google.com/uc?id=${dSiswa.link}" target="_blank" style="color:var(--primary); font-weight:bold; text-decoration:none">LIHAT</a>` : `-`;
+      rb.innerHTML += `<tr><td>${idx + 1}</td><td>${s.n}</td><td>${statusHtml}</td><td>${aksiHtml}</td></tr>`;
     });
-  } catch(e) { 
-    console.error(e); 
-    document.getElementById('statusTugas').innerText = "Koneksi Bermasalah / Link API Belum Di-Deploy";
-  }
+  } catch(e) { document.getElementById('statusTugas').innerText = "Koneksi Bermasalah"; }
 }
 
 function tambahSoal() {
   const id = Date.now();
   const tipe = document.getElementById('jenisTugas').value;
-  const html = `
-    <div class="soal-box" id="box-${id}">
-      <button onclick="document.getElementById('box-${id}').remove()" style="position:absolute; top:10px; right:10px; color:red; border:none; background:none; font-weight:bold; cursor:pointer">X</button>
-      <b>Soal:</b>
-      <textarea class="q-text" placeholder="Tulis pertanyaan..."></textarea>
-      ${tipe === 'pg' ? `
-        <div class="opt-grid">
-          <input class="oa" placeholder="Opsi A"> <input class="ob" placeholder="Opsi B">
-          <input class="oc" placeholder="Opsi C"> <input class="od" placeholder="Opsi D">
-        </div>
-        <select class="q-kunci"><option value="">-- Kunci Jawaban --</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
-      ` : ''}
-    </div>`;
+  const html = `<div class="soal-box" id="box-${id}"><button onclick="document.getElementById('box-${id}').remove()" style="position:absolute; top:10px; right:10px; color:red; border:none; background:none; font-weight:bold; cursor:pointer">X</button><b>Soal:</b><textarea class="q-text" placeholder="Tulis pertanyaan..."></textarea>${tipe === 'pg' ? `<div class="opt-grid"><input class="oa" placeholder="Opsi A"> <input class="ob" placeholder="Opsi B"><input class="oc" placeholder="Opsi C"> <input class="od" placeholder="Opsi D"></div><select class="q-kunci"><option value="">-- Kunci Jawaban --</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>` : ''}</div>`;
   document.getElementById('wadahSoal').insertAdjacentHTML('beforeend', html);
 }
+
 function resetSoal() { document.getElementById('wadahSoal').innerHTML = ""; tambahSoal(); }
 
 async function kirimTugas() {
@@ -208,14 +167,11 @@ async function kirimTugas() {
   const p = { action:"setTugas", judul: document.getElementById('judulMateri').value, jenis: document.getElementById('jenisTugas').value, soal:[] };
   document.querySelectorAll('#wadahSoal .soal-box').forEach(b => {
     let s = { tanya: b.querySelector('.q-text').value };
-    if(p.jenis === 'pg') {
-      s.opsi = [b.querySelector('.oa').value, b.querySelector('.ob').value, b.querySelector('.oc').value, b.querySelector('.od').value];
-      s.kunci = b.querySelector('.q-kunci').value;
-    }
+    if(p.jenis === 'pg') { s.opsi = [b.querySelector('.oa').value, b.querySelector('.ob').value, b.querySelector('.oc').value, b.querySelector('.od').value]; s.kunci = b.querySelector('.q-kunci').value; }
     p.soal.push(s);
   });
   await fetch(API, {method:"POST", body:JSON.stringify(p)}); 
-  alert("Tugas Terbit!"); location.reload();
+  location.reload();
 }
 
 function bukaTugas(nama) {
@@ -225,43 +181,72 @@ function bukaTugas(nama) {
   document.getElementById('materiHi').innerText = "Materi: " + dataWeb.tugas.judul;
   const area = document.getElementById('areaSoalSiswa'); area.innerHTML = "";
   dataWeb.tugas.soal.forEach((s, i) => {
-    let inp = dataWeb.tugas.jenis === 'pg' ? `<select class="ans-siswa"><option value="">-- Pilih Jawaban --</option><option value="A">A. ${s.opsi[0]}</option><option value="B">B. ${s.opsi[1]}</option><option value="C">C. ${s.opsi[2]}</option><option value="D">D. ${s.opsi[3]}</option></select>` : `<textarea class="ans-siswa" placeholder="Ketik jawabanmu..."></textarea>`;
+    let inp = dataWeb.tugas.jenis === 'pg' ? `<select class="ans-siswa"><option value="">-- Pilih Jawaban --</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>` : `<textarea class="ans-siswa" placeholder="Ketik jawabanmu..."></textarea>`;
     area.innerHTML += `<div class="soal-box"><p><b>${i+1}. ${s.tanya}</b></p>${inp}</div>`;
   });
   openView('panelKerja');
 }
 
-function generateJPG() {
-  let bnr = 0; const ans = document.querySelectorAll('.ans-siswa'); const list = [];
+// LOGIKA OTOMATIS: GENERATE JPG + KOMPRES + KIRIM
+async function prosesOtomatis() {
+  const btn = document.getElementById('btnKirimSiswa');
+  btn.innerText = "MENGOMPRES & MENGIRIM...";
+  btn.disabled = true;
+
+  let bnr = 0; 
+  const ans = document.querySelectorAll('.ans-siswa'); 
+  const list = [];
+  
   dataWeb.tugas.soal.forEach((s, i) => {
     list.push(`No ${i+1}: ${ans[i].value || '-'}`);
     if(dataWeb.tugas.jenis === 'pg' && ans[i].value === s.kunci) bnr++;
   });
-  const n = dataWeb.tugas.jenis === 'pg' ? Math.round((bnr / dataWeb.tugas.soal.length) * 100) : "Uraian";
-  const cvs = document.getElementById('canvasHasil'); const ctx = cvs.getContext('2d');
-  cvs.width = 600; cvs.height = 700; ctx.fillStyle = "white"; ctx.fillRect(0,0,600,700);
-  ctx.fillStyle = "#0ea5e9"; ctx.fillRect(0,0,600,60);
-  ctx.fillStyle = "white"; ctx.font="bold 20px Arial"; ctx.fillText("HASIL KERJA - SD N PENGKOL", 30, 40);
-  ctx.fillStyle = "#1e293b"; ctx.font="bold 15px Arial"; ctx.fillText(`Nama: ${userSekarang}`, 30, 100); ctx.fillText(`Materi: ${dataWeb.tugas.judul}`, 30, 125);
-  ctx.fillStyle = "#f0f9ff"; ctx.fillRect(420, 80, 120, 60); ctx.fillStyle = "#0ea5e9"; ctx.font="bold 12px Arial"; ctx.fillText("NILAI", 465, 100);
-  ctx.font="bold 30px Arial"; ctx.fillText(n, 455, 132);
-  ctx.font="14px Arial"; ctx.fillStyle="#475569"; let y=180; list.forEach(l => { ctx.fillText(l, 40, y); y+=25; });
-  const link = document.createElement('a'); link.download = `Siswa_${userSekarang}.jpg`; link.href = cvs.toDataURL("image/jpeg"); link.click();
-}
 
-async function prosesSelesai() {
-  const f = document.getElementById('inputFoto').files[0];
-  if(!f) return alert("Pilih foto dulu!");
-  let bnr = 0; const ans = document.querySelectorAll('.ans-siswa');
-  if(dataWeb.tugas.jenis === 'pg') dataWeb.tugas.soal.forEach((s, i) => { if(ans[i].value === s.kunci) bnr++; });
   const nFinal = dataWeb.tugas.jenis === 'pg' ? Math.round((bnr / dataWeb.tugas.soal.length) * 100) : "Uraian";
-  const btn = document.getElementById('btnKirimSiswa'); btn.innerText = "MENGIRIM..."; btn.disabled = true;
-  const rd = new FileReader();
-  rd.onload = async (e) => {
-    await fetch(API, { method: "POST", body: JSON.stringify({ action: "upload", nama: userSekarang, materi: dataWeb.tugas.judul, nilai: nFinal, file: e.target.result.split(',')[1], filename: userSekarang + ".jpg" }) });
-    alert("Berhasil Dikirim!"); location.reload();
-  };
-  rd.readAsDataURL(f);
+
+  // Create Image on Canvas
+  const cvs = document.getElementById('canvasHasil'); 
+  const ctx = cvs.getContext('2d');
+  cvs.width = 500; 
+  cvs.height = 600; 
+  ctx.fillStyle = "white"; 
+  ctx.fillRect(0,0,500,600);
+  
+  ctx.fillStyle = "#0ea5e9"; ctx.fillRect(0,0,500,50);
+  ctx.fillStyle = "white"; ctx.font="bold 18px Arial"; ctx.fillText("HASIL JAWABAN SISWA", 20, 32);
+  
+  ctx.fillStyle = "#1e293b"; ctx.font="bold 14px Arial";
+  ctx.fillText(`Nama   : ${userSekarang}`, 20, 85);
+  ctx.fillText(`Materi : ${dataWeb.tugas.judul}`, 20, 110);
+  ctx.fillText(`Nilai  : ${nFinal}`, 20, 135);
+  
+  ctx.beginPath(); ctx.moveTo(20, 150); ctx.lineTo(480, 150); ctx.stroke();
+  
+  ctx.font="13px Arial"; let y=180;
+  list.forEach(l => { ctx.fillText(l, 30, y); y+=22; });
+
+  // Kompresi: quality 0.5 (50%) agar file sangat kecil tapi tetap terbaca
+  const dataGambar = cvs.toDataURL("image/jpeg", 0.5).split(',')[1];
+
+  try {
+    await fetch(API, { 
+      method: "POST", 
+      body: JSON.stringify({ 
+        action: "upload", 
+        nama: userSekarang, 
+        materi: dataWeb.tugas.judul, 
+        nilai: nFinal, 
+        file: dataGambar, 
+        filename: "Jawaban_" + userSekarang + ".jpg" 
+      }) 
+    });
+    alert("Jawaban Berhasil Terkirim!");
+    location.reload();
+  } catch(e) {
+    alert("Gagal mengirim, coba lagi.");
+    btn.disabled = false;
+    btn.innerText = "KIRIM JAWABAN KE GURU";
+  }
 }
 
 function login() { if(document.getElementById('passGuru').value === "guru123") { document.getElementById('modalLogin').style.display='none'; openView('panelGuru'); } else { alert("Sandi Salah!"); } }
@@ -271,5 +256,3 @@ async function resetTugas() { if(confirm("Hapus tugas aktif?")) { await fetch(AP
 </script>
 </body>
 </html>
-
-
