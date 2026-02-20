@@ -12,7 +12,7 @@
     .container { max-width: 800px; margin: 0 auto; }
     .brand-header { text-align: center; margin-bottom: 30px; }
     .brand-header h1 { font-size: 2rem; font-weight: 800; }
-    .brand-header p { font-size: 0.8rem; letter-spacing: 2px; color: var(--primary); font-weight: 700; }
+    .brand-header p { font-size: 0.8rem; letter-spacing: 2px; color: var(--primary); font-weight: 700; text-transform: uppercase; }
     .info-bar { background: #f8fafc; border: 1px solid var(--border); padding: 12px 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
     .guru-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; }
     .guru-profile img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -20,13 +20,15 @@
     .grid-siswa { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
     .card-siswa { background: #fff; border: 1px solid var(--border); padding: 15px 5px; border-radius: 20px; text-align: center; cursor: pointer; min-height: 140px; display: flex; flex-direction: column; justify-content: center; transition: 0.2s; }
     .card-siswa:hover { border-color: var(--primary); background: #f0f7ff; }
+    .card-siswa span { font-size: 2.2rem; display: block; margin-bottom: 8px; }
+    .card-siswa p { font-size: 0.65rem; font-weight: 700; }
     .panel-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 9999; overflow-y: auto; padding: 25px 15px; }
     .rekap-box { background: #fff; border: 1px solid var(--border); border-radius: 15px; overflow: hidden; margin-top: 15px; }
     table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
     th { background: #f8fafc; padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
     td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
-    .btn-action { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; margin-top: 10px; }
-    input, textarea { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin: 8px 0; }
+    .btn-action { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; margin-top: 10px; font-size: 0.85rem; }
+    input, textarea { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin: 8px 0; outline: none; }
   </style>
 </head>
 <body>
@@ -35,7 +37,7 @@
   <div class="brand-header"><h1>RUANG BELAJAR</h1><p>SD NEGERI PENGKOL</p></div>
   <div class="info-bar">
     <div style="font-size: 0.65rem; color: #64748b; font-weight: 600;">KELAS V • 2025/2026</div>
-    <div class="guru-profile" onclick="openLogin()">
+    <div class="guru-profile" onclick="bukaModalLogin()">
       <div style="text-align:right">
         <p style="font-size:0.75rem; font-weight:700">Aditya W. W., S.Pd</p>
         <p style="font-size:0.6rem; color:#64748b">NIP. 19940319 202321 1 005</p>
@@ -47,88 +49,134 @@
   <div class="grid-siswa" id="gridSiswa"></div>
 </div>
 
-<div id="panelRekap" class="panel-overlay">
-  <div class="container" style="max-width: 600px;">
-    <h2 style="text-align:center; margin-bottom:15px;">📊 Rekap Nilai Siswa</h2>
-    <div class="rekap-box">
-      <table>
-        <thead><tr><th>No</th><th>Nama</th><th>Status</th><th>Bukti</th></tr></thead>
-        <tbody id="isiRekapTabel"></tbody>
-      </table>
-    </div>
-    <button class="btn-action" style="background:#000; color:white" onclick="closeView('panelRekap')">TUTUP</button>
-  </div>
-</div>
-
 <div id="panelGuru" class="panel-overlay">
   <div class="container" style="max-width: 400px; text-align:center;">
     <h2 style="margin-bottom: 25px;">Menu Kontrol Guru</h2>
-    <button class="btn-action" style="background:#f1f5f9;" onclick="openView('panelBuat')">📝 Buat Tugas</button>
-    <button class="btn-action" style="background:#f1f5f9;" onclick="ambilDataDanBukaRekap()">📊 Lihat Rekap (Refresh)</button>
-    <button class="btn-action" style="background:#fee2e2; color:red" onclick="resetTugas()">🗑️ Hapus Tugas</button>
-    <button class="btn-action" style="background:none;" onclick="location.reload()">Keluar</button>
+    <button class="btn-action" style="background:#f1f5f9; color:var(--text)" onclick="tampilkanPanelBuat()">📝 Buat Tugas Baru</button>
+    <button class="btn-action" style="background:#f1f5f9; color:var(--text)" onclick="tampilkanPanelRekap()">📊 Lihat Rekap Siswa</button>
+    <button class="btn-action" style="background:#fee2e2; color:#ef4444" onclick="prosesHapusTugas()">🗑️ Hapus Tugas Aktif</button>
+    <hr style="margin:20px 0; border:none; border-top:1px solid #e2e8f0;">
+    <button class="btn-action" style="background:none; color:#64748b" onclick="location.reload()">Keluar Aplikasi</button>
+  </div>
+</div>
+
+<div id="panelBuat" class="panel-overlay">
+  <div class="container" style="max-width: 500px;">
+    <h3>📝 Buat Tugas Baru</h3>
+    <input type="text" id="judulMateriBaru" placeholder="Judul Materi (Contoh: IPA Bab 1)">
+    <div id="wadahListSoal"></div>
+    <button class="btn-action" style="background:#f1f5f9; color:var(--primary)" onclick="tambahInputSoal()">+ Tambah Soal</button>
+    <button class="btn-action" style="background:var(--primary); color:white; margin-top:20px;" onclick="prosesTerbitTugas()">TERBITKAN SEKARANG</button>
+    <button class="btn-action" style="background:none; color:red" onclick="tutupSemuaPanel()">BATAL</button>
+  </div>
+</div>
+
+<div id="panelRekap" class="panel-overlay">
+  <div class="container" style="max-width: 600px;">
+    <h2 style="text-align:center; margin-bottom:15px;">📊 Rekap Nilai</h2>
+    <div class="rekap-box">
+      <table>
+        <thead><tr><th>No</th><th>Nama</th><th>Status</th><th>Bukti</th></tr></thead>
+        <tbody id="isiTabelRekap"></tbody>
+      </table>
+    </div>
+    <button class="btn-action" style="background:var(--text); color:white; margin-top:20px;" onclick="tutupSemuaPanel(); bukaPanelGuru();">KEMBALI KE MENU</button>
   </div>
 </div>
 
 <div id="modalLogin" class="panel-overlay" style="background: rgba(255,255,255,0.9); display:none; align-items:center; justify-content:center;">
-  <div style="width:300px; text-align:center; background:white; padding:20px; border-radius:20px; box-shadow:0 10px 25px rgba(0,0,0,0.1)">
-    <h4 style="margin-bottom:20px;">PIN KEAMANAN</h4>
-    <input type="password" id="pinInput" placeholder="Masukkan PIN" style="text-align:center; font-size:1.5rem;">
-    <button class="btn-action" style="background:var(--primary); color:white" onclick="cekLogin()">MASUK</button>
+  <div style="width:300px; text-align:center; background:white; padding:30px; border-radius:24px; box-shadow:0 15px 35px rgba(0,0,0,0.1)">
+    <h4 style="margin-bottom:20px;">PIN GURU</h4>
+    <input type="password" id="inputPinGuru" placeholder="****" style="text-align:center; font-size:1.5rem; letter-spacing:5px;">
+    <button class="btn-action" style="background:var(--primary); color:white" onclick="validasiLogin()">MASUK</button>
+    <button style="background:none; border:none; color:#64748b; margin-top:15px; cursor:pointer;" onclick="tutupSemuaPanel()">Batal</button>
   </div>
 </div>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbzKSeF0P2w2x1sszm09pLl1lEzApYHH9xbG1UISa5SoiDWfrle5L4iF7jbh8LtdqgyHvA/exec";
-const SISWA = [{n:"Alvaro Adnan Aji Pambudi",i:"👦"},{n:"Anantha Yudha Diztira",i:"👦"},{n:"Arifah Yhuan Nur Azizah",i:"👧"},{n:"Aurelia Gieni Lindria Putri",i:"👧"},{n:"Dhafitha Nizza Nur Azizah",i:"👧"},{n:"Dhian Rahmawati",i:"👧"},{n:"Dimas Rasyid Faristia",i:"👦"},{n:"Erfin Denu Setiawan",i:"👦"},{n:"Marsya Anindya Kiera",i:"👧"},{n:"Mikayla Ayuningtyas",i:"👧"},{n:"Muhammad Ozil Ramadhan",i:"👦"},{n:"Rhevan Nabil Yudanta",i:"👦"},{n:"Ridho Wicaksono",i:"👦"},{n:"Rizky Syam Dani",i:"👦"},{n:"Tanca Al Verosa",i:"👦"}];
+const API_URL = "https://script.google.com/macros/s/AKfycbzKSeF0P2w2x1sszm09pLl1lEzApYHH9xbG1UISa5SoiDWfrle5L4iF7jbh8LtdqgyHvA/exec";
+const DAFTAR_SISWA = [{n:"Alvaro Adnan Aji Pambudi",i:"👦"},{n:"Anantha Yudha Diztira",i:"👦"},{n:"Arifah Yhuan Nur Azizah",i:"👧"},{n:"Aurelia Gieni Lindria Putri",i:"👧"},{n:"Dhafitha Nizza Nur Azizah",i:"👧"},{n:"Dhian Rahmawati",i:"👧"},{n:"Dimas Rasyid Faristia",i:"👦"},{n:"Erfin Denu Setiawan",i:"👦"},{n:"Marsya Anindya Kiera",i:"👧"},{n:"Mikayla Ayuningtyas",i:"👧"},{n:"Muhammad Ozil Ramadhan",i:"👦"},{n:"Rhevan Nabil Yudanta",i:"👦"},{n:"Ridho Wicaksono",i:"👦"},{n:"Rizky Syam Dani",i:"👦"},{n:"Tanca Al Verosa",i:"👦"}];
 
-let dataWeb = null;
+let dataServer = null;
 
+// Jalankan saat web dibuka
 window.onload = () => {
   const grid = document.getElementById('gridSiswa');
-  SISWA.forEach(s => { 
-    grid.innerHTML += `<div class="card-siswa" onclick="alert('Membuka Lembar Kerja: ${s.n}')"><span>${s.i}</span><p>${s.n}</p></div>`; 
+  DAFTAR_SISWA.forEach(s => { 
+    grid.innerHTML += `<div class="card-siswa" onclick="alert('Membuka tugas untuk ${s.n}')"><span>${s.i}</span><p>${s.n}</p></div>`; 
   });
-  refreshData();
+  muatDataServer();
 };
 
-async function refreshData() {
+async function muatDataServer() {
   try {
-    const res = await fetch(API + "?action=getAllData");
-    dataWeb = await res.json();
-    document.getElementById('statusTugas').innerText = (dataWeb.tugas.judul === "TIDAK ADA TUGAS") ? "BELUM ADA TUGAS" : "TUGAS: " + dataWeb.tugas.judul;
-  } catch(e) { console.error("Gagal ambil data"); }
+    const r = await fetch(API_URL + "?action=getAllData");
+    dataServer = await r.json();
+    document.getElementById('statusTugas').innerText = (dataServer.tugas.judul === "TIDAK ADA TUGAS") ? "BELUM ADA TUGAS" : "TUGAS: " + dataServer.tugas.judul;
+  } catch(e) { document.getElementById('statusTugas').innerText = "Koneksi Bermasalah"; }
 }
 
-async function ambilDataDanBukaRekap() {
-  const tb = document.getElementById('isiRekapTabel');
-  tb.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Mengambil data terbaru...</td></tr>";
-  openView('panelRekap');
+// Fungsi Navigasi Panel (SAYA PERBAIKI DI SINI)
+function bukaModalLogin() { tutupSemuaPanel(); document.getElementById('modalLogin').style.display = 'flex'; }
+function bukaPanelGuru() { tutupSemuaPanel(); document.getElementById('panelGuru').style.display = 'block'; }
+function tampilkanPanelBuat() { tutupSemuaPanel(); document.getElementById('panelBuat').style.display = 'block'; }
+function tutupSemuaPanel() { document.querySelectorAll('.panel-overlay').forEach(p => p.style.display = 'none'); }
+
+function validasiLogin() {
+  if(document.getElementById('inputPinGuru').value === "1234") {
+    bukaPanelGuru();
+  } else { alert("PIN Salah!"); }
+}
+
+// FUNGSI REKAP (SAYA PERBAIKI TOTAL)
+async function tampilkanPanelRekap() {
+  tutupSemuaPanel();
+  document.getElementById('panelRekap').style.display = 'block';
+  const tb = document.getElementById('isiTabelRekap');
+  tb.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Sinkronisasi data...</td></tr>";
   
-  await refreshData(); // Paksa ambil data terbaru
+  await muatDataServer(); // Ambil data terbaru
   
   tb.innerHTML = "";
-  if(!dataWeb || !dataWeb.rekap) return tb.innerHTML = "<tr><td colspan='4'>Data belum tersedia.</td></tr>";
-
-  SISWA.forEach((s, idx) => {
-    const r = dataWeb.rekap.find(item => item.nama === s.n && item.materi === dataWeb.tugas.judul);
+  DAFTAR_SISWA.forEach((s, idx) => {
+    const r = dataServer.rekap.find(item => item.nama === s.n && item.materi === dataServer.tugas.judul);
     tb.innerHTML += `<tr>
       <td>${idx+1}</td>
       <td><b>${s.n}</b></td>
-      <td><span style="color:${r?'green':'#ccc'}">${r?'● Selesai':'○ Belum'}</span></td>
-      <td>${r ? `<a href="https://drive.google.com/uc?id=${r.link}" target="_blank" style="color:blue;font-weight:700">LIHAT</a>` : '-'}</td>
+      <td><span style="color:${r?'#059669':'#ccc'}">${r?'● Selesai':'○ Belum'}</span></td>
+      <td>${r ? `<a href="https://drive.google.com/uc?id=${r.link}" target="_blank" style="color:var(--primary); font-weight:700; text-decoration:none;">Buka</a>` : '-'}</td>
     </tr>`;
   });
 }
 
-function openView(id) { document.getElementById(id).style.display = 'block'; }
-function closeView(id) { document.getElementById(id).style.display = 'none'; }
-function closeAllPanels() { document.querySelectorAll('.panel-overlay').forEach(p => p.style.display = 'none'); }
-function openLogin() { document.getElementById('modalLogin').style.display = 'flex'; }
-function cekLogin() { if(document.getElementById('pinInput').value === "1234") { closeAllPanels(); openView('panelGuru'); } else alert("PIN SALAH!"); }
+function tambahInputSoal() {
+  const div = document.createElement('div');
+  div.style = "background:#f8fafc; padding:10px; border-radius:10px; margin-bottom:10px; border:1px solid #e2e8f0;";
+  div.innerHTML = `<b>Soal:</b><textarea class="input-soal-teks" rows="2"></textarea>`;
+  document.getElementById('wadahListSoal').appendChild(div);
+}
 
-// Fungsi Reset & Terbitkan (Logika Dasar)
-async function resetTugas() { if(confirm("Hapus tugas saat ini?")) { await fetch(API, {method:"POST", body:JSON.stringify({action:"setTugas", judul:"TIDAK ADA TUGAS", soal:[]})}); location.reload(); }}
+async function prosesTerbitTugas() {
+  const jdl = document.getElementById('judulMateriBaru').value;
+  if(!jdl) return alert("Isi judul materi!");
+  const kumpulanSoal = [];
+  document.querySelectorAll('.input-soal-teks').forEach(tx => { if(tx.value) kumpulanSoal.push({tanya: tx.value}); });
+  
+  if(kumpulanSoal.length === 0) return alert("Tambah soal minimal satu!");
+  
+  const payload = { action: "setTugas", judul: jdl, jenis: "uraian", soal: kumpulanSoal };
+  await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+  alert("Tugas Berhasil Terbit!");
+  location.reload();
+}
+
+async function prosesHapusTugas() {
+  if(confirm("Hapus materi tugas yang sedang aktif?")) {
+    const payload = { action: "setTugas", judul: "TIDAK ADA TUGAS", jenis: "uraian", soal: [] };
+    await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+    location.reload();
+  }
+}
 </script>
 </body>
 </html>
