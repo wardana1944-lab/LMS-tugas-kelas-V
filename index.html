@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="id">
 <head>
@@ -129,16 +130,40 @@
 
 <div id="loader"><div class="spinner"></div><p style="color:var(--primary-teal); font-weight:700;">Loading System...</p></div>
 
-<div class="container">
-  <div class="header-card">
-    <div class="sch-info"><h1>SD N PENGKOL</h1><p>KELAS 5 • 2025/2026</p></div>
-    <div class="header-center"><h2>RUANG BELAJAR</h2></div>
-    <div class="guru-profile" onclick="bukaModalLogin()">
-      <div class="guru-text"><p>Aditya W. W., S.Pd</p><p style="font-size: 0.6rem; opacity: 0.5;">NIP 19940319 202321 1 005</p></div>
-      <img src="https://ui-avatars.com/api/?name=Aditya+WW&background=00B894&color=fff&bold=true">
-    </div>
+<div class="header-card">
+  <div class="sch-info">
+    <h1>SD N PENGKOL</h1>
+    <p>KELAS 5 • 2025/2026</p>
   </div>
 
+  <div class="header-center">
+    <h2>RUANG BELAJAR</h2>
+  </div>
+
+  <div class="guru-profile" onclick="bukaModalLogin()">
+    <div class="guru-text">
+      <p>Aditya W. W., S.Pd</p>
+      <p style="font-size: 0.6rem; opacity: 0.5;">NIP 19940319 202321 1 005</p>
+      <p style="font-size: 0.6rem; opacity: 0.5;">Wali Kelas 5</p>
+    </div>
+    <div style="
+      width: 50px; 
+      height: 30px; 
+      background: var(--primary-teal); 
+      color: white; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      border-radius: 8px; 
+      font-size: 0.65rem; 
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 5px rgba(0, 184, 148, 0.2);
+    ">
+      LOG IN
+    </div>
+  </div>
+</div>
   <div id="statusTugas" class="banner">📡 Sinkronisasi data...</div>
   <div class="grid-siswa" id="gridSiswa"></div>
 </div>
@@ -164,7 +189,7 @@
 
 <div id="panelGuru" class="panel">
   <div class="container" style="max-width:500px">
-    <h2 style="text-align: center; margin-bottom: 25px; color: var(--deep-charcoal);">Menu Pengajar</h2>
+    <h2 style="text-align: center; margin-bottom: 25px; color: var(--deep-charcoal);">DASBOARD GURU</h2>
     <div class="soal-box" onclick="openView('panelBuat')" style="cursor:pointer;">
         <b style="color:var(--primary-teal)">📝 Buat Tugas Baru</b><br><small>Pilihan Ganda, Uraian, atau Link Canva</small>
     </div>
@@ -211,7 +236,7 @@
 
 <div id="modalLogin" class="panel" style="background:rgba(244,247,246,0.95); align-items:center; justify-content:center; display:none;">
   <div style="background:white; padding:30px; border-radius:20px; width:300px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
-    <p style="margin-bottom:15px; font-weight:700;">Keamanan Guru</p>
+    <p style="margin-bottom:15px; font-weight:700;">Log In Guru</p>
     <input type="password" id="pin" style="text-align:center; font-size:1.2rem;" placeholder="****">
     <button class="btn btn-blue" onclick="prosesLogin()">MASUK</button>
     <button class="btn btn-outline" onclick="closeLogin()" style="border:none;">Batal</button>
