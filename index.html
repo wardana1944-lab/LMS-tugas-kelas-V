@@ -133,6 +133,7 @@
     <div class="guru-text">
       <p style="margin:0; font-size: 0.8rem; font-weight: 700;">Aditya W. W., S.Pd</p>
       <p style="margin:0; font-size: 0.6rem; opacity: 0.5;">NIP 19940319 202321 1 005</p>
+      <p style="margin:0; font-size: 0.6rem; opacity: 0.5;">Wali Kelas 5</p>
     </div>
     <div style="width: 50px; height: 30px; background: var(--primary-teal); color: white; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 0.65rem; font-weight: 800; flex-shrink: 0;">LOG IN</div>
   </div>
@@ -165,14 +166,23 @@
 <div id="panelGuru" class="panel">
   <div class="container" style="max-width:500px">
     <h2 style="text-align: center; margin-bottom: 25px; color: var(--deep-charcoal);">DASHBOARD GURU</h2>
+    
+    <div class="soal-box" style="border-left: 5px solid var(--primary-teal);">
+        <b style="font-size: 0.8rem; color: var(--primary-teal);">⏳ SETTING BATAS WAKTU (CUT OFF)</b>
+        <input type="datetime-local" id="cutoffGlobal" style="margin-top:10px;">
+        <p style="font-size: 0.65rem; opacity: 0.6; margin-top: 5px;">*Batas waktu berlaku untuk tugas aktif saat ini.</p>
+    </div>
+
     <div class="soal-box" onclick="openView('panelBuat')" style="cursor:pointer;">
         <b style="color:var(--primary-teal)">📝 Buat Tugas Baru</b><br><small>Pilihan Ganda, Uraian, atau Link Canva</small>
     </div>
     <div class="soal-box" onclick="openView('panelRekap')" style="cursor:pointer;">
         <b>📊 Rekapitulasi Nilai</b><br><small>Lihat perkembangan belajar siswa</small>
     </div>
-    <button class="btn btn-outline" onclick="resetSistem()" style="color:#ff7675">Cut Off Tugas Aktif</button>
-    <button class="btn btn-outline" onclick="location.reload()" style="margin-top:20px">BERANDA</button>
+    
+    <button class="btn btn-blue" onclick="simpanCutOff()" style="margin-top: 10px;">SIMPAN PERUBAHAN WAKTU</button>
+    <button class="btn btn-outline" onclick="resetSistem()" style="color:#ff7675">Hapus Materi Aktif</button>
+    <button class="btn btn-outline" onclick="location.reload()" style="margin-top:20px">KEMBALI KE BERANDA</button>
   </div>
 </div>
 
@@ -180,10 +190,6 @@
   <div class="container" style="max-width:600px">
     <h3 style="margin-bottom:15px">Pengaturan Materi</h3>
     <input type="text" id="jdlMateri" placeholder="Judul Tugas">
-    
-    <label style="font-size: 0.75rem; font-weight: 700; color: var(--primary-teal);">BATAS WAKTU PENGUMPULAN (CUT OFF):</label>
-    <input type="datetime-local" id="cutoffTugas">
-    
     <select id="jnsTugas" onchange="resetInputSoal()">
         <option value="pg">Pilihan Ganda</option>
         <option value="uraian">Uraian / Esai</option>
@@ -191,8 +197,8 @@
     </select>
     <div id="wadahInput"></div>
     <button class="btn btn-outline" onclick="tambahBaris()">+ Tambah Baris</button>
-    <button class="btn btn-blue" onclick="simpanTugas()" style="margin-top:15px;">PUBLIKASIKAN</button>
-    <button class="btn btn-outline" onclick="closeView('panelBuat')">KEMBALI</button>
+    <button class="btn btn-blue" onclick="simpanTugas()" style="margin-top:15px;">PUBLIKASIKAN TUGAS</button>
+    <button class="btn btn-outline" onclick="closeView('panelBuat')">BATAL</button>
   </div>
 </div>
 
@@ -251,14 +257,13 @@ async function loadData() {
     const r = await fetch(API + "?action=getAllData");
     dWeb = await r.json();
     
-    // Tampilan Info di Banner
     let txtBanner = dWeb.tugas.judul === "TIDAK ADA TUGAS" ? "🍃 Menunggu tugas baru" : "📖 Tugas: " + dWeb.tugas.judul;
     
-    // Tambahkan Info Cut Off jika ada
     if(dWeb.tugas.cutoff && dWeb.tugas.judul !== "TIDAK ADA TUGAS") {
         const d = new Date(dWeb.tugas.cutoff);
         const formatTgl = d.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
         txtBanner += ` | ⏳ Batas: ${formatTgl}`;
+        document.getElementById('cutoffGlobal').value = dWeb.tugas.cutoff;
     }
     
     document.getElementById('statusTugas').innerText = txtBanner;
@@ -270,13 +275,10 @@ async function loadData() {
 function mulaiTugas(nama) {
   if(!dWeb || dWeb.tugas.judul === "TIDAK ADA TUGAS") return alert("Belum ada tugas.");
   
-  // Logika Cut Off: Cek apakah sudah lewat waktu
   if(dWeb.tugas.cutoff) {
       const skr = new Date();
       const bts = new Date(dWeb.tugas.cutoff);
-      if(skr > bts) {
-          return alert("Waktu pengumpulan sudah habis! Silahkan hubungi Pak Aditya.");
-      }
+      if(skr > bts) return alert("Waktu pengumpulan sudah habis!");
   }
 
   curUser = nama; curIdx = 0;
@@ -302,11 +304,10 @@ function tampilSoal() {
   const areaMedia = document.getElementById('areaMedia');
   const areaJawaban = document.getElementById('areaJawaban');
   areaMedia.innerHTML = ""; areaJawaban.innerHTML = "";
-  
   renderNavigasiCBT();
 
   if(dWeb.tugas.jenis === 'link') {
-      document.getElementById('teksSoal').innerText = "Tonton/Pelajari materi melalui link di bawah:";
+      document.getElementById('teksSoal').innerText = "Tonton/Pelajari materi melalui link:";
       areaMedia.innerHTML = `<iframe src="${s.link}" style="width:100%; height:350px; border-radius:12px; border:1px solid var(--border-light);"></iframe>`;
       curAns[curIdx] = "SELESAI";
   } else {
@@ -322,7 +323,6 @@ function tampilSoal() {
       } else {
         const tx = document.createElement('textarea');
         tx.rows = 5; tx.value = curAns[curIdx];
-        tx.placeholder = "Ketik jawabanmu...";
         tx.oninput = (e) => { curAns[curIdx] = e.target.value; renderNavigasiCBT(); };
         areaJawaban.appendChild(tx);
       }
@@ -337,9 +337,7 @@ async function submitJawaban() {
   document.getElementById('loader').style.display = 'flex';
   
   let benar = 0;
-  dWeb.tugas.soal.forEach((s, i) => { 
-    if(dWeb.tugas.jenis === 'pg' && curAns[i] === s.kunci) benar++; 
-  });
+  dWeb.tugas.soal.forEach((s, i) => { if(dWeb.tugas.jenis === 'pg' && curAns[i] === s.kunci) benar++; });
   const skor = Math.round((benar / dWeb.tugas.soal.length) * 100);
   const tampilNilai = dWeb.tugas.jenis === 'pg' ? skor : (dWeb.tugas.jenis === 'link' ? 'Selesai' : 'Uraian');
 
@@ -355,21 +353,10 @@ async function submitJawaban() {
   try {
     await fetch(API, { 
         method: "POST", 
-        body: JSON.stringify({ 
-            action: "upload", 
-            nama: curUser, 
-            materi: dWeb.tugas.judul, 
-            nilai: tampilNilai, 
-            file: base64, 
-            filename: "HASIL_" + dWeb.tugas.judul + "_" + curUser + ".jpg" 
-        }) 
+        body: JSON.stringify({ action: "upload", nama: curUser, materi: dWeb.tugas.judul, nilai: tampilNilai, file: base64, filename: "HASIL_" + dWeb.tugas.judul + "_" + curUser + ".jpg" }) 
     });
-    alert("Berhasil dikirim!");
-    location.reload();
-  } catch (e) {
-    alert("Gagal mengirim.");
-    document.getElementById('loader').style.display = 'none';
-  }
+    alert("Berhasil!"); location.reload();
+  } catch (e) { alert("Gagal!"); document.getElementById('loader').style.display = 'none'; }
 }
 
 function bukaModalLogin() { document.getElementById('modalLogin').style.display = 'flex'; }
@@ -380,10 +367,9 @@ function tambahBaris() {
   const tipe = document.getElementById('jnsTugas').value;
   const div = document.createElement('div'); div.className = 'soal-box';
   let h = `<span style="float:right; cursor:pointer;" onclick="this.parentElement.remove()">❌</span>`;
-  if(tipe === 'link') {
-    h += `<b>Link Canva/AI:</b><input type="text" class="q-link" placeholder="https://...">`;
-  } else {
-    h += `<b>Pertanyaan:</b><textarea class="q-txt"></textarea>`;
+  if(tipe === 'link') { h += `<b>Link:</b><input type="text" class="q-link">`; }
+  else {
+    h += `<b>Soal:</b><textarea class="q-txt"></textarea>`;
     if(tipe === 'pg') {
       h += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;"><input class="oa" placeholder="A"><input class="ob" placeholder="B"><input class="oc" placeholder="C"><input class="od" placeholder="D"></div>
             <select class="q-kunci"><option value="A">Kunci A</option><option value="B">Kunci B</option><option value="C">Kunci C</option><option value="D">Kunci D</option></select>`;
@@ -391,13 +377,12 @@ function tambahBaris() {
   }
   div.innerHTML = h; document.getElementById('wadahInput').appendChild(div);
 }
+
 function resetInputSoal() { document.getElementById('wadahInput').innerHTML = ""; tambahBaris(); }
 
 async function simpanTugas() {
   const mtr = document.getElementById('jdlMateri').value;
-  const ctf = document.getElementById('cutoffTugas').value;
-  if(!mtr || !ctf) return alert("Judul dan Batas Waktu harus diisi!");
-  
+  if(!mtr) return alert("Isi Judul!");
   document.getElementById('loader').style.display = 'flex';
   const jenis = document.getElementById('jnsTugas').value;
   const arr = [];
@@ -413,7 +398,17 @@ async function simpanTugas() {
     }
     arr.push(s);
   });
-  await fetch(API, { method:"POST", body:JSON.stringify({ action:"setTugas", judul:mtr, jenis:jenis, cutoff:ctf, soal:arr }) });
+  await fetch(API, { method:"POST", body:JSON.stringify({ action:"setTugas", judul:mtr, jenis:jenis, cutoff:document.getElementById('cutoffGlobal').value, soal:arr }) });
+  location.reload();
+}
+
+async function simpanCutOff() {
+  if(!dWeb || dWeb.tugas.judul === "TIDAK ADA TUGAS") return alert("Tidak ada tugas aktif!");
+  document.getElementById('loader').style.display = 'flex';
+  await fetch(API, { 
+    method:"POST", 
+    body:JSON.stringify({ action:"setTugas", judul:dWeb.tugas.judul, jenis:dWeb.tugas.jenis, cutoff:document.getElementById('cutoffGlobal').value, soal:dWeb.tugas.soal }) 
+  });
   location.reload();
 }
 
