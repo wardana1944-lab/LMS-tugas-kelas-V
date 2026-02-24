@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="id">
 <head>
@@ -27,7 +26,6 @@
 
     .container { max-width: 1000px; margin: 0 auto; }
 
-    /* HEADER SOFT TECH */
     .header-card { 
       background: var(--card-white); 
       border-radius: 20px; 
@@ -47,9 +45,7 @@
 
     .guru-profile { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 5px 15px; border-radius: 12px; transition: 0.3s; }
     .guru-profile:hover { background: var(--bg-minty); }
-    .guru-profile img { width: 40px; height: 40px; border-radius: 10px; border: 2px solid var(--primary-teal); }
     .guru-text { text-align: right; }
-    .guru-text p:first-child { font-size: 0.8rem; font-weight: 700; }
 
     .banner { 
       text-align:center; padding:12px; border-radius:12px; margin-bottom:25px; 
@@ -57,7 +53,6 @@
       font-size: 0.85rem; color: var(--primary-teal); font-weight: 600;
     }
 
-    /* GRID SISWA - UKURAN SEDANG & RAPI */
     .grid-siswa { 
       display: grid; 
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
@@ -84,7 +79,6 @@
     .card-siswa span { font-size: 3.5rem; display: block; margin-bottom: 15px; }
     .card-siswa p { font-size: 0.95rem; font-weight: 700; color: var(--deep-charcoal); line-height: 1.2; }
 
-    /* CBT NAVIGATION */
     .nomor-wrapper { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; justify-content: center; }
     .nomor-box { 
       width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border-light); 
@@ -94,22 +88,17 @@
     .nomor-box.aktif { background: var(--primary-teal); color: white; border-color: var(--primary-teal); }
     .nomor-box.isi { background: var(--accent-soft); color: var(--primary-teal); border-color: var(--primary-teal); }
 
-    /* PANEL */
     .panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-minty); z-index: 9999; overflow-y: auto; padding: 25px 15px; }
     .soal-box { background: var(--card-white); padding: 25px; border-radius: 20px; border: 1px solid var(--border-light); margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
 
-    /* BUTTONS */
     .btn { padding: 14px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; width: 100%; margin-bottom: 10px; transition: 0.3s; font-size: 0.9rem; }
     .btn-blue { background: var(--primary-teal); color: white; }
     .btn-blue:hover { filter: brightness(0.9); }
     .btn-outline { background: transparent; border: 1px solid var(--border-light); color: var(--deep-charcoal); }
-    .btn-outline:hover { background: #fdfdfd; border-color: var(--primary-teal); }
 
-    /* FORMS */
     input, textarea, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-light); background: #fcfcfc; color: var(--deep-charcoal); margin: 8px 0; outline: none; }
     input:focus { border-color: var(--primary-teal); }
 
-    /* OPTIONS */
     .opt-box { background: white; border: 1px solid var(--border-light); padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; display: flex; gap: 12px; align-items: center; transition: 0.2s; }
     .opt-box:hover { background: var(--bg-minty); border-color: var(--primary-teal); }
     .opt-box.selected { background: var(--primary-teal); color: white; font-weight: 700; }
@@ -140,34 +129,17 @@
     <h2>RUANG BELAJAR</h2>
   </div>
 
-  <div class="guru-profile" onclick="bukaModalLogin()" style="display: flex; align-items: center; gap: 12px; justify-content: flex-end;">
-    <div class="guru-text" style="text-align: right;">
-  <p style="margin:0; font-size: 0.8rem; font-weight: 700;">Aditya W. W., S.Pd</p>
-  <p style="margin:0; font-size: 0.6rem; opacity: 0.5;">NIP 19940319 202321 1 005</p>
-  <p style="margin:0; font-size: 0.6rem; opacity: 0.5;">Wali Kelas 5</p>
+  <div class="guru-profile" onclick="bukaModalLogin()">
+    <div class="guru-text">
+      <p style="margin:0; font-size: 0.8rem; font-weight: 700;">Aditya W. W., S.Pd</p>
+      <p style="margin:0; font-size: 0.6rem; opacity: 0.5;">NIP 19940319 202321 1 005</p>
     </div>
-    
-    <div style="
-      width: 50px; 
-      height: 30px; 
-      background: var(--primary-teal); 
-      color: white; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      border-radius: 8px; 
-      font-size: 0.65rem; 
-      font-weight: 800;
-      flex-shrink: 0;
-    ">
-      LOG IN
-    </div>
+    <div style="width: 50px; height: 30px; background: var(--primary-teal); color: white; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 0.65rem; font-weight: 800; flex-shrink: 0;">LOG IN</div>
   </div>
 </div>
-    </div>
-  </div>
-</div>
-  <div id="statusTugas" class="banner">📡 Sinkronisasi data...</div>
+
+<div id="statusTugas" class="banner">📡 Sinkronisasi data...</div>
+<div class="container">
   <div class="grid-siswa" id="gridSiswa"></div>
 </div>
 
@@ -192,7 +164,7 @@
 
 <div id="panelGuru" class="panel">
   <div class="container" style="max-width:500px">
-    <h2 style="text-align: center; margin-bottom: 25px; color: var(--deep-charcoal);">DASBOARD GURU</h2>
+    <h2 style="text-align: center; margin-bottom: 25px; color: var(--deep-charcoal);">DASHBOARD GURU</h2>
     <div class="soal-box" onclick="openView('panelBuat')" style="cursor:pointer;">
         <b style="color:var(--primary-teal)">📝 Buat Tugas Baru</b><br><small>Pilihan Ganda, Uraian, atau Link Canva</small>
     </div>
@@ -208,6 +180,10 @@
   <div class="container" style="max-width:600px">
     <h3 style="margin-bottom:15px">Pengaturan Materi</h3>
     <input type="text" id="jdlMateri" placeholder="Judul Tugas">
+    
+    <label style="font-size: 0.75rem; font-weight: 700; color: var(--primary-teal);">BATAS WAKTU PENGUMPULAN (CUT OFF):</label>
+    <input type="datetime-local" id="cutoffTugas">
+    
     <select id="jnsTugas" onchange="resetInputSoal()">
         <option value="pg">Pilihan Ganda</option>
         <option value="uraian">Uraian / Esai</option>
@@ -274,14 +250,35 @@ async function loadData() {
   try {
     const r = await fetch(API + "?action=getAllData");
     dWeb = await r.json();
-    document.getElementById('statusTugas').innerText = dWeb.tugas.judul === "TIDAK ADA TUGAS" ? "🍃 Menunggu tugas baru" : "📖 Tugas: " + dWeb.tugas.judul;
+    
+    // Tampilan Info di Banner
+    let txtBanner = dWeb.tugas.judul === "TIDAK ADA TUGAS" ? "🍃 Menunggu tugas baru" : "📖 Tugas: " + dWeb.tugas.judul;
+    
+    // Tambahkan Info Cut Off jika ada
+    if(dWeb.tugas.cutoff && dWeb.tugas.judul !== "TIDAK ADA TUGAS") {
+        const d = new Date(dWeb.tugas.cutoff);
+        const formatTgl = d.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+        txtBanner += ` | ⏳ Batas: ${formatTgl}`;
+    }
+    
+    document.getElementById('statusTugas').innerText = txtBanner;
     renderRekap();
   } catch(e) { console.error(e); }
   document.getElementById('loader').style.display = 'none';
 }
 
 function mulaiTugas(nama) {
-  if(!dWeb || dWeb.tugas.judul === "TIDAK ADA TUGAS AKTIF") return alert("Belum ada tugas.");
+  if(!dWeb || dWeb.tugas.judul === "TIDAK ADA TUGAS") return alert("Belum ada tugas.");
+  
+  // Logika Cut Off: Cek apakah sudah lewat waktu
+  if(dWeb.tugas.cutoff) {
+      const skr = new Date();
+      const bts = new Date(dWeb.tugas.cutoff);
+      if(skr > bts) {
+          return alert("Waktu pengumpulan sudah habis! Silahkan hubungi Pak Aditya.");
+      }
+  }
+
   curUser = nama; curIdx = 0;
   curAns = new Array(dWeb.tugas.soal.length).fill("");
   openView('panelSiswa');
@@ -310,8 +307,7 @@ function tampilSoal() {
 
   if(dWeb.tugas.jenis === 'link') {
       document.getElementById('teksSoal').innerText = "Tonton/Pelajari materi melalui link di bawah:";
-      areaMedia.innerHTML = `<iframe src="${s.link}" style="width:100%; height:350px; border-radius:12px; border:1px solid var(--border-light);"></iframe>
-                             <div style="margin-top:10px; text-align:center;"><a href="${s.link}" target="_blank" style="color:var(--primary-teal); font-size:0.8rem;">Buka Full Screen</a></div>`;
+      areaMedia.innerHTML = `<iframe src="${s.link}" style="width:100%; height:350px; border-radius:12px; border:1px solid var(--border-light);"></iframe>`;
       curAns[curIdx] = "SELESAI";
   } else {
       document.getElementById('teksSoal').innerText = s.tanya;
@@ -340,102 +336,21 @@ async function submitJawaban() {
   if(!confirm("Kirim jawaban sekarang?")) return;
   document.getElementById('loader').style.display = 'flex';
   
-  // 1. Logika Perhitungan Nilai
   let benar = 0;
   dWeb.tugas.soal.forEach((s, i) => { 
     if(dWeb.tugas.jenis === 'pg' && curAns[i] === s.kunci) benar++; 
   });
-  const totalSoal = dWeb.tugas.soal.length;
-  const skor = Math.round((benar / totalSoal) * 100);
+  const skor = Math.round((benar / dWeb.tugas.soal.length) * 100);
   const tampilNilai = dWeb.tugas.jenis === 'pg' ? skor : (dWeb.tugas.jenis === 'link' ? 'Selesai' : 'Uraian');
 
-  // 2. Setting Canvas Ukuran A4 (595 x 842 pixel)
   const c = document.getElementById('canvasHasil'); 
   const x = c.getContext('2d');
-  c.width = 595; 
-  c.height = 842; 
+  c.width = 595; c.height = 842; 
+  x.fillStyle = "white"; x.fillRect(0, 0, c.width, c.height);
+  x.fillStyle = "#2D3436"; x.fillRect(0, 0, c.width, 100);
+  x.fillStyle = "white"; x.font = "bold 20px 'Plus Jakarta Sans'";
+  x.fillText("LEMBAR JAWABAN DIGITAL", 40, 55);
   
-  // Background Putih
-  x.fillStyle = "white"; 
-  x.fillRect(0, 0, c.width, c.height);
-  
-  // Header Formal
-  x.fillStyle = "#2D3436"; // Warna Deep Charcoal untuk kesan formal
-  x.fillRect(0, 0, c.width, 100);
-  
-  x.fillStyle = "white";
-  x.font = "bold 22px 'Plus Jakarta Sans'";
-  x.fillText("LEMBAR JAWABAN SISWA", 40, 45);
-  x.font = "14px 'Plus Jakarta Sans'";
-  x.fillText("SD N PENGKOL - TAHUN PELAJARAN 2025/2026", 40, 70);
-  x.fillText("Kelas 5 • Mata Pelajaran/Materi: " + dWeb.tugas.judul, 40, 88);
-
-  // Box Identitas Siswa
-  x.fillStyle = "#F4F7F6";
-  x.fillRect(40, 130, 515, 80);
-  x.strokeStyle = "#e0e6e5";
-  x.strokeRect(40, 130, 515, 80);
-
-  x.fillStyle = "#2D3436";
-  x.font = "bold 15px 'Plus Jakarta Sans'";
-  x.fillText("NAMA SISWA  : " + curUser.toUpperCase(), 60, 160);
-  x.fillText("WAKTU KIRIM : " + new Date().toLocaleString('id-ID'), 60, 185);
-
-  // Badge Nilai (Hanya muncul jika PG)
-  if(dWeb.tugas.jenis === 'pg') {
-      x.fillStyle = "#00B894"; // Warna Teal
-      x.fillRect(430, 140, 110, 60);
-      x.fillStyle = "white";
-      x.font = "bold 12px 'Plus Jakarta Sans'";
-      x.fillText("SKOR AKHIR", 448, 160);
-      x.font = "bold 28px 'Plus Jakarta Sans'";
-      x.textAlign = "center";
-      x.fillText(skor, 485, 190);
-      x.textAlign = "left"; // reset alignment
-  }
-
-  // Bagian Daftar Jawaban
-  x.fillStyle = "#2D3436";
-  x.font = "bold 16px 'Plus Jakarta Sans'";
-  x.fillText("DAFTAR JAWABAN :", 40, 250);
-  
-  // Garis bawah judul
-  x.beginPath();
-  x.moveTo(40, 260);
-  x.lineTo(555, 260);
-  x.strokeStyle = "#2D3436";
-  x.lineWidth = 2;
-  x.stroke();
-
-  // List Jawaban
-  x.font = "14px 'Plus Jakarta Sans'";
-  let startY = 290;
-  curAns.forEach((ans, i) => {
-      // Supaya tulisan tidak keluar kertas jika soal sangat banyak
-      if(startY < 800) {
-          let mark = "";
-          if(dWeb.tugas.jenis === 'pg') {
-              mark = (ans === dWeb.tugas.soal[i].kunci) ? " (Benar)" : " (Salah - Kunci: "+dWeb.tugas.soal[i].kunci+")";
-          }
-
-          x.fillStyle = "#2D3436";
-          // Bungkus teks jika jawaban uraian terlalu panjang
-          let text = (i + 1) + ". " + (ans === "" ? "Tidak diisi" : ans) + mark;
-          
-          // Potong teks jika terlalu panjang ke samping
-          if(text.length > 70) text = text.substring(0, 67) + "...";
-          
-          x.fillText(text, 50, startY);
-          startY += 25;
-      }
-  });
-
-  // Footer / Watermark
-  x.fillStyle = "#b2bec3";
-  x.font = "10px 'Plus Jakarta Sans'";
-  x.fillText("Dokumen digital SD N Pengkol - Dicetak secara otomatis oleh Sistem Ruang Belajar", 40, 820);
-
-  // 3. Proses Pengiriman
   const base64 = c.toDataURL("image/jpeg", 0.8).split(',')[1];
   try {
     await fetch(API, { 
@@ -449,13 +364,14 @@ async function submitJawaban() {
             filename: "HASIL_" + dWeb.tugas.judul + "_" + curUser + ".jpg" 
         }) 
     });
-    alert("Berhasil! Lembar jawab kamu sudah dikirim ke Pak Aditya.");
+    alert("Berhasil dikirim!");
     location.reload();
   } catch (e) {
-    alert("Gagal mengirim, periksa koneksi.");
+    alert("Gagal mengirim.");
     document.getElementById('loader').style.display = 'none';
   }
 }
+
 function bukaModalLogin() { document.getElementById('modalLogin').style.display = 'flex'; }
 function closeLogin() { document.getElementById('modalLogin').style.display = 'none'; }
 function prosesLogin() { if(document.getElementById('pin').value === "guru123") { closeLogin(); openView('panelGuru'); } else alert("PIN Salah!"); }
@@ -478,8 +394,11 @@ function tambahBaris() {
 function resetInputSoal() { document.getElementById('wadahInput').innerHTML = ""; tambahBaris(); }
 
 async function simpanTugas() {
+  const mtr = document.getElementById('jdlMateri').value;
+  const ctf = document.getElementById('cutoffTugas').value;
+  if(!mtr || !ctf) return alert("Judul dan Batas Waktu harus diisi!");
+  
   document.getElementById('loader').style.display = 'flex';
-  const materi = document.getElementById('jdlMateri').value;
   const jenis = document.getElementById('jnsTugas').value;
   const arr = [];
   document.querySelectorAll('#wadahInput .soal-box').forEach(b => {
@@ -494,23 +413,24 @@ async function simpanTugas() {
     }
     arr.push(s);
   });
-  await fetch(API, { method:"POST", body:JSON.stringify({ action:"setTugas", judul:materi, jenis:jenis, soal:arr }) });
+  await fetch(API, { method:"POST", body:JSON.stringify({ action:"setTugas", judul:mtr, jenis:jenis, cutoff:ctf, soal:arr }) });
   location.reload();
 }
 
 function renderRekap() {
   const tb = document.getElementById('isiRekap'); tb.innerHTML = "";
+  if(!dWeb) return;
   SISWA.forEach((s, i) => {
     const d = dWeb.rekap.find(r => r.nama === s.n && r.materi === dWeb.tugas.judul);
     tb.innerHTML += `<tr style="border-bottom: 1px solid var(--border-light)">
         <td style="padding:15px">${i+1}</td><td style="padding:15px"><b>${s.n}</b></td>
         <td style="padding:15px">${d ? '✅' : '❌'}</td>
-        <td style="padding:15px">${d ? `<a href="https://drive.google.com/uc?id=${d.link}" target="_blank" style="color:var(--primary-teal); text-decoration:none; font-weight:700;">LIHAT</a>` : '-'}</td>
+        <td style="padding:15px">${d ? `<a href="https://drive.google.com/uc?id=${d.link}" target="_blank" style="color:var(--primary-teal); font-weight:700;">LIHAT</a>` : '-'}</td>
     </tr>`;
   });
 }
 
-async function resetSistem() { if(confirm("Hapus materi?")) { await fetch(API, {method:"POST", body:JSON.stringify({action:"setTugas", judul:"TIDAK ADA TUGAS", jenis:"pg", soal:[]})}); location.reload(); } }
+async function resetSistem() { if(confirm("Hapus materi?")) { await fetch(API, {method:"POST", body:JSON.stringify({action:"setTugas", judul:"TIDAK ADA TUGAS", jenis:"pg", cutoff:"", soal:[]})}); location.reload(); } }
 function openView(id) { document.getElementById(id).style.display = 'block'; }
 function closeView(id) { document.getElementById(id).style.display = 'none'; }
 function tutupSemua() { document.querySelectorAll('.panel').forEach(p => p.style.display = 'none'); }
