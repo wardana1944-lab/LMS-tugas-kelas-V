@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SD N PENGKOL - Tahun Pelajaran 2025/2026</title>
-<link rel="icon" type="image/x-icon" href="icon.png.ico">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>RUANG BELAJAR - SD N PENGKOL</title>
+  <link rel="icon" type="image/x-icon" href="icon.png.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root { 
       --bg-minty: #F4F7F6; 
       --card-white: #FFFFFF; 
       --deep-charcoal: #2D3436; 
-      --primary-teal: #00B894; 
-      --accent-soft: #e8f6f3;
+      --primary-teal: #059669; 
+      --teal-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      --accent-soft: #ecfdf5;
       --border-light: #e0e6e5;
     }
     
@@ -22,34 +23,61 @@
       background: var(--bg-minty); 
       color: var(--deep-charcoal); 
       min-height: 100vh; 
-      padding: 20px; 
+      padding-top: 180px; 
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-bottom: 20px;
     }
 
     .container { max-width: 1000px; margin: 0 auto; }
 
-    /* HEADER SOFT TECH */
-    .header-card { 
-      background: var(--card-white); 
-      border-radius: 20px; 
-      padding: 20px 30px; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 25px; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      border: 1px solid var(--border-light);
+    .header-main {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: var(--teal-gradient);
+      color: white;
+      padding: 25px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 25px rgba(5, 150, 105, 0.2);
+      text-align: center;
     }
-    
-    .sch-info h1 { font-size: 1.1rem; color: var(--primary-teal); font-weight: 800; }
-    .sch-info p { font-size: 0.7rem; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; }
 
-    .header-center h2 { font-size: 1.2rem; font-weight: 700; color: var(--deep-charcoal); letter-spacing: 1px; }
+    .header-main h2 { 
+      font-size: 2.2rem; 
+      font-weight: 900; 
+      letter-spacing: 5px; 
+      margin: 0;
+      line-height: 1.1;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
 
-    .guru-profile { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 5px 15px; border-radius: 12px; transition: 0.3s; }
-    .guru-profile:hover { background: var(--bg-minty); }
-    .guru-profile img { width: 40px; height: 40px; border-radius: 10px; border: 2px solid var(--primary-teal); }
-    .guru-text { text-align: right; }
-    .guru-text p:first-child { font-size: 0.8rem; font-weight: 700; }
+    .header-main .sch-info { margin-top: 8px; }
+    .header-main .sch-info h1 { font-size: 1.1rem; font-weight: 600; opacity: 0.95; margin: 0; }
+    .header-main .sch-info p { font-size: 0.75rem; letter-spacing: 2px; opacity: 0.8; font-weight: 500; margin-top: 2px; }
+
+    .sub-header-guru {
+      max-width: 1000px;
+      margin: -20px auto 25px auto;
+      background: var(--card-white);
+      border-radius: 15px;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      position: relative;
+      z-index: 900;
+    }
+
+    .btn-login-small { 
+      background: var(--deep-charcoal); color: white; border: none; padding: 10px 20px; 
+      border-radius: 10px; font-weight: 700; font-size: 0.75rem; cursor: pointer; transition: 0.3s; 
+    }
 
     .banner { 
       text-align:center; padding:12px; border-radius:12px; margin-bottom:25px; 
@@ -57,163 +85,113 @@
       font-size: 0.85rem; color: var(--primary-teal); font-weight: 600;
     }
 
-    /* GRID SISWA - UKURAN SEDANG & RAPI */
-    .grid-siswa { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
-      gap: 15px; 
-    }
+    .grid-siswa { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
 
     .card-siswa { 
-      background: var(--card-white); 
-      border: 1px solid var(--border-light); 
-      padding: 25px 15px; 
-      border-radius: 18px; 
-      text-align: center; 
-      cursor: pointer; 
+      background: var(--card-white); border: 1px solid var(--border-light); 
+      padding: 25px 15px; border-radius: 18px; text-align: center; cursor: pointer; 
       transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
-
-    .card-siswa:hover { 
-      border-color: var(--primary-teal); 
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0, 184, 148, 0.1);
-    }
-
+    .card-siswa:hover { border-color: var(--primary-teal); transform: translateY(-5px); }
     .card-siswa span { font-size: 3.5rem; display: block; margin-bottom: 15px; }
-    .card-siswa p { font-size: 0.95rem; font-weight: 700; color: var(--deep-charcoal); line-height: 1.2; }
+    .card-siswa p { font-size: 0.95rem; font-weight: 700; color: var(--deep-charcoal); }
 
-    /* CBT NAVIGATION */
+    .panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-minty); z-index: 9999; overflow-y: auto; padding: 25px 15px; }
+    .soal-box { background: var(--card-white); padding: 30px 25px 25px 25px; border-radius: 20px; border: 1px solid var(--border-light); margin-bottom: 20px; position: relative;}
+    
+    .nomor-soal-input { position: absolute; top: -10px; left: 20px; background: var(--primary-teal); color: white; padding: 4px 15px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; }
+
     .nomor-wrapper { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; justify-content: center; }
-    .nomor-box { 
-      width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border-light); 
-      display: flex; align-items: center; justify-content: center; cursor: pointer; 
-      font-weight: 700; font-size: 0.9rem; background: white;
-    }
-    .nomor-box.aktif { background: var(--primary-teal); color: white; border-color: var(--primary-teal); }
+    .nomor-box { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 700; background: white; }
+    .nomor-box.aktif { background: var(--primary-teal); color: white; }
     .nomor-box.isi { background: var(--accent-soft); color: var(--primary-teal); border-color: var(--primary-teal); }
 
-    /* PANEL */
-    .panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-minty); z-index: 9999; overflow-y: auto; padding: 25px 15px; }
-    .soal-box { background: var(--card-white); padding: 25px; border-radius: 20px; border: 1px solid var(--border-light); margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
-
-    /* BUTTONS */
-    .btn { padding: 14px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; width: 100%; margin-bottom: 10px; transition: 0.3s; font-size: 0.9rem; }
+    .btn { padding: 14px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; width: 100%; margin-bottom: 10px; transition: 0.3s; }
     .btn-blue { background: var(--primary-teal); color: white; }
-    .btn-blue:hover { filter: brightness(0.9); }
     .btn-outline { background: transparent; border: 1px solid var(--border-light); color: var(--deep-charcoal); }
-    .btn-outline:hover { background: #fdfdfd; border-color: var(--primary-teal); }
 
-    /* FORMS */
-    input, textarea, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-light); background: #fcfcfc; color: var(--deep-charcoal); margin: 8px 0; outline: none; }
-    input:focus { border-color: var(--primary-teal); }
-
-    /* OPTIONS */
-    .opt-box { background: white; border: 1px solid var(--border-light); padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; display: flex; gap: 12px; align-items: center; transition: 0.2s; }
-    .opt-box:hover { background: var(--bg-minty); border-color: var(--primary-teal); }
+    input, textarea, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-light); background: #fcfcfc; margin: 8px 0; outline: none; }
+    .opt-box { background: white; border: 1px solid var(--border-light); padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; display: flex; gap: 12px; align-items: center; }
     .opt-box.selected { background: var(--primary-teal); color: white; font-weight: 700; }
 
-    #loader { position: fixed; top:0; left:0; width:100%; height:100%; background:white; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10000; gap:15px; }
+    #loader { position: fixed; top:0; left:0; width:100%; height:100%; background:white; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10000; }
     .spinner { width: 40px; height: 40px; border: 4px solid var(--accent-soft); border-top-color: var(--primary-teal); border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* TIMER STYLE */
-    .timer-badge {
-      background: #2D3436; color: white; padding: 8px 20px; border-radius: 30px; 
-      font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; text-align: center;
-      display: inline-block; border: 2px solid var(--primary-teal);
-    }
+    .timer-badge { background: #2D3436; color: white; padding: 8px 20px; border-radius: 30px; font-weight: 800; display: inline-block; border: 2px solid var(--primary-teal); }
 
     @media (max-width: 600px) {
-      .header-card { flex-direction: column; text-align: center; gap: 15px; }
-      .header-center { order: -1; }
-      .guru-profile { flex-direction: row-reverse; }
-      .grid-siswa { grid-template-columns: repeat(2, 1fr); }
+      body { padding-top: 160px; }
+      .header-main h2 { font-size: 1.5rem; }
     }
   </style>
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><p style="color:var(--primary-teal); font-weight:700;">Loading System...</p></div>
+<div id="loader"><div class="spinner"></div><p style="color:var(--primary-teal); font-weight:700; margin-top:10px;">Memuat Sistem...</p></div>
 
-<div class="header-card">
+<header class="header-main">
+  <h2>RUANG BELAJAR</h2>
   <div class="sch-info">
     <h1>SD N PENGKOL</h1>
-    <p>KELAS 5 • 2025/2026</p>
+    <p>KELAS 5 • TAHUN PELAJARAN 2025/2026</p>
+  </div>
+</header>
+
+<div class="container">
+  <div class="sub-header-guru">
+    <div class="guru-profile">
+      <div class="guru-text">
+        <p style="margin:0; font-weight: bold;">Aditya Wahyu Wardana, S.Pd</p>
+        <p style="margin:0; font-size: 0.7rem; color: var(--primary-teal);">NIP 19940319 202321 1 005</p> 
+        <p style="margin:0; font-size: 0.7rem; color: var(--primary-teal);">Wali Kelas V</p>
+      </div>
+    </div>
+    <button class="btn-login-small" onclick="bukaModalLogin()">LOG IN GURU</button>
   </div>
 
-  <div class="header-center">
-    <h2>RUANG BELAJAR</h2>
-  </div>
-
-  <div class="guru-profile" onclick="bukaModalLogin()" style="display: flex; align-items: center; gap: 12px; justify-content: flex-end;">
-    <div class="guru-text" style="text-align: right;">
-      <p style="margin:0; font-size: 0.8rem; font-weight: 700;">Aditya W. W., S.Pd</p>
-      <p style="margin:0; font-size: 0.6rem; opacity: 0.5;">NIP 19940319 202321 1 005</p>
-      <p style="margin:0; font-size: 0.6rem; opacity: 0.5;">Wali Kelas 5</p>
-    </div>
-    
-    <div style="width: 50px; height: 30px; background: var(--primary-teal); color: white; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 0.65rem; font-weight: 800; flex-shrink: 0;">
-      LOG IN
-    </div>
-  </div>
+  <div id="statusTugas" class="banner">📡 Sinkronisasi data...</div>
+  <div class="grid-siswa" id="gridSiswa"></div>
 </div>
 
-<div id="statusTugas" class="banner">📡 Sinkronisasi data...</div>
-<div class="grid-siswa" id="gridSiswa"></div>
-
-<div id="panelSiswa" class="panel">
-  <div class="container" style="max-width:600px; text-align: center;">
-    <div id="displayTimer" class="timer-badge">00:00</div>
-    <div class="nomor-wrapper" id="gridNomorCBT"></div>
-    <div class="soal-box" style="text-align: left;">
-      <div id="areaMedia"></div>
-      <p id="teksSoal" style="font-weight:700; margin-bottom:20px; font-size:1.1rem; line-height: 1.5; color: var(--deep-charcoal);"></p>
-      <div id="areaJawaban"></div>
-    </div>
-    <div style="display:flex; gap:10px;">
-      <button class="btn btn-outline" onclick="pindahSoal(-1)">KEMBALI</button>
-      <button class="btn btn-blue" onclick="pindahSoal(1)">LANJUT</button>
-    </div>
-    <div id="divKirim" style="display:none; margin-top:10px;">
-        <button class="btn btn-blue" style="background: #2D3436;" onclick="submitJawaban()">KIRIM JAWABAN</button>
-    </div>
-    <button class="btn btn-outline" onclick="tutupSemua()" style="margin-top:20px; border-color:#ff7675; color:#ff7675;">KELUAR</button>
+<div id="modalLogin" class="panel" style="background:rgba(244,247,246,0.95); align-items:center; justify-content:center; display:none;">
+  <div style="background:white; padding:30px; border-radius:20px; width:300px; text-align:center;">
+    <p style="margin-bottom:15px; font-weight:700;">Akses Guru</p>
+    <input type="password" id="pin" style="text-align:center;" placeholder="PIN">
+    <button class="btn btn-blue" onclick="prosesLogin()">MASUK</button>
+    <button class="btn btn-outline" onclick="closeLogin()" style="border:none;">Batal</button>
   </div>
 </div>
 
 <div id="panelGuru" class="panel">
   <div class="container" style="max-width:500px">
-    <h2 style="text-align: center; margin-bottom: 25px; color: var(--deep-charcoal);">DASBOARD GURU</h2>
+    <h2 style="text-align: center; margin-bottom: 25px;">DASHBOARD GURU</h2>
     <div class="soal-box" onclick="openView('panelBuat')" style="cursor:pointer;">
-        <b style="color:var(--primary-teal)">📝 Buat Tugas Baru</b><br><small>Pilihan Ganda, Uraian, atau Link Canva</small>
+        <b style="color:var(--primary-teal)">📝 Buat Tugas Baru</b><br><small>PG, Uraian, atau Campuran</small>
     </div>
     <div class="soal-box" onclick="openView('panelRekap')" style="cursor:pointer;">
-        <b>📊 Rekapitulasi Nilai</b><br><small>Lihat perkembangan belajar siswa</small>
+        <b>📊 Rekapitulasi Nilai</b><br><small>Cek hasil jawaban siswa</small>
     </div>
     <button class="btn btn-outline" onclick="resetSistem()" style="color:#ff7675">Akhiri Tugas Aktif</button>
-    <button class="btn btn-outline" onclick="location.reload()" style="margin-top:20px">BERANDA</button>
+    <button class="btn btn-outline" onclick="location.reload()" style="margin-top:20px">KEMBALI KE BERANDA</button>
   </div>
 </div>
 
 <div id="panelBuat" class="panel">
   <div class="container" style="max-width:600px">
-    <h3 style="margin-bottom:15px">Pengaturan Materi</h3>
-    <input type="text" id="jdlMateri" placeholder="Judul Tugas">
-    <div style="margin-bottom: 10px;">
-        <label style="font-size: 0.8rem; font-weight: 700;">Waktu Pengerjaan (Menit):</label>
-        <input type="number" id="waktuTugas" value="60" min="1">
-    </div>
+    <h3>Konfigurasi Tugas</h3>
+    <input type="text" id="jdlMateri" placeholder="Judul Tugas/Mata Pelajaran">
+    <label style="font-size:0.75rem; font-weight:700;">Durasi (Menit):</label>
+    <input type="number" id="waktuTugas" value="60">
     <select id="jnsTugas" onchange="resetInputSoal()">
-        <option value="pg">Pilihan Ganda</option>
-        <option value="uraian">Uraian / Esai</option>
-        <option value="link">Link Canva / Media AI</option>
+        <option value="pg">Pilihan Ganda (Otomatis)</option>
+        <option value="uraian">Uraian (Manual)</option>
+        <option value="campuran">Campuran (PG & Uraian)</option>
     </select>
     <div id="wadahInput"></div>
-    <button class="btn btn-outline" onclick="tambahBaris()">+ Tambah Baris</button>
-    <button class="btn btn-blue" onclick="simpanTugas()" style="margin-top:15px;">PUBLIKASIKAN</button>
-    <button class="btn btn-outline" onclick="closeView('panelBuat')">KEMBALI</button>
+    <button class="btn btn-outline" onclick="tambahBaris()">+ Tambah Soal Baru</button>
+    <button class="btn btn-blue" onclick="simpanTugas()" style="margin-top:15px;">PUBLIKASIKAN SEKARANG</button>
+    <button class="btn btn-outline" onclick="closeView('panelBuat')">BATAL</button>
   </div>
 </div>
 
@@ -224,7 +202,7 @@
         <table style="width:100%; border-collapse:collapse; min-width:400px;">
           <thead>
             <tr style="background:var(--bg-minty); text-align:left;">
-              <th style="padding:15px;">No</th><th style="padding:15px;">Siswa</th><th style="padding:15px;">Status</th><th style="padding:15px;">Aksi</th>
+              <th style="padding:15px;">No</th><th style="padding:15px;">Siswa</th><th style="padding:15px;">Skor PG</th><th style="padding:15px;">Aksi</th>
             </tr>
           </thead>
           <tbody id="isiRekap"></tbody>
@@ -234,12 +212,22 @@
   </div>
 </div>
 
-<div id="modalLogin" class="panel" style="background:rgba(244,247,246,0.95); align-items:center; justify-content:center; display:none;">
-  <div style="background:white; padding:30px; border-radius:20px; width:300px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
-    <p style="margin-bottom:15px; font-weight:700;">Log In Guru</p>
-    <input type="password" id="pin" style="text-align:center; font-size:1.2rem;" placeholder="****">
-    <button class="btn btn-blue" onclick="prosesLogin()">MASUK</button>
-    <button class="btn btn-outline" onclick="closeLogin()" style="border:none;">Batal</button>
+<div id="panelSiswa" class="panel">
+  <div class="container" style="max-width:600px; text-align: center;">
+    <div id="displayTimer" class="timer-badge">00:00</div>
+    <div class="nomor-wrapper" id="gridNomorCBT"></div>
+    <div class="soal-box" style="text-align: left;">
+      <p id="teksSoal" style="font-weight:700; margin-bottom:20px; font-size:1.1rem; line-height:1.5;"></p>
+      <div id="areaJawaban"></div>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn btn-outline" onclick="pindahSoal(-1)">SEBELUM</button>
+      <button class="btn btn-blue" onclick="pindahSoal(1)">LANJUT</button>
+    </div>
+    <div id="divKirim" style="display:none; margin-top:10px;">
+        <button class="btn btn-blue" style="background:#2D3436;" onclick="submitJawaban()">KIRIM SEMUA JAWABAN</button>
+    </div>
+    <button class="btn btn-outline" onclick="location.reload()" style="margin-top:20px; border-color:#ff7675; color:#ff7675;">KEMBALI KE BERANDA</button>
   </div>
 </div>
 
@@ -279,81 +267,87 @@ async function loadData() {
   document.getElementById('loader').style.display = 'none';
 }
 
+// Fitur Auto Save
+function saveDraft() {
+  const data = { user: curUser, answers: curAns, taskTitle: dWeb.tugas.judul };
+  localStorage.setItem('ruangBelajar_draft', JSON.stringify(data));
+}
+
+function recoverDraft(nama) {
+  const saved = localStorage.getItem('ruangBelajar_draft');
+  if (saved) {
+    const data = JSON.parse(saved);
+    if (data.user === nama && data.taskTitle === dWeb.tugas.judul) {
+      return data.answers;
+    }
+  }
+  return null;
+}
+
 function mulaiTugas(nama) {
-  // Pastikan data tugas sudah termuat
   if(!dWeb || dWeb.tugas.judul === "TIDAK ADA TUGAS") return alert("Belum ada tugas.");
+  curUser = nama; curIdx = 0;
   
-  curUser = nama; 
-  curIdx = 0;
-  curAns = new Array(dWeb.tugas.soal.length).fill("");
-  
-  // PERBAIKAN: Mengambil durasi dari dWeb (data dari server)
-  // Jika durasi tidak ditemukan di database, gunakan default 60 menit
-  let durasiInput = parseInt(dWeb.tugas.durasi);
-  sisaWaktu = (isNaN(durasiInput) || durasiInput <= 0) ? 3600 : durasiInput * 60;
-  
+  const draft = recoverDraft(nama);
+  if(draft) {
+    curAns = draft;
+  } else {
+    curAns = new Array(dWeb.tugas.soal.length).fill("");
+  }
+
+  sisaWaktu = (dWeb.tugas.durasi || 60) * 60;
   startTimer();
   openView('panelSiswa');
   tampilSoal();
 }
+
 function startTimer() {
   clearInterval(timerInterval);
   timerInterval = setInterval(() => {
     sisaWaktu--;
-    let m = Math.floor(sisaWaktu / 60);
-    let s = sisaWaktu % 60;
+    let m = Math.floor(sisaWaktu / 60), s = sisaWaktu % 60;
     document.getElementById('displayTimer').innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    
-    if(sisaWaktu <= 0) {
-      clearInterval(timerInterval);
-      alert("Waktu habis! Jawaban otomatis dikirim.");
-      submitJawaban();
-    }
+    if(sisaWaktu <= 0) { clearInterval(timerInterval); submitJawaban(); }
   }, 1000);
-}
-
-function renderNavigasiCBT() {
-    const g = document.getElementById('gridNomorCBT');
-    g.innerHTML = "";
-    curAns.forEach((a, i) => {
-        const box = document.createElement('div');
-        box.className = `nomor-box ${curIdx === i ? 'aktif' : (a !== "" ? 'isi' : '')}`;
-        box.innerText = i + 1;
-        box.onclick = () => { curIdx = i; tampilSoal(); };
-        g.appendChild(box);
-    });
 }
 
 function tampilSoal() {
   const s = dWeb.tugas.soal[curIdx];
-  const areaMedia = document.getElementById('areaMedia');
   const areaJawaban = document.getElementById('areaJawaban');
-  areaMedia.innerHTML = ""; areaJawaban.innerHTML = "";
+  areaJawaban.innerHTML = "";
   
-  renderNavigasiCBT();
+  const g = document.getElementById('gridNomorCBT');
+  g.innerHTML = "";
+  curAns.forEach((a, i) => {
+    const b = document.createElement('div');
+    b.className = `nomor-box ${curIdx === i ? 'aktif' : (a !== "" ? 'isi' : '')}`;
+    b.innerText = i + 1;
+    b.onclick = () => { curIdx = i; tampilSoal(); };
+    g.appendChild(b);
+  });
 
-  if(dWeb.tugas.jenis === 'link') {
-      document.getElementById('teksSoal').innerText = "Tonton/Pelajari materi melalui link di bawah:";
-      areaMedia.innerHTML = `<iframe src="${s.link}" style="width:100%; height:350px; border-radius:12px; border:1px solid var(--border-light);"></iframe>
-                             <div style="margin-top:10px; text-align:center;"><a href="${s.link}" target="_blank" style="color:var(--primary-teal); font-size:0.8rem;">Buka Full Screen</a></div>`;
-      curAns[curIdx] = "SELESAI";
+  document.getElementById('teksSoal').innerText = s.tanya;
+
+  if(s.kunci && s.kunci !== "") {
+    ['A','B','C','D'].forEach((opt, idx) => {
+      const b = document.createElement('div');
+      b.className = `opt-box ${curAns[curIdx] === opt ? 'selected' : ''}`;
+      b.innerHTML = `<b>${opt}</b> <span>${s.opsi[idx]}</span>`;
+      b.onclick = () => { 
+        curAns[curIdx] = opt; 
+        saveDraft(); 
+        tampilSoal(); 
+      };
+      areaJawaban.appendChild(b);
+    });
   } else {
-      document.getElementById('teksSoal').innerText = s.tanya;
-      if(dWeb.tugas.jenis === 'pg') {
-        ['A','B','C','D'].forEach((opt, idx) => {
-          const b = document.createElement('div');
-          b.className = `opt-box ${curAns[curIdx] === opt ? 'selected' : ''}`;
-          b.innerHTML = `<b>${opt}</b> <span>${s.opsi[idx]}</span>`;
-          b.onclick = () => { curAns[curIdx] = opt; tampilSoal(); };
-          areaJawaban.appendChild(b);
-        });
-      } else {
-        const tx = document.createElement('textarea');
-        tx.rows = 5; tx.value = curAns[curIdx];
-        tx.placeholder = "Ketik jawabanmu...";
-        tx.oninput = (e) => { curAns[curIdx] = e.target.value; renderNavigasiCBT(); };
-        areaJawaban.appendChild(tx);
-      }
+    const tx = document.createElement('textarea');
+    tx.rows = 5; tx.value = curAns[curIdx];
+    tx.oninput = (e) => { 
+      curAns[curIdx] = e.target.value; 
+      saveDraft(); 
+    };
+    areaJawaban.appendChild(tx);
   }
   document.getElementById('divKirim').style.display = (curIdx === curAns.length - 1) ? 'block' : 'none';
 }
@@ -364,208 +358,116 @@ async function submitJawaban() {
   clearInterval(timerInterval);
   document.getElementById('loader').style.display = 'flex';
   
-  let benar = 0;
+  let benar = 0, jmlPG = 0;
   dWeb.tugas.soal.forEach((s, i) => { 
-    if(dWeb.tugas.jenis === 'pg' && curAns[i] === s.kunci) benar++; 
+    if(s.kunci) { jmlPG++; if(curAns[i] === s.kunci) benar++; }
   });
-  const totalSoal = dWeb.tugas.soal.length;
-  const skor = Math.round((benar / totalSoal) * 100);
-  const tampilNilai = dWeb.tugas.jenis === 'pg' ? skor : (dWeb.tugas.jenis === 'link' ? 'Selesai' : 'Uraian');
 
-  // CANVAS SETTINGS A4
-  const c = document.getElementById('canvasHasil'); 
-  const x = c.getContext('2d');
-  c.width = 1240; // A4 @ 150DPI
-  c.height = 1754; 
+  const skor = jmlPG > 0 ? Math.round((benar / jmlPG) * 100) : "Uraian";
+
+  const c = document.getElementById('canvasHasil'); const x = c.getContext('2d');
+  c.width = 1000; c.height = 1400; x.fillStyle = "white"; x.fillRect(0,0,1000,1400);
+  x.fillStyle = "#059669"; x.fillRect(0,0,1000,150);
+  x.fillStyle="white"; x.font="bold 40px Arial"; x.fillText("HASIL JAWABAN: " + dWeb.tugas.judul, 50, 90);
+  x.fillStyle="#2D3436"; x.font="30px Arial"; x.fillText("Nama: " + curUser, 50, 220);
+  x.fillText("Skor PG: " + skor, 50, 270);
   
-  x.fillStyle = "white"; 
-  x.fillRect(0, 0, c.width, c.height);
-  
-  // Header Box
-  x.fillStyle = "#2D3436";
-  x.fillRect(0, 0, c.width, 180);
-  
-  x.fillStyle = "white";
-  x.font = "bold 40px 'Plus Jakarta Sans'";
-  x.fillText("LEMBAR JAWABAN DIGITAL SISWA", 80, 80);
-  x.font = "24px 'Plus Jakarta Sans'";
-  x.fillText("SD N PENGKOL - TAHUN PELAJARAN 2025/2026", 80, 120);
-  x.fillText("Mata Pelajaran/Materi: " + dWeb.tugas.judul, 80, 150);
-
-  // Identity Box
-  x.fillStyle = "#f9f9f9";
-  x.fillRect(80, 220, 1080, 120);
-  x.strokeStyle = "#2D3436";
-  x.lineWidth = 2;
-  x.strokeRect(80, 220, 1080, 120);
-
-  x.fillStyle = "#2D3436";
-  x.font = "bold 28px 'Plus Jakarta Sans'";
-  x.fillText("NAMA : " + curUser.toUpperCase(), 120, 270);
-  x.font = "22px 'Plus Jakarta Sans'";
-  x.fillText("WAKTU KIRIM : " + new Date().toLocaleString('id-ID'), 120, 310);
-
-  if(dWeb.tugas.jenis === 'pg') {
-      x.fillStyle = "#00B894";
-      x.fillRect(950, 230, 180, 100);
-      x.fillStyle = "white";
-      x.font = "bold 20px 'Plus Jakarta Sans'";
-      x.textAlign = "center";
-      x.fillText("SKOR", 1040, 260);
-      x.font = "bold 45px 'Plus Jakarta Sans'";
-      x.fillText(skor, 1040, 310);
-      x.textAlign = "left";
-  }
-
-  // Answer Body
-  x.fillStyle = "#2D3436";
-  x.font = "bold 30px 'Plus Jakarta Sans'";
-  x.fillText("DAFTAR JAWABAN :", 80, 400);
-  
-  x.beginPath();
-  x.moveTo(80, 415);
-  x.lineTo(1160, 415);
-  x.stroke();
-
-  let startY = 470;
-  x.font = "24px 'Plus Jakarta Sans'";
-  
+  let y = 350;
   curAns.forEach((ans, i) => {
-      let soalTeks = dWeb.tugas.soal[i].tanya || "Materi Link";
-      let textLine = `${i + 1}. ${ans || "(Kosong)"}`;
-      
-      if(dWeb.tugas.jenis === 'pg') {
-          let mark = (ans === dWeb.tugas.soal[i].kunci) ? " [BENAR]" : ` [SALAH - Kunci: ${dWeb.tugas.soal[i].kunci}]`;
-          x.fillStyle = (ans === dWeb.tugas.soal[i].kunci) ? "#00B894" : "#ff7675";
-          x.fillText(textLine + mark, 100, startY);
-      } else {
-          x.fillStyle = "#2D3436";
-          // Wrap Text untuk Uraian
-          let words = textLine.split(' ');
-          let line = '';
-          for(let n = 0; n < words.length; n++) {
-              let testLine = line + words[n] + ' ';
-              if (testLine.length > 80) {
-                  x.fillText(line, 100, startY);
-                  line = words[n] + ' ';
-                  startY += 35;
-              } else {
-                  line = testLine;
-              }
-          }
-          x.fillText(line, 100, startY);
-      }
-      startY += 50;
-      
-      // Page break check (Sederhana)
-      if(startY > 1650) { 
-          // Dalam sistem ini satu halaman cukup, jika butuh lebih bisa dikembangkan
-          x.fillText("... (lanjutan di halaman data guru) ...", 100, startY);
-      }
+    x.fillText(`${i+1}. ${ans}`, 50, y); y+=45;
   });
-
-  x.fillStyle = "#b2bec3";
-  x.font = "italic 18px 'Plus Jakarta Sans'";
-  x.fillText("Dicetak otomatis oleh Sistem Ruang Belajar Digital SDN Pengkol", 80, 1700);
 
   const base64 = c.toDataURL("image/jpeg", 0.7).split(',')[1];
   try {
     await fetch(API, { 
         method: "POST", 
-        body: JSON.stringify({ 
-            action: "upload", 
-            nama: curUser, 
-            materi: dWeb.tugas.judul, 
-            nilai: tampilNilai, 
-            file: base64, 
-            filename: "HASIL_" + dWeb.tugas.judul + "_" + curUser + ".jpg" 
-        }) 
+        body: JSON.stringify({ action: "upload", nama: curUser, materi: dWeb.tugas.judul, nilai: skor, file: base64, filename: `HASIL_${curUser}.jpg` }) 
     });
-    alert("Berhasil! Jawaban sudah terkirim.");
+    localStorage.removeItem('ruangBelajar_draft');
+    alert("Jawaban terkirim!");
     location.reload();
-  } catch (e) {
-    alert("Gagal mengirim.");
-    document.getElementById('loader').style.display = 'none';
-  }
+  } catch(e) { alert("Gagal kirim."); document.getElementById('loader').style.display = 'none'; }
 }
-
-function bukaModalLogin() { document.getElementById('modalLogin').style.display = 'flex'; }
-function closeLogin() { document.getElementById('modalLogin').style.display = 'none'; }
-function prosesLogin() { if(document.getElementById('pin').value === "guru123") { closeLogin(); openView('panelGuru'); } else alert("PIN Salah!"); }
 
 function tambahBaris() {
   const tipe = document.getElementById('jnsTugas').value;
+  const wadah = document.getElementById('wadahInput');
+  const no = wadah.children.length + 1;
   const div = document.createElement('div'); div.className = 'soal-box';
-  let h = `<span style="float:right; cursor:pointer;" onclick="this.parentElement.remove()">❌</span>`;
-  if(tipe === 'link') {
-    h += `<b>Link Canva/AI:</b><input type="text" class="q-link" placeholder="https://...">`;
-  } else {
-    h += `<b>Pertanyaan:</b><textarea class="q-txt"></textarea>`;
-    if(tipe === 'pg') {
-      h += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;"><input class="oa" placeholder="A"><input class="ob" placeholder="B"><input class="oc" placeholder="C"><input class="od" placeholder="D"></div>
-            <select class="q-kunci"><option value="A">Kunci A</option><option value="B">Kunci B</option><option value="C">Kunci C</option><option value="D">Kunci D</option></select>`;
-    }
+  
+  let html = `<div class="nomor-soal-input">SOAL NO ${no}</div>
+              <span style="float:right; cursor:pointer;" onclick="this.parentElement.remove(); reorderNomor();">❌</span>
+              <b>Pertanyaan:</b><textarea class="q-txt"></textarea>`;
+  
+  if(tipe === 'campuran') {
+    html += `<select class="q-mode" onchange="toggleMode(this)">
+               <option value="pg">Tipe Pilihan Ganda</option>
+               <option value="uraian">Tipe Uraian</option>
+             </select>
+             <div class="pg-area">
+               <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;"><input class="oa" placeholder="A"><input class="ob" placeholder="B"><input class="oc" placeholder="C"><input class="od" placeholder="D"></div>
+               <select class="q-kunci"><option value="A">Kunci A</option><option value="B">Kunci B</option><option value="C">Kunci C</option><option value="D">Kunci D</option></select>
+             </div>`;
+  } else if(tipe === 'pg') {
+    html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;"><input class="oa" placeholder="A"><input class="ob" placeholder="B"><input class="oc" placeholder="C"><input class="od" placeholder="D"></div>
+             <select class="q-kunci"><option value="A">Kunci A</option><option value="B">Kunci B</option><option value="C">Kunci C</option><option value="D">Kunci D</option></select>`;
   }
-  div.innerHTML = h; document.getElementById('wadahInput').appendChild(div);
+  div.innerHTML = html; wadah.appendChild(div);
 }
+
+function toggleMode(sel) { sel.parentElement.querySelector('.pg-area').style.display = (sel.value === 'pg' ? 'block' : 'none'); }
+function reorderNomor() { document.querySelectorAll('.nomor-soal-input').forEach((el, i) => { el.innerText = `SOAL NO ${i+1}`; }); }
 function resetInputSoal() { document.getElementById('wadahInput').innerHTML = ""; tambahBaris(); }
 
 async function simpanTugas() {
   document.getElementById('loader').style.display = 'flex';
   const materi = document.getElementById('jdlMateri').value;
-  const jenis = document.getElementById('jnsTugas').value;
-  
-  // PERBAIKAN: Pastikan ID 'waktuTugas' terbaca dengan benar
-  const durasi = document.getElementById('waktuTugas').value || 60; 
-  
+  const durasi = document.getElementById('waktuTugas').value;
   const arr = [];
   document.querySelectorAll('#wadahInput .soal-box').forEach(b => {
-    let s = {};
-    if(jenis === 'link') { 
-        s.link = b.querySelector('.q-link').value; 
-    } else {
-      s.tanya = b.querySelector('.q-txt').value;
-      if(jenis === 'pg') {
-        s.opsi = [b.querySelector('.oa').value, b.querySelector('.ob').value, b.querySelector('.oc').value, b.querySelector('.od').value];
-        s.kunci = b.querySelector('.q-kunci').value;
-      }
-    }
+    let s = { tanya: b.querySelector('.q-txt').value };
+    const mode = b.querySelector('.q-mode') ? b.querySelector('.q-mode').value : document.getElementById('jnsTugas').value;
+    if(mode === 'pg') {
+      s.opsi = [b.querySelector('.oa').value, b.querySelector('.ob').value, b.querySelector('.oc').value, b.querySelector('.od').value];
+      s.kunci = b.querySelector('.q-kunci').value;
+    } else { s.opsi = []; s.kunci = ""; }
     arr.push(s);
   });
-
-  // Kirim durasi ke API agar tersimpan di Google Sheets/Database
-  await fetch(API, { 
-    method: "POST", 
-    body: JSON.stringify({ 
-        action: "setTugas", 
-        judul: materi, 
-        jenis: jenis, 
-        durasi: durasi, // Mengirim nilai durasi ke server
-        soal: arr 
-    }) 
-  });
+  await fetch(API, { method: "POST", body: JSON.stringify({ action: "setTugas", judul: materi, jenis: "custom", durasi: durasi, soal: arr }) });
   location.reload();
 }
+
 function renderRekap() {
-  const tb = document.getElementById('isiRekap'); tb.innerHTML = "";
+  const tb = document.getElementById('isiRekap'); 
+  tb.innerHTML = "";
   if(!dWeb) return;
+
   SISWA.forEach((s, i) => {
+    // Mencari data jawaban siswa berdasarkan nama dan judul tugas aktif
     const d = dWeb.rekap.find(r => r.nama === s.n && r.materi === dWeb.tugas.judul);
-    tb.innerHTML += `<tr style="border-bottom: 1px solid var(--border-light)">
-        <td style="padding:15px">${i+1}</td><td style="padding:15px"><b>${s.n}</b></td>
-        <td style="padding:15px">${d ? '✅' : '❌'}</td>
-        <td style="padding:15px">${d ? `<a href="https://drive.google.com/uc?id=${d.link}" target="_blank" style="color:var(--primary-teal); text-decoration:none; font-weight:700;">LIHAT</a>` : '-'}</td>
-    </tr>`;
+    
+    // Logika penentuan tanda centang atau silang
+    const statusIcon = d 
+      ? '<span style="color: #059669; font-size: 1.2rem; font-weight: bold;">✔</span>' // Centang Hijau jika ada data
+      : '<span style="color: #ff7675; font-size: 1.2rem; font-weight: bold;">✘</span>'; // Silang Merah jika tidak ada data
+
+    tb.innerHTML += `
+      <tr style="border-bottom: 1px solid var(--border-light)">
+        <td style="padding:15px">${i+1}</td>
+        <td style="padding:15px"><b>${s.n}</b></td>
+        <td style="padding:15px; text-align: center;">${statusIcon}</td>
+        <td style="padding:15px">
+          ${d ? `<a href="https://drive.google.com/uc?id=${d.link}" target="_blank" style="color:var(--primary-teal); font-weight:700; text-decoration: none;">LIHAT</a>` : '<small style="color:#ccc">Belum Ada</small>'}
+        </td>
+      </tr>`;
   });
 }
-
-async function resetSistem() { if(confirm("Hapus materi?")) { await fetch(API, {method:"POST", body:JSON.stringify({action:"setTugas", judul:"TIDAK ADA TUGAS", jenis:"pg", durasi:60, soal:[]})}); location.reload(); } }
+function bukaModalLogin() { document.getElementById('modalLogin').style.display = 'flex'; }
+function closeLogin() { document.getElementById('modalLogin').style.display = 'none'; }
+function prosesLogin() { if(document.getElementById('pin').value === "guru123") { closeLogin(); openView('panelGuru'); } else alert("PIN Salah!"); }
 function openView(id) { document.getElementById(id).style.display = 'block'; }
 function closeView(id) { document.getElementById(id).style.display = 'none'; }
-function tutupSemua() { 
-    clearInterval(timerInterval);
-    document.querySelectorAll('.panel').forEach(p => p.style.display = 'none'); 
-}
+async function resetSistem() { if(confirm("Hapus materi?")) { await fetch(API, {method:"POST", body:JSON.stringify({action:"setTugas", judul:"TIDAK ADA TUGAS", soal:[]})}); location.reload(); } }
 </script>
 </body>
 </html>
