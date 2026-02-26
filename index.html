@@ -184,13 +184,13 @@
     <label style="font-size:0.75rem; font-weight:700;">Durasi (Menit):</label>
     <input type="number" id="waktuTugas" value="60">
     <select id="jnsTugas" onchange="resetInputSoal()">
-        <option value="pg">Pilihan Ganda (Otomatis)</option>
-        <option value="uraian">Uraian (Manual)</option>
+        <option value="pg">Pilihan Ganda )</option>
+        <option value="uraian">Uraian )</option>
         <option value="campuran">Campuran (PG & Uraian)</option>
     </select>
     <div id="wadahInput"></div>
     <button class="btn btn-outline" onclick="tambahBaris()">+ Tambah Soal Baru</button>
-    <button class="btn btn-blue" onclick="simpanTugas()" style="margin-top:15px;">PUBLIKASIKAN SEKARANG</button>
+    <button class="btn btn-blue" onclick="simpanTugas()" style="margin-top:15px;">PUBLIKASIKAN TUGAS</button>
     <button class="btn btn-outline" onclick="closeView('panelBuat')">BATAL</button>
   </div>
 </div>
@@ -202,7 +202,7 @@
         <table style="width:100%; border-collapse:collapse; min-width:400px;">
           <thead>
             <tr style="background:var(--bg-minty); text-align:left;">
-              <th style="padding:15px;">No</th><th style="padding:15px;">Siswa</th><th style="padding:15px;">Skor PG</th><th style="padding:15px;">Aksi</th>
+              <th style="padding:15px;">No</th><th style="padding:15px;">Siswa</th><th style="padding:15px;">Progres</th><th style="padding:15px;">Aksi</th>
             </tr>
           </thead>
           <tbody id="isiRekap"></tbody>
@@ -471,3 +471,4 @@ async function resetSistem() { if(confirm("Hapus materi?")) { await fetch(API, {
 </script>
 </body>
 </html>
+
