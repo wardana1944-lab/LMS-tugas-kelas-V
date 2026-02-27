@@ -6,6 +6,7 @@
   <title>RUANG BELAJAR - SD N PENGKOL</title>
   <link rel="icon" type="image/x-icon" href="icon.png.ico">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root { 
       --bg-minty: #F4F7F6; 
@@ -184,13 +185,13 @@
     <label style="font-size:0.75rem; font-weight:700;">Durasi (Menit):</label>
     <input type="number" id="waktuTugas" value="60">
     <select id="jnsTugas" onchange="resetInputSoal()">
-        <option value="pg">Pilihan Ganda )</option>
-        <option value="uraian">Uraian )</option>
+        <option value="pg">Pilihan Ganda (Otomatis)</option>
+        <option value="uraian">Uraian (Manual)</option>
         <option value="campuran">Campuran (PG & Uraian)</option>
     </select>
     <div id="wadahInput"></div>
     <button class="btn btn-outline" onclick="tambahBaris()">+ Tambah Soal Baru</button>
-    <button class="btn btn-blue" onclick="simpanTugas()" style="margin-top:15px;">PUBLIKASIKAN TUGAS</button>
+    <button class="btn btn-blue" onclick="simpanTugas()" style="margin-top:15px;">PUBLIKASIKAN SEKARANG</button>
     <button class="btn btn-outline" onclick="closeView('panelBuat')">BATAL</button>
   </div>
 </div>
@@ -202,7 +203,7 @@
         <table style="width:100%; border-collapse:collapse; min-width:400px;">
           <thead>
             <tr style="background:var(--bg-minty); text-align:left;">
-              <th style="padding:15px;">No</th><th style="padding:15px;">Siswa</th><th style="padding:15px;">Progres</th><th style="padding:15px;">Aksi</th>
+              <th style="padding:15px;">No</th><th style="padding:15px;">Siswa</th><th style="padding:15px;">Skor PG</th><th style="padding:15px;">Aksi</th>
             </tr>
           </thead>
           <tbody id="isiRekap"></tbody>
@@ -231,10 +232,9 @@
   </div>
 </div>
 
-<canvas id="canvasHasil" style="display:none;"></canvas>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbxGLCAnqRtwjbjz1HSdsgyDlVEiIMGM43Z3bPz7nEZs3Mg5MM3tpsMk0KEfHieIoYKB6g/exec";
+const API = "https://script.google.com/macros/s/AKfycbzMbkryvJv7-jKAoTPwgS4is72POSbazsq9qNvVdDBU2STaubc0YXEk4-78kSmwvD81-w/exec";
 const SISWA = [{n:"Alvaro Adnan Aji Pambudi",i:"👦"},{n:"Anantha Yudha Diztira",i:"👦"},{n:"Arifah Yhuan Nur Azizah",i:"👧"},{n:"Aurelia Gieni Lindria Putri",i:"👧"},{n:"Dhafitha Nizza Nur Azizah",i:"👧"},{n:"Dhian Rahmawati",i:"👧"},{n:"Dimas Rasyid Faristia",i:"👦"},{n:"Erfin Denu Setiawan",i:"👦"},{n:"Marsya Anindya Kiera",i:"👧"},{n:"Mikayla Ayuningtyas",i:"👧"},{n:"Muhammad Ozil Ramadhan",i:"👦"},{n:"Rhevan Nabil Yudanta",i:"👦"},{n:"Ridho Wicaksono",i:"👦"},{n:"Rizky Syam Dani",i:"👦"},{n:"Tanca Al Verosa",i:"👦"}];
 
 let dWeb = null;
@@ -355,41 +355,98 @@ function tampilSoal() {
 function pindahSoal(n) { if(curIdx+n >= 0 && curIdx+n < curAns.length) { curIdx += n; tampilSoal(); } }
 
 async function submitJawaban() {
-  clearInterval(timerInterval);
-  document.getElementById('loader').style.display = 'flex';
+  clearInterval(timerInterval); // Berhentikan waktu
+  document.getElementById('loader').style.display = 'flex'; // Munculkan loading
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
   
+  // 1. HITUNG SKOR (Logika tetap sama)
   let benar = 0, jmlPG = 0;
   dWeb.tugas.soal.forEach((s, i) => { 
     if(s.kunci) { jmlPG++; if(curAns[i] === s.kunci) benar++; }
   });
-
   const skor = jmlPG > 0 ? Math.round((benar / jmlPG) * 100) : "Uraian";
 
-  const c = document.getElementById('canvasHasil'); const x = c.getContext('2d');
-  c.width = 1000; c.height = 1400; x.fillStyle = "white"; x.fillRect(0,0,1000,1400);
-  x.fillStyle = "#059669"; x.fillRect(0,0,1000,150);
-  x.fillStyle="white"; x.font="bold 40px Arial"; x.fillText("HASIL JAWABAN: " + dWeb.tugas.judul, 50, 90);
-  x.fillStyle="#2D3436"; x.font="30px Arial"; x.fillText("Nama: " + curUser, 50, 220);
-  x.fillText("Skor PG: " + skor, 50, 270);
+  // 2. HEADER PROFESIONAL (Kop Surat)
+  doc.setFontSize(16);
+  doc.setFont(undefined, 'bold');
+  doc.setTextColor(5, 150, 105); // Warna hijau primary-teal
+  doc.text("LEMBAR JAWABAN SISWA", 105, 20, { align: "center" });
   
-  let y = 350;
+  doc.setFontSize(11);
+  doc.setTextColor(45, 52, 54); 
+  doc.text(dWeb.tugas.judul.toUpperCase(), 105, 27, { align: "center" });
+
+  doc.setLineWidth(0.8);
+  doc.line(20, 32, 190, 32); // Garis tebal
+  doc.setLineWidth(0.2);
+  doc.line(20, 33, 190, 33); // Garis tipis
+
+  // 3. TABEL IDENTITAS
+  doc.setFontSize(10);
+  doc.setFont(undefined, 'bold');
+  doc.text("IDENTITAS SISWA", 20, 42);
+  
+  doc.setFont(undefined, 'normal');
+  doc.text("Nama Lengkap", 20, 48);
+  doc.text(": " + curUser, 55, 48); // Mengambil nama siswa aktif
+  doc.text("Kelas / Semester", 20, 54);
+  doc.text(": V (Lima) / 2", 55, 54);
+  
+  doc.text("Hari, Tanggal", 120, 48);
+  const tgl = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  doc.text(": " + tgl, 145, 48);
+  doc.text("Skor PG", 120, 54);
+  doc.setFont(undefined, 'bold');
+  doc.text(": " + skor, 145, 54);
+
+  doc.line(20, 60, 190, 60); // Garis pembatas isi
+  
+  // 4. ISI JAWABAN (OTOMATIS PINDAH HALAMAN)
+  let y = 70;
   curAns.forEach((ans, i) => {
-    x.fillText(`${i+1}. ${ans}`, 50, y); y+=45;
+    // Jika posisi Y sudah di bawah kertas (batas A4), buat halaman baru
+    if (y > 270) {
+      doc.addPage();
+      y = 20;
+    }
+
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'bold');
+    doc.text(`Soal No. ${i + 1}:`, 20, y);
+    
+    doc.setFont(undefined, 'normal');
+    const teksBersih = ans || "(Tidak ada jawaban)";
+    const splitText = doc.splitTextToSize(teksBersih, 165); // Wrap text otomatis
+    doc.text(splitText, 25, y + 7);
+    
+    y += 15 + (splitText.length * 5); // Jarak dinamis
   });
 
-  const base64 = c.toDataURL("image/jpeg", 0.7).split(',')[1];
+  // 5. PROSES KIRIM PDF (Base64)
+  const pdfBase64 = doc.output('datauristring').split(',')[1];
+
   try {
     await fetch(API, { 
         method: "POST", 
-        body: JSON.stringify({ action: "upload", nama: curUser, materi: dWeb.tugas.judul, nilai: skor, file: base64, filename: `HASIL_${curUser}.jpg` }) 
+        body: JSON.stringify({ 
+            action: "upload", 
+            nama: curUser, 
+            materi: dWeb.tugas.judul, 
+            nilai: skor, 
+            file: pdfBase64, 
+            filename: `JAWABAN_${curUser}.pdf` 
+        }) 
     });
-    localStorage.removeItem('ruangBelajar_draft');
-    alert("Jawaban terkirim!");
-    location.reload();
-  } catch(e) { alert("Gagal kirim."); document.getElementById('loader').style.display = 'none'; }
-}
-
-function tambahBaris() {
+    localStorage.removeItem('ruangBelajar_draft'); // Hapus draft jika sukses
+    alert("Jawaban PDF berhasil dikirim ke Pak Aditya!");
+    location.reload(); // Refresh halaman
+  } catch(e) { 
+    alert("Gagal kirim PDF. Cek koneksi internet."); 
+    document.getElementById('loader').style.display = 'none'; 
+  }
+}function tambahBaris() {
   const tipe = document.getElementById('jnsTugas').value;
   const wadah = document.getElementById('wadahInput');
   const no = wadah.children.length + 1;
@@ -471,4 +528,3 @@ async function resetSistem() { if(confirm("Hapus materi?")) { await fetch(API, {
 </script>
 </body>
 </html>
-
