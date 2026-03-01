@@ -61,7 +61,7 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin: 8px 0; font-size: 1rem; }
-    .soal-box { background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; border: 1px solid var(--border); }
+    .soal-box { background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; border: 1px solid var(--border); position: relative; }
     
     .opt-box { background: white; border: 1px solid var(--border); padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
     .opt-box:hover { border-color: var(--accent); background: #f0fdf4; }
@@ -73,6 +73,10 @@
     .btn-tool:hover { background: #e2e8f0; }
     .editor { min-height: 100px; padding: 12px; border: 1px solid var(--border); border-radius: 0 0 10px 10px; background: white; outline: none; margin-bottom: 10px; }
     .img-preview { max-width: 100%; max-height: 200px; margin-top: 10px; border-radius: 8px; display: block; }
+
+    /* TOMBOL HAPUS SOAL */
+    .btn-hapus-soal { position: absolute; top: 15px; right: 15px; background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; padding: 5px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; }
+    .btn-hapus-soal:hover { background: #ef4444; color: white; }
   </style>
 </head>
 <body>
@@ -268,6 +272,13 @@ function bukaBuatTugas(slot) {
     curSlot = slot;
     document.getElementById('wadahInput').innerHTML = "";
     document.getElementById('jdlMateri').value = dataTugas[slot] ? dataTugas[slot].judul : "";
+    
+    // Jika edit, muat soal yang sudah ada
+    if(dataTugas[slot] && dataTugas[slot].soal) {
+        dataTugas[slot].soal.forEach(s => {
+            tambahSoalManual(s);
+        });
+    }
     openView('panelBuat');
 }
 
@@ -286,27 +297,61 @@ function insertImage(input, previewId) {
 function tambahSoal(jenis) {
     const wadah = document.getElementById('wadahInput');
     const no = wadah.children.length + 1;
+    buatElemenSoal(no, jenis, {tanya: "", img: "", opsi: ["","","",""], kunci: "A"});
+}
+
+// Fungsi pembantu untuk memuat soal saat edit
+function tambahSoalManual(data) {
+    const wadah = document.getElementById('wadahInput');
+    const no = wadah.children.length + 1;
+    buatElemenSoal(no, data.jenis, data);
+}
+
+function buatElemenSoal(no, jenis, data) {
+    const wadah = document.getElementById('wadahInput');
     const div = document.createElement('div');
     div.className = "soal-box"; div.dataset.jenis = jenis;
     
-    let html = `<b>No ${no} (${jenis})</b>
+    let html = `<button class="btn-hapus-soal" onclick="hapusSoal(this)">HAPUS</button>
+    <b class="label-nomor">No ${no} (${jenis})</b>
     <div class="toolbar">
         <button class="btn-tool" onclick="formatDoc('bold')">B</button>
         <button class="btn-tool" onclick="formatDoc('italic')">I</button>
         <button class="btn-tool" onclick="formatDoc('underline')">U</button>
         <label class="btn-tool" style="font-size:0.8rem;">🖼️ Gambar <input type="file" hidden onchange="insertImage(this, 'prev-${no}')" accept="image/*"></label>
     </div>
-    <div class="editor" id="ed-${no}" contenteditable="true"></div>
-    <img id="prev-${no}" class="img-preview" style="display:none;">`;
+    <div class="editor" id="ed-${no}" contenteditable="true">${data.tanya || ''}</div>
+    <img id="prev-${no}" src="${data.img || ''}" class="img-preview" style="display:${data.img ? 'block' : 'none'};">`;
     
     if(jenis === 'PG') {
+        const o = data.opsi || ["","","",""];
         html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
-            <input class="oa" placeholder="Opsi A"> <input class="ob" placeholder="Opsi B">
-            <input class="oc" placeholder="Opsi C"> <input class="od" placeholder="Opsi D">
+            <input class="oa" placeholder="Opsi A" value="${o[0]}"> <input class="ob" placeholder="Opsi B" value="${o[1]}">
+            <input class="oc" placeholder="Opsi C" value="${o[2]}"> <input class="od" placeholder="Opsi D" value="${o[3]}">
         </div>
-        <select class="q-kunci"><option value="A">Kunci: A</option><option value="B">Kunci: B</option><option value="C">Kunci: C</option><option value="D">Kunci: D</option></select>`;
+        <select class="q-kunci">
+            <option value="A" ${data.kunci === 'A' ? 'selected' : ''}>Kunci: A</option>
+            <option value="B" ${data.kunci === 'B' ? 'selected' : ''}>Kunci: B</option>
+            <option value="C" ${data.kunci === 'C' ? 'selected' : ''}>Kunci: C</option>
+            <option value="D" ${data.kunci === 'D' ? 'selected' : ''}>Kunci: D</option>
+        </select>`;
     }
     div.innerHTML = html; wadah.appendChild(div);
+}
+
+function hapusSoal(btn) {
+    if(confirm("Hapus soal ini?")) {
+        btn.parentElement.remove();
+        // Update ulang penomoran
+        document.querySelectorAll('#wadahInput .soal-box').forEach((box, i) => {
+            const noBaru = i + 1;
+            box.querySelector('.label-nomor').innerText = `No ${noBaru} (${box.dataset.jenis})`;
+            box.querySelector('.editor').id = `ed-${noBaru}`;
+            box.querySelector('.img-preview').id = `prev-${noBaru}`;
+            const fileInput = box.querySelector('input[type="file"]');
+            if(fileInput) fileInput.setAttribute('onchange', `insertImage(this, 'prev-${noBaru}')`);
+        });
+    }
 }
 
 function simpanKeFirebase() {
@@ -318,8 +363,8 @@ function simpanKeFirebase() {
         const n = i+1;
         const item = { 
             jenis: b.dataset.jenis, 
-            tanya: document.getElementById('ed-'+n).innerHTML,
-            img: document.getElementById('prev-'+n).src || ""
+            tanya: b.querySelector('.editor').innerHTML,
+            img: b.querySelector('.img-preview').src || ""
         };
         if(item.jenis === 'PG') {
             item.opsi = [b.querySelector('.oa').value, b.querySelector('.ob').value, b.querySelector('.oc').value, b.querySelector('.od').value];
@@ -396,7 +441,6 @@ function submitJawaban() {
     t.soal.forEach((s, i) => { if(s.jenis === 'PG') { totalPG++; if(curAns[i] === s.kunci) benar++; }});
     const skor = totalPG > 0 ? Math.round((benar / totalPG) * 100) : "Uraian";
     
-    // PEMBUATAN PDF PROFESIONAL DENGAN TABEL
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
@@ -409,7 +453,6 @@ function submitJawaban() {
 
     const rows = [];
     t.soal.forEach((s, i) => {
-        // Hilangkan tag HTML untuk tampilan tabel PDF
         const tanyaBersih = s.tanya.replace(/<[^>]*>?/gm, '');
         rows.push([i + 1, tanyaBersih, curAns[i] || "-"]);
     });
@@ -419,7 +462,7 @@ function submitJawaban() {
         head: [['No', 'Pertanyaan', 'Jawaban Siswa']],
         body: rows,
         theme: 'grid',
-        headStyles: { fillColor: [5, 150, 105] }, // Hijau Tema
+        headStyles: { fillColor: [5, 150, 105] }, 
         columnStyles: { 0: { cellWidth: 10 }, 1: { cellWidth: 100 } }
     });
 
