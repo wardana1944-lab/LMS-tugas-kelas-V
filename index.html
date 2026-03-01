@@ -523,7 +523,7 @@ function base64ToBlob(base64, type) {
 
 function hapusTugasAktif(slot) { if(confirm("Akhiri tugas?")) db.ref('tugas_multi/' + slot).remove(); }
 function showLoader(t) { document.getElementById('loaderText').innerText = t; document.getElementById('loader').style.display = 'flex'; }
-function hideLoader() { document.getElementById('loader').style.none; }
+function hideLoader() { document.getElementById('loader').style.display = 'none'; }
 function openView(id) { document.getElementById(id).style.display = id.includes('modal') ? 'flex' : 'block'; }
 function closeView(id) { document.getElementById(id).style.display = 'none'; }
 function pindahSoal(n) { const max = dataTugas[curSlot].soal.length; if(curIdx+n >= 0 && curIdx+n < max) { curIdx += n; renderSoal(); } }
