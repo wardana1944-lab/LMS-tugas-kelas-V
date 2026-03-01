@@ -21,9 +21,46 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
     body { background: var(--bg); color: var(--text); line-height: 1.6; }
 
-    header { background: var(--header-bg); color: var(--header-text); padding: 60px 20px; text-align: center; border-radius: 0 0 50px 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-    header h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; }
-    header p { opacity: 0.9; font-size: 1.1rem; margin-top: 5px; }
+    /* HEADER BARU YANG RAPI */
+    header { 
+      background: linear-gradient(135deg, #059669 0%, #10B981 100%); 
+      color: var(--header-text); 
+      padding: 50px 20px; 
+      text-align: center; 
+      border-radius: 0 0 50px 50px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+    }
+    header h1 { 
+      font-size: 2.2rem; 
+      font-weight: 800; 
+      letter-spacing: 2px; 
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    header .school-name {
+      font-size: 1.3rem;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    header .divider {
+      width: 50px;
+      height: 3px;
+      background: white;
+      margin: 10px auto;
+      border-radius: 2px;
+      opacity: 0.7;
+    }
+    header .year { 
+      display: inline-block;
+      padding: 5px 20px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 20px;
+      font-size: 0.9rem; 
+      font-weight: 400;
+      margin-top: 5px;
+    }
 
     .container { max-width: 1000px; margin: -40px auto 40px; padding: 0 20px; }
 
@@ -67,14 +104,12 @@
     .opt-box:hover { border-color: var(--accent); background: #f0fdf4; }
     .opt-box.selected { background: #D1FAE5; border-color: var(--primary); color: var(--primary); font-weight: 700; }
 
-    /* FORMATTING TOOLBAR */
     .toolbar { background: #f1f5f9; padding: 8px; border-radius: 10px 10px 0 0; border: 1px solid var(--border); border-bottom: none; display: flex; gap: 5px; }
     .btn-tool { padding: 5px 10px; background: white; border: 1px solid #cbd5e1; border-radius: 5px; cursor: pointer; font-weight: bold; }
     .btn-tool:hover { background: #e2e8f0; }
     .editor { min-height: 100px; padding: 12px; border: 1px solid var(--border); border-radius: 0 0 10px 10px; background: white; outline: none; margin-bottom: 10px; }
     .img-preview { max-width: 100%; max-height: 200px; margin-top: 10px; border-radius: 8px; display: block; }
 
-    /* TOMBOL HAPUS SOAL */
     .btn-hapus-soal { position: absolute; top: 15px; right: 15px; background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; padding: 5px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; }
     .btn-hapus-soal:hover { background: #ef4444; color: white; }
   </style>
@@ -85,8 +120,9 @@
 
 <header>
   <h1>RUANG BELAJAR</h1>
-  <p>SD NEGERI PENGKOL</p>
-  <p style="font-weight: 400; font-size: 0.9rem;">Tahun Pelajaran 2025/2026</p>
+  <span class="school-name">KELAS V</span>
+  <div class="divider"></div>
+  <p class="year">SD NEGERI PENGKOL 2025/2026</p>
 </header>
 
 <div class="container">
@@ -94,15 +130,15 @@
     <div class="guru-info">
       <div class="guru-avatar">👨‍🏫</div>
       <div>
-        <h3 style="font-size: 1.1rem;">Aditya W. Wardana, S.Pd</h3>
-        <p style="font-size: 0.8rem; color: #64748b;">NIP 19940319 202321 1 005</p>
-        <p style="font-size: 0.8rem; color: #64748b;">Wali Kelas V</p>
+        <h3 style="font-size: 0.9rem;">Aditya W. Wardana., S.Pd</h3>
+        <p style="font-size: 0.7rem; color: #64748b;">NIP 19940319 202321 1 005</p>
+        <p style="font-size: 0.7rem; color: #64748b;">Wali Kelas V</p>
       </div>
     </div>
     <button class="btn btn-dark" onclick="openView('modalLogin')">LOGIN GURU</button>
   </div>
 
-  <div id="listTugasAktif" class="status-banner">Memuat data tugas...</div>
+  <div id="listTugasAktif" class="status-banner">Memuat data...</div>
 
   <div class="grid-siswa" id="gridSiswa"></div>
 </div>
@@ -110,7 +146,7 @@
 <div id="modalLogin" class="panel" style="background:rgba(15,23,42,0.8); align-items:center; justify-content:center; display:none;">
     <div style="background:white; padding:40px; border-radius:30px; width:100%; max-width:350px; text-align:center;">
       <h2 style="margin-bottom:20px;">Akses Guru</h2>
-      <input type="password" id="pin" placeholder="Masukkan PIN" style="text-align:center; font-size: 1.2rem; letter-spacing: 5px;">
+      <input type="password" id="pin" placeholder="Password" style="text-align:center; font-size: 1 rem; letter-spacing: 5px;">
       <button class="btn btn-blue" style="width:100%; margin-top:15px;" onclick="prosesLogin()">MASUK DASHBOARD</button>
       <button class="btn-outline btn" style="width:100%; margin-top:10px; border:none;" onclick="closeView('modalLogin')">Batal</button>
     </div>
@@ -149,14 +185,11 @@
       <h3 id="labelTugas" style="color: var(--primary);">Konfigurasi Soal</h3>
       <input type="text" id="jdlMateri" placeholder="Judul Tugas (Contoh: Evaluasi Matematika)">
       <input type="number" id="waktuTugas" placeholder="Waktu (Menit)" value="60">
-      
       <div id="wadahInput" style="margin-top:20px;"></div>
-      
       <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
           <button class="btn btn-outline" onclick="tambahSoal('PG')">+ Pilihan Ganda</button>
           <button class="btn btn-outline" onclick="tambahSoal('URAIAN')">+ Soal Uraian</button>
       </div>
-      
       <button class="btn btn-blue" style="width:100%; margin-top:30px;" onclick="simpanKeFirebase()">TERBITKAN TUGAS SEKARANG</button>
       <button class="btn-outline btn" style="width:100%; margin-top:10px; border:none;" onclick="closeView('panelBuat')">Batal</button>
     </div>
@@ -184,7 +217,7 @@
       <h2 id="salamSiswa" style="color: var(--primary);">Selamat Datang</h2>
       <p style="color:#64748b; margin-bottom:30px;">Pilih tugas yang ingin dikerjakan:</p>
       <div id="menuTugasSiswa"></div>
-      <button class="btn btn-outline" style="width:100%; margin-top:20px;" onclick="location.reload()">Bukan saya, kembali</button>
+      <button class="btn btn-outline" style="width:100%; margin-top:20px;" onclick="location.reload()">KELUAR</button>
     </div>
 </div>
 
@@ -211,7 +244,6 @@
 </div>
 
 <script>
-// CONFIG FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyCfzJJpq32AltXRcP0ZB6fM1mvYpJVSVl4",
   authDomain: "ruang-belajar-kelas-v.firebaseapp.com",
@@ -247,7 +279,7 @@ window.onload = () => {
     db.ref('tugas_multi').on('value', (snap) => {
         dataTugas = snap.val() || {};
         const labels = Object.values(dataTugas).map(t => t.judul);
-        document.getElementById('listTugasAktif').innerText = labels.length > 0 ? "🔥 Tugas Aktif: " + labels.join(" & ") : "📍 Menunggu Tugas Guru...";
+        document.getElementById('listTugasAktif').innerHTML = labels.length > 0 ? "📝 Tugas Aktif:<br>" + labels.join("<br>") : "⛔ Belum Ada Tugas Aktif";
         document.getElementById('infoSlot1').innerText = dataTugas.tugas1 ? dataTugas.tugas1.judul : "Kosong";
         document.getElementById('infoSlot2').innerText = dataTugas.tugas2 ? dataTugas.tugas2.judul : "Kosong";
     });
@@ -272,17 +304,12 @@ function bukaBuatTugas(slot) {
     curSlot = slot;
     document.getElementById('wadahInput').innerHTML = "";
     document.getElementById('jdlMateri').value = dataTugas[slot] ? dataTugas[slot].judul : "";
-    
-    // Jika edit, muat soal yang sudah ada
     if(dataTugas[slot] && dataTugas[slot].soal) {
-        dataTugas[slot].soal.forEach(s => {
-            tambahSoalManual(s);
-        });
+        dataTugas[slot].soal.forEach(s => { tambahSoalManual(s); });
     }
     openView('panelBuat');
 }
 
-// EDITOR FUNGSI
 function formatDoc(cmd) { document.execCommand(cmd, false, null); }
 function insertImage(input, previewId) {
     const file = input.files[0];
@@ -300,7 +327,6 @@ function tambahSoal(jenis) {
     buatElemenSoal(no, jenis, {tanya: "", img: "", opsi: ["","","",""], kunci: "A"});
 }
 
-// Fungsi pembantu untuk memuat soal saat edit
 function tambahSoalManual(data) {
     const wadah = document.getElementById('wadahInput');
     const no = wadah.children.length + 1;
@@ -342,14 +368,9 @@ function buatElemenSoal(no, jenis, data) {
 function hapusSoal(btn) {
     if(confirm("Hapus soal ini?")) {
         btn.parentElement.remove();
-        // Update ulang penomoran
         document.querySelectorAll('#wadahInput .soal-box').forEach((box, i) => {
             const noBaru = i + 1;
             box.querySelector('.label-nomor').innerText = `No ${noBaru} (${box.dataset.jenis})`;
-            box.querySelector('.editor').id = `ed-${noBaru}`;
-            box.querySelector('.img-preview').id = `prev-${noBaru}`;
-            const fileInput = box.querySelector('input[type="file"]');
-            if(fileInput) fileInput.setAttribute('onchange', `insertImage(this, 'prev-${noBaru}')`);
         });
     }
 }
@@ -360,7 +381,6 @@ function simpanKeFirebase() {
     showLoader("Mempublikasikan...");
     const soalArr = [];
     document.querySelectorAll('#wadahInput .soal-box').forEach((b, i) => {
-        const n = i+1;
         const item = { 
             jenis: b.dataset.jenis, 
             tanya: b.querySelector('.editor').innerHTML,
@@ -392,7 +412,7 @@ function masukHalamanPilihTugas(nama) {
     Object.keys(dataTugas).forEach(slot => {
         const t = dataTugas[slot]; const sudah = rekapGlobal.some(r => r.nama === curUser && r.materi === t.judul);
         const btn = document.createElement('div'); btn.className = "card-siswa"; btn.style = "margin-bottom:15px; padding:20px; display:flex; justify-content:space-between; align-items:center;";
-        btn.innerHTML = `<div><h4 style="text-align:left;">${t.judul}</h4><span class="badge ${sudah ? 'bg-green' : 'bg-red'}">${sudah ? 'Sudah Selesai' : 'Siap Dikerjakan'}</span></div>`;
+        btn.innerHTML = `<div><h4 style="text-align:left;">${t.judul}</h4><span class="badge ${sudah ? 'bg-green' : 'bg-red'}">${sudah ? 'Sudah Dikerjakan' : 'Belum Dikerjakan'}</span></div>`;
         if(!sudah) btn.onclick = () => mulaiKerja(slot);
         menu.appendChild(btn);
     });
@@ -408,7 +428,6 @@ function renderSoal() {
     const s = dataTugas[curSlot].soal[curIdx];
     document.getElementById('teksSoal').innerHTML = `${curIdx + 1}. ${s.tanya}`;
     document.getElementById('imgSoalSiswa').innerHTML = s.img ? `<img src="${s.img}" style="max-width:100%; border-radius:10px; margin-bottom:15px;">` : "";
-    
     const g = document.getElementById('gridNomorCBT'); g.innerHTML = "";
     curAns.forEach((a, i) => {
         const d = document.createElement('div');
@@ -416,7 +435,6 @@ function renderSoal() {
         d.innerText = i + 1; d.onclick = () => { curIdx = i; renderSoal(); };
         g.appendChild(d);
     });
-
     const area = document.getElementById('areaJawaban'); area.innerHTML = "";
     if(s.jenis === 'PG') {
         s.opsi.forEach((o, i) => {
@@ -438,48 +456,78 @@ function submitJawaban() {
     showLoader("Mengirim..."); clearInterval(timerInterval);
     const t = dataTugas[curSlot];
     let benar = 0, totalPG = 0;
+    
     t.soal.forEach((s, i) => { if(s.jenis === 'PG') { totalPG++; if(curAns[i] === s.kunci) benar++; }});
     const skor = totalPG > 0 ? Math.round((benar / totalPG) * 100) : "Uraian";
     
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
-    doc.setFontSize(16); doc.text("HASIL TUGAS SISWA - SD N PENGKOL", 105, 15, {align: 'center'});
+    doc.setFontSize(18); doc.setTextColor(5, 150, 105);
+    doc.text("LAPORAN HASIL TUGAS SISWA", 105, 20, {align: 'center'});
+    doc.setFontSize(12); doc.setTextColor(0, 0, 0);
+    doc.text("SD NEGERI PENGKOL", 105, 28, {align: 'center'});
+    
+    doc.setDrawColor(200, 200, 200);
+    doc.line(14, 32, 196, 32);
+    
     doc.setFontSize(10);
-    doc.text(`Nama : ${curUser}`, 14, 25);
-    doc.text(`Materi : ${t.judul}`, 14, 30);
-    doc.text(`Nilai PG : ${skor}`, 14, 35);
-    doc.text(`Waktu : ${new Date().toLocaleString()}`, 14, 40);
+    doc.text(`Nama Lengkap : ${curUser}`, 14, 42);
+    doc.text(`Mata Pelajaran: ${t.judul}`, 14, 48);
+    doc.text(`Nilai (PG)    : ${skor}`, 14, 54);
+    doc.text(`Waktu Selesai : ${new Date().toLocaleString('id-ID')}`, 14, 60);
 
     const rows = [];
     t.soal.forEach((s, i) => {
         const tanyaBersih = s.tanya.replace(/<[^>]*>?/gm, '');
-        rows.push([i + 1, tanyaBersih, curAns[i] || "-"]);
+        let statusJawab = curAns[i] || "-";
+        
+        if(s.jenis === 'PG' && curAns[i]) {
+            const isBenar = curAns[i] === s.kunci;
+            statusJawab += isBenar ? " (Benar)" : ` (Salah, Kunci: ${s.kunci})`;
+        }
+        rows.push([i + 1, tanyaBersih, statusJawab]);
     });
 
     doc.autoTable({
-        startY: 45,
+        startY: 68,
         head: [['No', 'Pertanyaan', 'Jawaban Siswa']],
         body: rows,
         theme: 'grid',
         headStyles: { fillColor: [5, 150, 105] }, 
-        columnStyles: { 0: { cellWidth: 10 }, 1: { cellWidth: 100 } }
+        columnStyles: { 0: { cellWidth: 10 }, 1: { cellWidth: 110 } }
     });
 
     const pdfB64 = doc.output('datauristring').split(',')[1];
     db.ref('rekap_v2').push({ nama: curUser, materi: t.judul, nilai: skor, file: pdfB64 }).then(() => {
-        hideLoader(); alert("Berhasil Terkirim!"); location.reload();
+        hideLoader(); 
+        alert("Berhasil Terkirim!");
+        closeView('panelSiswa');
+        masukHalamanPilihTugas(curUser);
     });
+}
+
+function viewPDF(b64) {
+    const blob = base64ToBlob(b64, 'application/pdf');
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+}
+
+function base64ToBlob(base64, type) {
+    const bin = atob(base64);
+    const len = bin.length;
+    const arr = new Uint8Array(len);
+    for (let i = 0; i < len; i++) arr[i] = bin.charCodeAt(i);
+    return new Blob([arr], { type: type });
 }
 
 function hapusTugasAktif(slot) { if(confirm("Akhiri tugas?")) db.ref('tugas_multi/' + slot).remove(); }
 function showLoader(t) { document.getElementById('loaderText').innerText = t; document.getElementById('loader').style.display = 'flex'; }
-function hideLoader() { document.getElementById('loader').style.display = 'none'; }
+function hideLoader() { document.getElementById('loader').style.none; }
 function openView(id) { document.getElementById(id).style.display = id.includes('modal') ? 'flex' : 'block'; }
 function closeView(id) { document.getElementById(id).style.display = 'none'; }
 function pindahSoal(n) { const max = dataTugas[curSlot].soal.length; if(curIdx+n >= 0 && curIdx+n < max) { curIdx += n; renderSoal(); } }
 function startTimer() { timerInterval = setInterval(() => { sisaWaktu--; let m = Math.floor(sisaWaktu/60), s = sisaWaktu%60; document.getElementById('displayTimer').innerText = `${m}:${s < 10 ? '0'+s : s}`; if(sisaWaktu <= 0) submitJawaban(); }, 1000); }
-function viewPDF(b64) { const win = window.open(); win.document.write(`<iframe src="data:application/pdf;base64,${b64}" frameborder="0" style="width:100%; height:100%;"></iframe>`); }
 function kembaliKeDaftarTugas() { if(confirm("Kembali ke daftar?")) { clearInterval(timerInterval); closeView('panelSiswa'); openView('panelPilihTugas'); } }
 </script>
 </body>
