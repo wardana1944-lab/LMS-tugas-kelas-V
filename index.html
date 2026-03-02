@@ -21,7 +21,6 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
     body { background: var(--bg); color: var(--text); line-height: 1.6; }
 
-    /* HEADER BARU YANG RAPI */
     header { 
       background: linear-gradient(135deg, #059669 0%, #10B981 100%); 
       color: var(--header-text); 
@@ -30,46 +29,17 @@
       border-radius: 0 0 50px 50px; 
       box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
     }
-    header h1 { 
-      font-size: 2.2rem; 
-      font-weight: 800; 
-      letter-spacing: 2px; 
-      text-transform: uppercase;
-      margin-bottom: 5px;
-    }
-    header .school-name {
-      font-size: 1.3rem;
-      font-weight: 600;
-      display: block;
-      margin-bottom: 10px;
-      opacity: 0.95;
-    }
-    header .divider {
-      width: 50px;
-      height: 3px;
-      background: white;
-      margin: 10px auto;
-      border-radius: 2px;
-      opacity: 0.7;
-    }
-    header .year { 
-      display: inline-block;
-      padding: 5px 20px;
-      background: rgba(255,255,255,0.15);
-      border-radius: 20px;
-      font-size: 0.9rem; 
-      font-weight: 400;
-      margin-top: 5px;
-    }
+    header h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
+    header .school-name { font-size: 1.3rem; font-weight: 600; display: block; margin-bottom: 10px; opacity: 0.95; }
+    header .divider { width: 50px; height: 3px; background: white; margin: 10px auto; border-radius: 2px; opacity: 0.7; }
+    header .year { display: inline-block; padding: 5px 20px; background: rgba(255,255,255,0.15); border-radius: 20px; font-size: 0.9rem; font-weight: 400; margin-top: 5px; }
 
     .container { max-width: 1000px; margin: -40px auto 40px; padding: 0 20px; }
-
     .guru-profile { background: var(--white); padding: 25px; border-radius: 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 30px; border: 1px solid var(--border); }
     .guru-info { display: flex; align-items: center; gap: 15px; }
     .guru-avatar { width: 60px; height: 60px; background: #D1FAE5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--primary); }
-
+    
     .status-banner { background: #f1f5f9; padding: 12px 20px; border-radius: 12px; margin-bottom: 25px; font-weight: 600; text-align: center; border-left: 5px solid var(--accent); }
-
     .grid-siswa { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
     .card-siswa { background: var(--white); padding: 30px 20px; border-radius: 24px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 1px solid var(--border); }
     .card-siswa:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 12px 30px rgba(16, 185, 129, 0.1); }
@@ -99,7 +69,6 @@
 
     input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin: 8px 0; font-size: 1rem; }
     .soal-box { background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; border: 1px solid var(--border); position: relative; }
-    
     .opt-box { background: white; border: 1px solid var(--border); padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
     .opt-box:hover { border-color: var(--accent); background: #f0fdf4; }
     .opt-box.selected { background: #D1FAE5; border-color: var(--primary); color: var(--primary); font-weight: 700; }
@@ -137,9 +106,7 @@
     </div>
     <button class="btn btn-dark" onclick="openView('modalLogin')">LOGIN GURU</button>
   </div>
-
   <div id="listTugasAktif" class="status-banner">Memuat data...</div>
-
   <div class="grid-siswa" id="gridSiswa"></div>
 </div>
 
@@ -197,17 +164,22 @@
 
 <div id="panelRekap" class="panel">
     <div class="panel-content">
-      <h2 style="margin-bottom:20px;">Rekapitulasi Nilai</h2>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+          <h2 style="font-size:1.2rem;">Rekapitulasi Nilai</h2>
+          <button onclick="exportRekapPDF()" style="padding: 6px 12px; background: #059669; color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 0.7rem; cursor: pointer;">📥 CETAK REKAP (PDF)</button>
+      </div>
+      
       <select id="filterTugas" onchange="filterRekap()" style="margin-bottom:20px; font-weight:700; border-color: var(--primary);">
           <option value="">-- Pilih Judul Tugas --</option>
       </select>
+
       <div style="overflow-x:auto;">
           <table>
               <thead><tr><th>No</th><th>Nama Lengkap</th><th>Status</th><th>Nilai PG</th><th>Aksi</th></tr></thead>
               <tbody id="isiRekap"></tbody>
           </table>
       </div>
-      <button class="btn btn-outline" style="width:100%; margin-top:30px;" onclick="closeView('panelRekap')">KEMBALI</button>
+      <button class="btn btn-outline" style="width:100%; margin-top:20px;" onclick="closeView('panelRekap')">KEMBALI</button>
     </div>
 </div>
 
@@ -402,7 +374,7 @@ function filterRekap() {
     const tb = document.getElementById('isiRekap'); tb.innerHTML = "";
     SISWA.forEach((s, idx) => {
         const d = rekapGlobal.find(r => r.nama === s.n && r.materi === filter);
-        tb.innerHTML += `<tr><td>${idx+1}</td><td><b>${s.n}</b></td><td><span class="badge ${d ? 'bg-green' : 'bg-red'}">${d ? 'Selesai' : 'Belum'}</span></td><td>${d ? d.nilai : "-"}</td><td>${d ? `<button onclick="viewPDF('${d.file}')" style="color:var(--primary); font-weight:700; background:none; border:none; cursor:pointer;">LIHAT PDF</button>` : "-"}</td></tr>`;
+        tb.innerHTML += `<tr><td>${idx+1}</td><td><b>${s.n}</b></td><td><span class="badge ${d ? 'bg-green' : 'bg-red'}">${d ? 'Selesai' : 'Belum'}</span></td><td>${d ? d.nilai : "-"}</td><td>${d ? `<button onclick="viewPDF('${d.file}')" style="color:var(--primary); font-weight:700; background:none; border:none; cursor:pointer;">LIHAT</button>` : "-"}</td></tr>`;
     });
 }
 
@@ -529,6 +501,67 @@ function closeView(id) { document.getElementById(id).style.display = 'none'; }
 function pindahSoal(n) { const max = dataTugas[curSlot].soal.length; if(curIdx+n >= 0 && curIdx+n < max) { curIdx += n; renderSoal(); } }
 function startTimer() { timerInterval = setInterval(() => { sisaWaktu--; let m = Math.floor(sisaWaktu/60), s = sisaWaktu%60; document.getElementById('displayTimer').innerText = `${m}:${s < 10 ? '0'+s : s}`; if(sisaWaktu <= 0) submitJawaban(); }, 1000); }
 function kembaliKeDaftarTugas() { if(confirm("Kembali ke daftar?")) { clearInterval(timerInterval); closeView('panelSiswa'); openView('panelPilihTugas'); } }
+
+// FUNGSI EKSPORT REKAP KELAS PDF (SIAP CETAK)
+function exportRekapPDF() {
+    const filter = document.getElementById('filterTugas').value;
+    if (!filter) return alert("Silakan pilih judul tugas terlebih dahulu!");
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Judul Laporan
+    doc.setFontSize(16); doc.setTextColor(5, 150, 105);
+    doc.text("REKAPITULASI NILAI HARIAN SISWA", 105, 20, {align: 'center'});
+    doc.setFontSize(12); doc.setTextColor(0, 0, 0);
+    doc.text("SD NEGERI PENGKOL - KELAS V", 105, 28, {align: 'center'});
+    doc.text("Tahun Pelajaran 2025/2026", 105, 34, {align: 'center'});
+    
+    doc.line(14, 38, 196, 38);
+
+    // Keterangan Tugas
+    doc.setFontSize(10);
+    doc.text(`Judul Tugas : ${filter}`, 14, 46);
+    doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 52);
+
+    // Persiapan Data Tabel
+    const tableData = [];
+    SISWA.forEach((s, idx) => {
+        const d = rekapGlobal.find(r => r.nama === s.n && r.materi === filter);
+        tableData.push([
+            idx + 1,
+            s.n,
+            d ? "SELESAI" : "BELUM",
+            d ? d.nilai : "-"
+        ]);
+    });
+
+    // Generate Tabel Otomatis
+    doc.autoTable({
+        startY: 58,
+        head: [['No', 'Nama Lengkap Siswa', 'Status', 'Nilai PG']],
+        body: tableData,
+        theme: 'grid',
+        headStyles: { fillColor: [5, 150, 105], halign: 'center' },
+        columnStyles: {
+            0: { cellWidth: 10, halign: 'center' },
+            2: { cellWidth: 30, halign: 'center' },
+            3: { cellWidth: 30, halign: 'center' }
+        },
+        styles: { fontSize: 9 }
+    });
+
+    // Bagian Tanda Tangan Wali Kelas
+    const finalY = doc.lastAutoTable.finalY + 20;
+    doc.text("Mengetahui,", 150, finalY);
+    doc.text("Wali Kelas V", 150, finalY + 6);
+    doc.setFont("helvetica", "bold");
+    doc.text("Aditya W. Wardana., S.Pd", 150, finalY + 30);
+    doc.setFont("helvetica", "normal");
+    doc.text("NIP. 19940319 202321 1 005", 150, finalY + 35);
+
+    doc.save(`Rekap_Nilai_${filter.replace(/\s+/g, '_')}.pdf`);
+}
 </script>
 </body>
 </html>
