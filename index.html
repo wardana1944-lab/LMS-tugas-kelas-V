@@ -10,309 +10,212 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --brand: #0284c7; 
-      --brand-dark: #075985;
-      --brand-light: #f0f9ff;
-      --surface: #ffffff;
-      --bg-body: #f1f5f9;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --border-color: #e2e8f0;
-      --shadow-soft: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-      --radius-lg: 12px;
-      --radius-md: 8px;
+      --primary: #059669; --accent: #10B981; --primary-dark: #064E3B;
+      --bg: #F8FAFC; --white: #FFFFFF; --text: #1E293B; --text-light: #64748B;
+      --border: #E2E8F0; --danger: #EF4444; --header-bg: #059669; --header-text: #FFFFFF; 
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-    body { background: var(--bg-body); color: var(--text-main); -webkit-font-smoothing: antialiased; }
+    body { background: var(--bg); color: var(--text); line-height: 1.6; }
 
-    /* Nav/Header Profesional */
-    .top-nav {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-color);
-      padding: 1rem 2rem;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    header { 
+      background: linear-gradient(135deg, #059669 0%, #10B981 100%); 
+      color: var(--header-text); 
+      padding: 50px 20px; 
+      text-align: center; 
+      border-radius: 0 0 50px 50px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
     }
-    .brand-box { display: flex; align-items: center; gap: 12px; }
-    .brand-logo { width: 40px; height: 40px; background: var(--brand); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 1.2rem; }
-    .brand-text h1 { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px; color: var(--brand-dark); }
-    .brand-text p { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    header h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
+    header .school-name { font-size: 1.3rem; font-weight: 600; display: block; margin-bottom: 10px; opacity: 0.95; }
+    header .divider { width: 50px; height: 3px; background: white; margin: 10px auto; border-radius: 2px; opacity: 0.7; }
+    header .year { display: inline-block; padding: 5px 20px; background: rgba(255,255,255,0.15); border-radius: 20px; font-size: 0.9rem; font-weight: 400; margin-top: 5px; }
 
-    .hero-section {
-      background: linear-gradient(to bottom, #ffffff, var(--bg-body));
-      padding: 60px 20px;
-      text-align: center;
-    }
-    .hero-section h2 { font-size: 1.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 10px; }
-    .hero-section p { color: var(--text-muted); font-size: 1rem; max-width: 600px; margin: 0 auto; }
-
-    .container { max-width: 1140px; margin: 0 auto; padding: 0 24px 60px; }
-
-    /* Profile Teacher Card */
-    .teacher-card {
-      background: var(--surface);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: -40px;
-      box-shadow: var(--shadow-soft);
-      border: 1px solid var(--border-color);
-      margin-bottom: 40px;
-    }
-    .teacher-info { display: flex; align-items: center; gap: 16px; }
-    .teacher-img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--brand-light); }
-    .teacher-name { font-weight: 700; font-size: 1rem; }
-    .teacher-nip { font-size: 0.75rem; color: var(--text-muted); }
-
-    /* Student Grid */
-    .section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
-    .section-title::before { content: ''; width: 4px; height: 24px; background: var(--brand); border-radius: 2px; }
-
-    .grid-siswa { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-    .student-card {
-      background: var(--surface);
-      padding: 30px 20px;
-      border-radius: var(--radius-lg);
-      text-align: center;
-      border: 1px solid var(--border-color);
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-    .student-card:hover { 
-      border-color: var(--brand); 
-      transform: translateY(-5px);
-      box-shadow: 0 12px 20px -10px rgba(2, 132, 199, 0.2);
-    }
-    .student-avatar { font-size: 3rem; margin-bottom: 16px; display: block; }
-    .student-name { font-weight: 600; font-size: 0.9rem; color: var(--text-main); }
-
-    /* Modern Banner */
-    .banner-tugas {
-      background: var(--brand-dark);
-      color: white;
-      padding: 16px 24px;
-      border-radius: var(--radius-lg);
-      margin-bottom: 40px;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-
-    /* Buttons */
-    .btn {
-      padding: 10px 20px;
-      border-radius: var(--radius-md);
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: 0.2s;
-      font-size: 0.85rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .btn-brand { background: var(--brand); color: white; }
-    .btn-brand:hover { background: var(--brand-dark); }
-    .btn-white { background: white; border: 1px solid var(--border-color); color: var(--text-main); }
-    .btn-white:hover { background: var(--brand-light); }
-
-    /* Panel & Modals */
-    .panel { display: none; position: fixed; inset: 0; background: var(--bg-body); z-index: 2000; overflow-y: auto; padding-top: 20px; }
-    .panel-header { background: white; border-bottom: 1px solid var(--border-color); padding: 1rem 2rem; position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .container { max-width: 1000px; margin: -40px auto 40px; padding: 0 20px; }
+    .guru-profile { background: var(--white); padding: 25px; border-radius: 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 30px; border: 1px solid var(--border); }
+    .guru-info { display: flex; align-items: center; gap: 15px; }
+    .guru-avatar { width: 60px; height: 60px; background: #D1FAE5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--primary); }
     
-    /* Table Professional */
-    table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border-color); }
-    th { background: #f8fafc; padding: 16px; text-align: left; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border-color); }
-    td { padding: 16px; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
-    
-    /* CBT Modern */
-    .timer-pill { background: #0f172a; color: #38bdf8; padding: 8px 16px; border-radius: 100px; font-family: 'Courier New', monospace; font-weight: 800; font-size: 1.2rem; }
-    .question-box { background: white; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 32px; margin-bottom: 24px; }
-    .opt-btn { 
-      padding: 16px; border: 1px solid var(--border-color); border-radius: var(--radius-md); 
-      margin-bottom: 12px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 15px; 
-    }
-    .opt-btn:hover { background: var(--brand-light); border-color: var(--brand); }
-    .opt-btn.active { background: var(--brand); color: white; border-color: var(--brand); }
-    .opt-label { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 2px solid currentColor; border-radius: 6px; font-weight: 700; }
+    .status-banner { background: #f1f5f9; padding: 12px 20px; border-radius: 12px; margin-bottom: 25px; font-weight: 600; text-align: center; border-left: 5px solid var(--accent); }
+    .grid-siswa { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+    .card-siswa { background: var(--white); padding: 30px 20px; border-radius: 24px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 1px solid var(--border); }
+    .card-siswa:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 12px 30px rgba(16, 185, 129, 0.1); }
+    .card-siswa .icon { font-size: 3rem; margin-bottom: 10px; display: block; }
+    .card-siswa .nama { font-weight: 700; font-size: 1rem; }
 
-    #loader { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-    .spinner { width: 40px; height: 40px; border: 4px solid var(--brand-light); border-top-color: var(--brand); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    .panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 9999; overflow-y: auto; padding: 40px 0; }
+    .panel-content { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+
+    .btn { padding: 14px 24px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-blue { background: var(--accent); color: white; }
+    .btn-dark { background: var(--primary); color: white; }
+    .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text); }
+    .btn-danger { background: #fee2e2; color: var(--danger); border: 1px solid #fecaca; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 15px; overflow: hidden; border: 1px solid var(--border); }
+    th { background: #f1f5f9; padding: 15px; text-align: left; font-size: 0.9rem; }
+    td { padding: 15px; border-bottom: 1px solid var(--border); }
+
+    .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+    .bg-green { background: #dcfce7; color: #166534; }
+    .bg-red { background: #fee2e2; color: #991b1b; }
+
+    #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+    .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin: 8px 0; font-size: 1rem; }
+    .soal-box { background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; border: 1px solid var(--border); position: relative; }
+    .opt-box { background: white; border: 1px solid var(--border); padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
+    .opt-box:hover { border-color: var(--accent); background: #f0fdf4; }
+    .opt-box.selected { background: #D1FAE5; border-color: var(--primary); color: var(--primary); font-weight: 700; }
+
+    .toolbar { background: #f1f5f9; padding: 8px; border-radius: 10px 10px 0 0; border: 1px solid var(--border); border-bottom: none; display: flex; gap: 5px; }
+    .btn-tool { padding: 5px 10px; background: white; border: 1px solid #cbd5e1; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    .btn-tool:hover { background: #e2e8f0; }
+    .editor { min-height: 100px; padding: 12px; border: 1px solid var(--border); border-radius: 0 0 10px 10px; background: white; outline: none; margin-bottom: 10px; }
+    .img-preview { max-width: 100%; max-height: 200px; margin-top: 10px; border-radius: 8px; display: block; }
+
+    .btn-hapus-soal { position: absolute; top: 15px; right: 15px; background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; padding: 5px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; }
+    .btn-hapus-soal:hover { background: #ef4444; color: white; }
   </style>
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div></div>
+<div id="loader"><div class="spinner"></div><p id="loaderText" style="margin-top:10px; font-weight:700; color: var(--primary);">Memproses...</p></div>
 
-<nav class="top-nav">
-  <div class="brand-box">
-    <div class="brand-logo">R</div>
-    <div class="brand-text">
-      <h1>RUANG BELAJAR</h1>
-      <p>SD Negeri Pengkol</p>
-    </div>
-  </div>
-  <button class="btn btn-white" onclick="openView('modalLogin')">DASBOARD GURU</button>
-</nav>
-
-<div class="hero-section">
-  <h2>Selamat Datang di Ruang Belajar Kelas V</h2>
-</div>
+<header>
+  <h1>RUANG BELAJAR</h1>
+  <span class="school-name">KELAS V</span>
+  <div class="divider"></div>
+  <p class="year">SD NEGERI PENGKOL 2025/2026</p>
+</header>
 
 <div class="container">
-  <div class="teacher-card">
-    <div class="teacher-info">
-      <div class="brand-logo" style="background:#e0f2fe; color:#0284c7;">👨‍🏫</div>
+  <div class="guru-profile">
+    <div class="guru-info">
+      <div class="guru-avatar">👨‍🏫</div>
       <div>
-        <div class="teacher-name">ADITYA W. WARDANA., S.Pd</div>
-        <div class="teacher-nip">NIP 19940319 202321 1 005</div>
-        <div class="teacher-nip">Wali Kelas V</div>
+        <h3 style="font-size: 0.9rem;">Aditya W. Wardana., S.Pd</h3>
+        <p style="font-size: 0.7rem; color: #64748b;">NIP 19940319 202321 1 005</p>
+        <p style="font-size: 0.7rem; color: #64748b;">Wali Kelas V</p>
       </div>
     </div>
-    <div style="text-align: right">
-       <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">TAHUN AJARAN</div>
-       <div style="font-weight: 700; color: var(--brand-dark);">2025/2026</div>
-    </div>
+    <button class="btn btn-dark" onclick="openView('modalLogin')">LOGIN GURU</button>
   </div>
-
-  <div id="listTugasAktif" class="banner-tugas">
-    <span style="font-size:1.5rem">📢</span> 
-    <span>Memuat data tugas terbaru...</span>
-  </div>
-
-  <div class="section-title">Daftar Siswa Kelas V</div>
+  <div id="listTugasAktif" class="status-banner">Memuat data...</div>
   <div class="grid-siswa" id="gridSiswa"></div>
 </div>
 
-<div id="modalLogin" class="panel" style="background:rgba(15,23,42,0.9); display:none; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
-    <div style="background:white; padding:40px; border-radius:20px; width:100%; max-width:380px; text-align:center;">
-      <h2 style="margin-bottom:24px;">DASBOARD GURU</h2>
-      <input type="password" id="pin" placeholder="Password" style="width:100%; padding:15px; border-radius:10px; border:1px solid #ddd; margin-bottom:20px; text-align:center; font-size:1rem;">
-      <button class="btn btn-brand" style="width:100%; padding:15px;" onclick="prosesLogin()">MASUK DASHBOARD</button>
-      <button class="btn" style="margin-top:15px; color:var(--text-muted)" onclick="closeView('modalLogin')">Batalkan</button>
+<div id="modalLogin" class="panel" style="background:rgba(15,23,42,0.8); align-items:center; justify-content:center; display:none;">
+    <div style="background:white; padding:40px; border-radius:30px; width:100%; max-width:350px; text-align:center;">
+      <h2 style="margin-bottom:20px;">Akses Guru</h2>
+      <input type="password" id="pin" placeholder="Password" style="text-align:center; font-size: 1 rem; letter-spacing: 5px;">
+      <button class="btn btn-blue" style="width:100%; margin-top:15px;" onclick="prosesLogin()">MASUK DASHBOARD</button>
+      <button class="btn-outline btn" style="width:100%; margin-top:10px; border:none;" onclick="closeView('modalLogin')">Batal</button>
     </div>
 </div>
 
 <div id="panelGuru" class="panel">
-  <div class="panel-header">
-    <div class="brand-text"><h1>Dashboard Guru</h1></div>
-    <div style="display:flex; gap:10px;">
-        <button class="btn btn-white" onclick="openView('panelRekap')">Rekap Nilai</button>
-        <button class="btn btn-brand" onclick="closeView('panelGuru')">Keluar</button>
-    </div>
-  </div>
-  <div class="container" style="max-width:800px;">
-    <div class="section-title">Manajemen Tugas</div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-      <div class="question-box">
-        <h3 style="margin-bottom:15px; color:var(--brand)">Tugas 1</h3>
-        <p id="infoSlot1" style="font-size:0.9rem; color:var(--text-muted); margin-bottom:20px;">-</p>
-        <button class="btn btn-brand" onclick="bukaBuatTugas('tugas1')">Atur Tugas</button>
-        <button class="btn btn-white" onclick="hapusTugasAktif('tugas1')">Akhiri Tugas</button>
+    <div class="panel-content" style="max-width: 600px;">
+      <h2 style="margin-bottom:30px; text-align:center; color: var(--primary);">Dashboard Guru</h2>
+      <div class="soal-box">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+              <h4 style="color: var(--primary);">TUGAS 1</h4>
+              <div id="infoSlot1" style="font-size:0.8rem; font-weight:700;">Kosong</div>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
+              <button class="btn btn-blue" onclick="bukaBuatTugas('tugas1')">Buat/Edit</button>
+              <button class="btn btn-danger" onclick="hapusTugasAktif('tugas1')">Akhiri Tugas</button>
+          </div>
       </div>
-      <div class="question-box">
-        <h3 style="margin-bottom:15px; color:var(--brand)">Tugas 2</h3>
-        <p id="infoSlot2" style="font-size:0.9rem; color:var(--text-muted); margin-bottom:20px;">-</p>
-        <button class="btn btn-brand" onclick="bukaBuatTugas('tugas2')">Atur Tugas</button>
-        <button class="btn btn-white" onclick="hapusTugasAktif('tugas2')">Akhiri Tugas</button>
+      <div class="soal-box">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+              <h4 style="color: var(--primary);">TUGAS 2</h4>
+              <div id="infoSlot2" style="font-size:0.8rem; font-weight:700;">Kosong</div>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
+              <button class="btn btn-blue" onclick="bukaBuatTugas('tugas2')">Buat/Edit</button>
+              <button class="btn btn-danger" onclick="hapusTugasAktif('tugas2')">Akhiri Tugas</button>
+          </div>
       </div>
-    </div>
-  </div>
-</div>
-
-<div id="panelRekap" class="panel">
-    <div class="panel-header">
-        <div class="brand-text"><h1>Rekapitulasi Nilai</h1></div>
-        <button class="btn btn-white" onclick="closeView('panelRekap')">Tutup</button>
-    </div>
-    <div class="container">
-        <div style="background:white; padding:20px; border-radius:12px; margin-bottom:20px; display:flex; gap:20px; align-items:center;">
-            <select id="filterTugas" onchange="filterRekap()" style="flex:1; padding:12px; border-radius:8px; border:1px solid var(--border-color)"></select>
-            <button class="btn btn-brand" onclick="exportRekapPDF()">Cetak PDF</button>
-        </div>
-        <table>
-            <thead><tr><th>No</th><th>Nama Siswa</th><th>Status</th><th>Skor PG</th><th>Aksi</th></tr></thead>
-            <tbody id="isiRekap"></tbody>
-        </table>
-    </div>
-</div>
-
-<div id="panelPilihTugas" class="panel">
-    <div class="panel-header">
-        <div class="brand-text"><h1 id="salamSiswa">Halo</h1></div>
-        <button class="btn btn-white" onclick="location.reload()">KELUAR</button>
-    </div>
-    <div class="container" style="max-width:600px;">
-        <div class="section-title">Tugas Tersedia</div>
-        <div id="menuTugasSiswa"></div>
-    </div>
-</div>
-
-<div id="panelSiswa" class="panel">
-    <div class="panel-header">
-        <button class="btn btn-white" onclick="kembaliKeDaftarTugas()">⬅ Berhenti</button>
-        <div class="timer-pill" id="displayTimer">00:00</div>
-        <div></div>
-    </div>
-    <div class="container" style="max-width:800px;">
-        <div id="gridNomorCBT" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; justify-content:center;"></div>
-        
-        <div class="question-box">
-            <div id="imgSoalSiswa"></div>
-            <div id="teksSoal" style="font-size:1.1rem; line-height:1.7; margin-bottom:30px; font-weight:500;"></div>
-            <div id="areaJawaban"></div>
-        </div>
-
-        <div style="display:flex; justify-content:space-between;">
-            <button class="btn btn-white" style="padding:15px 30px" onclick="pindahSoal(-1)">KEMBALI</button>
-            <button class="btn btn-brand" style="padding:15px 30px" onclick="pindahSoal(1)">LANJUTKAN</button>
-        </div>
-        
-        <div id="divKirim" style="display:none; margin-top:40px; border-top:1px solid var(--border-color); padding-top:20px;">
-            <button class="btn btn-brand" style="width:100%; padding:20px; font-size:1.1rem;" onclick="submitJawaban()">KIRIM JAWABAN SEKARANG</button>
-        </div>
+      <button class="btn btn-dark" style="width:100%;" onclick="openView('panelRekap')">📊 LIHAT REKAPITULASI NILAI</button>
+      <button class="btn-outline btn" style="width:100%; margin-top:15px;" onclick="closeView('panelGuru')">Keluar</button>
     </div>
 </div>
 
 <div id="panelBuat" class="panel">
-    <div class="panel-header">
-        <div class="brand-text"><h1>Konfigurasi Soal</h1></div>
-        <button class="btn btn-brand" onclick="simpanKeFirebase()">SIMPAN & TERBITKAN</button>
+    <div class="panel-content">
+      <h3 id="labelTugas" style="color: var(--primary);">Konfigurasi Soal</h3>
+      <input type="text" id="jdlMateri" placeholder="Judul Tugas (Contoh: Evaluasi Matematika)">
+      <input type="number" id="waktuTugas" placeholder="Waktu (Menit)" value="60">
+      <div id="wadahInput" style="margin-top:20px;"></div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <button class="btn btn-outline" onclick="tambahSoal('PG')">+ Pilihan Ganda</button>
+          <button class="btn btn-outline" onclick="tambahSoal('URAIAN')">+ Soal Uraian</button>
+      </div>
+      <button class="btn btn-blue" style="width:100%; margin-top:30px;" onclick="simpanKeFirebase()">TERBITKAN TUGAS SEKARANG</button>
+      <button class="btn-outline btn" style="width:100%; margin-top:10px; border:none;" onclick="closeView('panelBuat')">Batal</button>
     </div>
-    <div class="container" style="max-width:800px;">
-        <div class="question-box">
-            <label style="font-size:0.75rem; font-weight:700; color:var(--text-muted)">JUDUL EVALUASI</label>
-            <input type="text" id="jdlMateri" placeholder="Contoh: Ulangan Harian IPA" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ddd; margin-top:5px; margin-bottom:15px;">
-            <label style="font-size:0.75rem; font-weight:700; color:var(--text-muted)">DURASI (MENIT)</label>
-            <input type="number" id="waktuTugas" value="60" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ddd; margin-top:5px;">
-        </div>
-        
-        <div id="wadahInput"></div>
-        
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button class="btn btn-white" style="flex:1" onclick="tambahSoal('PG')">+ Pilihan Ganda</button>
-            <button class="btn btn-white" style="flex:1" onclick="tambahSoal('URAIAN')">+ Soal Uraian</button>
-        </div>
-        <button class="btn btn-white" style="width:100%; margin-top:20px; border:none;" onclick="closeView('panelBuat')">Batalkan</button>
+</div>
+
+<div id="panelRekap" class="panel">
+    <div class="panel-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+          <h2 style="font-size:1.2rem;">Rekapitulasi Nilai</h2>
+          <button onclick="exportRekapPDF()" style="padding: 6px 12px; background: #059669; color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 0.7rem; cursor: pointer;">📥 CETAK REKAP (PDF)</button>
+      </div>
+      
+      <select id="filterTugas" onchange="filterRekap()" style="margin-bottom:20px; font-weight:700; border-color: var(--primary);">
+          <option value="">-- Pilih Judul Tugas --</option>
+      </select>
+
+      <div style="overflow-x:auto;">
+          <table>
+              <thead><tr><th>No</th><th>Nama Lengkap</th><th>Status</th><th>Nilai PG</th><th>Aksi</th></tr></thead>
+              <tbody id="isiRekap"></tbody>
+          </table>
+      </div>
+      <button class="btn btn-outline" style="width:100%; margin-top:20px;" onclick="closeView('panelRekap')">KEMBALI</button>
+    </div>
+</div>
+
+<div id="panelPilihTugas" class="panel">
+    <div class="panel-content" style="max-width:500px; text-align:center;">
+      <div class="guru-avatar" style="margin: 0 auto 20px; width:80px; height:80px; font-size:2.5rem; background: #D1FAE5;">👦</div>
+      <h2 id="salamSiswa" style="color: var(--primary);">Selamat Datang</h2>
+      <p style="color:#64748b; margin-bottom:30px;">Pilih tugas yang ingin dikerjakan:</p>
+      <div id="menuTugasSiswa"></div>
+      <button class="btn btn-outline" style="width:100%; margin-top:20px;" onclick="location.reload()">KELUAR</button>
+    </div>
+</div>
+
+<div id="panelSiswa" class="panel">
+    <div class="panel-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <button class="btn btn-outline" style="padding:8px 15px; font-size: 0.8rem;" onclick="kembaliKeDaftarTugas()">⬅️ Daftar Tugas</button>
+          <div id="displayTimer" style="background:var(--primary); color:white; padding:8px 20px; border-radius:10px; font-weight:800;">00:00</div>
+      </div>
+      <div id="gridNomorCBT" style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:25px;"></div>
+      <div class="soal-box">
+        <div id="imgSoalSiswa"></div>
+        <div id="teksSoal" style="margin-bottom:20px; font-size: 1.1rem; color: var(--text);"></div>
+        <div id="areaJawaban"></div>
+      </div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+        <button class="btn btn-outline" onclick="pindahSoal(-1)">KEMBALI</button>
+        <button class="btn btn-blue" onclick="pindahSoal(1)">LANJUTKAN</button>
+      </div>
+      <div id="divKirim" style="display:none; margin-top:25px;">
+        <button class="btn btn-dark" style="width:100%;" onclick="submitJawaban()">KIRIM JAWABAN SAYA</button>
+      </div>
     </div>
 </div>
 
 <script>
-// --- KONFIGURASI FIREBASE ---
 const firebaseConfig = {
   apiKey: "AIzaSyCfzJJpq32AltXRcP0ZB6fM1mvYpJVSVl4",
   authDomain: "ruang-belajar-kelas-v.firebaseapp.com",
@@ -339,8 +242,8 @@ window.onload = () => {
     const g = document.getElementById('gridSiswa');
     SISWA.forEach(s => {
         const d = document.createElement('div');
-        d.className = 'student-card';
-        d.innerHTML = `<span class="student-avatar">${s.i}</span><p class="student-name">${s.n}</p>`;
+        d.className = 'card-siswa';
+        d.innerHTML = `<span class="icon">${s.i}</span><p class="nama">${s.n}</p>`;
         d.onclick = () => masukHalamanPilihTugas(s.n);
         g.appendChild(d);
     });
@@ -348,21 +251,20 @@ window.onload = () => {
     db.ref('tugas_multi').on('value', (snap) => {
         dataTugas = snap.val() || {};
         const labels = Object.values(dataTugas).map(t => t.judul);
-        document.getElementById('listTugasAktif').innerHTML = labels.length > 0 ? `<span style="font-size:1.5rem">📝</span> <span>Tugas Aktif: ${labels.join(", ")}</span>` : "<span>⛔ Belum Ada Tugas Aktif</span>";
-        document.getElementById('infoSlot1').innerText = dataTugas.tugas1 ? dataTugas.tugas1.judul : "Belum terisi";
-        document.getElementById('infoSlot2').innerText = dataTugas.tugas2 ? dataTugas.tugas2.judul : "Belum terisi";
+        document.getElementById('listTugasAktif').innerHTML = labels.length > 0 ? "📝 Tugas Aktif:<br>" + labels.join("<br>") : "⛔ Belum Ada Tugas Aktif";
+        document.getElementById('infoSlot1').innerText = dataTugas.tugas1 ? dataTugas.tugas1.judul : "Kosong";
+        document.getElementById('infoSlot2').innerText = dataTugas.tugas2 ? dataTugas.tugas2.judul : "Kosong";
     });
 
     db.ref('rekap_v2').on('value', (snap) => {
-        rekapGlobal = []; const judulSet = new Set();
-        snap.forEach(c => { const v = c.val(); rekapGlobal.push(v); if(v.materi) judulSet.add(v.materi); });
+        rekapGlobal = []; const semuaJudul = new Set();
+        snap.forEach(c => { const val = c.val(); rekapGlobal.push(val); if(val.materi) semuaJudul.add(val.materi); });
         const sel = document.getElementById('filterTugas');
         sel.innerHTML = '<option value="">-- Pilih Judul Tugas --</option>';
-        judulSet.forEach(j => sel.innerHTML += `<option value="${j}">${j}</option>`);
+        semuaJudul.forEach(j => sel.innerHTML += `<option value="${j}">${j}</option>`);
     });
 };
 
-// --- LOGIKA GURU ---
 function prosesLogin() {
     if(document.getElementById('pin').value === "guru123") {
         closeView('modalLogin'); openView('panelGuru');
@@ -374,60 +276,87 @@ function bukaBuatTugas(slot) {
     curSlot = slot;
     document.getElementById('wadahInput').innerHTML = "";
     document.getElementById('jdlMateri').value = dataTugas[slot] ? dataTugas[slot].judul : "";
-    document.getElementById('waktuTugas').value = dataTugas[slot] ? dataTugas[slot].durasi : 60;
     if(dataTugas[slot] && dataTugas[slot].soal) {
-        dataTugas[slot].soal.forEach(s => tambahSoalManual(s));
+        dataTugas[slot].soal.forEach(s => { tambahSoalManual(s); });
     }
     openView('panelBuat');
 }
 
+function formatDoc(cmd) { document.execCommand(cmd, false, null); }
+function insertImage(input, previewId) {
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        document.getElementById(previewId).src = e.target.result;
+        document.getElementById(previewId).style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+}
+
 function tambahSoal(jenis) {
-    const no = document.getElementById('wadahInput').children.length + 1;
+    const wadah = document.getElementById('wadahInput');
+    const no = wadah.children.length + 1;
     buatElemenSoal(no, jenis, {tanya: "", img: "", opsi: ["","","",""], kunci: "A"});
 }
 
 function tambahSoalManual(data) {
-    const no = document.getElementById('wadahInput').children.length + 1;
+    const wadah = document.getElementById('wadahInput');
+    const no = wadah.children.length + 1;
     buatElemenSoal(no, data.jenis, data);
 }
 
 function buatElemenSoal(no, jenis, data) {
+    const wadah = document.getElementById('wadahInput');
     const div = document.createElement('div');
-    div.className = "question-box"; div.dataset.jenis = jenis;
-    div.style.position = "relative";
+    div.className = "soal-box"; div.dataset.jenis = jenis;
     
-    let html = `<button onclick="this.parentElement.remove()" style="position:absolute; top:20px; right:20px; color:red; border:none; background:none; cursor:pointer; font-weight:700;">Hapus</button>
-    <div style="font-weight:700; font-size:0.8rem; color:var(--brand); margin-bottom:10px;">PERTANYAAN NO ${no} (${jenis})</div>
-    <div class="editor" id="ed-${no}" contenteditable="true" style="min-height:80px; border:1px solid #ddd; padding:15px; border-radius:8px; background:#fafafa;">${data.tanya || ''}</div>`;
+    let html = `<button class="btn-hapus-soal" onclick="hapusSoal(this)">HAPUS</button>
+    <b class="label-nomor">No ${no} (${jenis})</b>
+    <div class="toolbar">
+        <button class="btn-tool" onclick="formatDoc('bold')">B</button>
+        <button class="btn-tool" onclick="formatDoc('italic')">I</button>
+        <button class="btn-tool" onclick="formatDoc('underline')">U</button>
+        <label class="btn-tool" style="font-size:0.8rem;">🖼️ Gambar <input type="file" hidden onchange="insertImage(this, 'prev-${no}')" accept="image/*"></label>
+    </div>
+    <div class="editor" id="ed-${no}" contenteditable="true">${data.tanya || ''}</div>
+    <img id="prev-${no}" src="${data.img || ''}" class="img-preview" style="display:${data.img ? 'block' : 'none'};">`;
     
     if(jenis === 'PG') {
         const o = data.opsi || ["","","",""];
-        html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px;">
-            <input class="oa" placeholder="Opsi A" value="${o[0]}" style="padding:10px; border-radius:5px; border:1px solid #ddd">
-            <input class="ob" placeholder="Opsi B" value="${o[1]}" style="padding:10px; border-radius:5px; border:1px solid #ddd">
-            <input class="oc" placeholder="Opsi C" value="${o[2]}" style="padding:10px; border-radius:5px; border:1px solid #ddd">
-            <input class="od" placeholder="Opsi D" value="${o[3]}" style="padding:10px; border-radius:5px; border:1px solid #ddd">
+        html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+            <input class="oa" placeholder="Opsi A" value="${o[0]}"> <input class="ob" placeholder="Opsi B" value="${o[1]}">
+            <input class="oc" placeholder="Opsi C" value="${o[2]}"> <input class="od" placeholder="Opsi D" value="${o[3]}">
         </div>
-        <select class="q-kunci" style="margin-top:10px; width:100%; padding:10px; border-radius:5px; border:1px solid var(--brand);">
+        <select class="q-kunci">
             <option value="A" ${data.kunci === 'A' ? 'selected' : ''}>Kunci: A</option>
             <option value="B" ${data.kunci === 'B' ? 'selected' : ''}>Kunci: B</option>
             <option value="C" ${data.kunci === 'C' ? 'selected' : ''}>Kunci: C</option>
             <option value="D" ${data.kunci === 'D' ? 'selected' : ''}>Kunci: D</option>
         </select>`;
     }
-    div.innerHTML = html; document.getElementById('wadahInput').appendChild(div);
+    div.innerHTML = html; wadah.appendChild(div);
+}
+
+function hapusSoal(btn) {
+    if(confirm("Hapus soal ini?")) {
+        btn.parentElement.remove();
+        document.querySelectorAll('#wadahInput .soal-box').forEach((box, i) => {
+            const noBaru = i + 1;
+            box.querySelector('.label-nomor').innerText = `No ${noBaru} (${box.dataset.jenis})`;
+        });
+    }
 }
 
 function simpanKeFirebase() {
     const jdl = document.getElementById('jdlMateri').value;
     if(!jdl) return alert("Judul wajib diisi!");
-    showLoader();
+    showLoader("Mempublikasikan...");
     const soalArr = [];
-    document.querySelectorAll('#wadahInput .question-box').forEach((b) => {
+    document.querySelectorAll('#wadahInput .soal-box').forEach((b, i) => {
         const item = { 
             jenis: b.dataset.jenis, 
             tanya: b.querySelector('.editor').innerHTML,
-            img: "" 
+            img: b.querySelector('.img-preview').src || ""
         };
         if(item.jenis === 'PG') {
             item.opsi = [b.querySelector('.oa').value, b.querySelector('.ob').value, b.querySelector('.oc').value, b.querySelector('.od').value];
@@ -436,23 +365,28 @@ function simpanKeFirebase() {
         soalArr.push(item);
     });
     db.ref('tugas_multi/' + curSlot).set({ judul: jdl, durasi: document.getElementById('waktuTugas').value, soal: soalArr }).then(() => {
-        hideLoader(); alert("Tugas Berhasil Disimpan!"); closeView('panelBuat');
+        hideLoader(); alert("Tugas Berhasil Terbit!"); closeView('panelBuat');
     });
 }
 
-// --- LOGIKA SISWA ---
+function filterRekap() {
+    const filter = document.getElementById('filterTugas').value;
+    const tb = document.getElementById('isiRekap'); tb.innerHTML = "";
+    SISWA.forEach((s, idx) => {
+        const d = rekapGlobal.find(r => r.nama === s.n && r.materi === filter);
+        tb.innerHTML += `<tr><td>${idx+1}</td><td><b>${s.n}</b></td><td><span class="badge ${d ? 'bg-green' : 'bg-red'}">${d ? 'Selesai' : 'Belum'}</span></td><td>${d ? d.nilai : "-"}</td><td>${d ? `<button onclick="viewPDF('${d.file}')" style="color:var(--primary); font-weight:700; background:none; border:none; cursor:pointer;">LIHAT</button>` : "-"}</td></tr>`;
+    });
+}
+
 function masukHalamanPilihTugas(nama) {
     curUser = nama; document.getElementById('salamSiswa').innerText = "Halo, " + nama.split(' ')[0] + "!";
     const menu = document.getElementById('menuTugasSiswa'); menu.innerHTML = "";
     Object.keys(dataTugas).forEach(slot => {
-        const t = dataTugas[slot];
-        const sudah = rekapGlobal.some(r => r.nama === curUser && r.materi === t.judul);
-        const div = document.createElement('div');
-        div.className = "student-card";
-        div.style = "display:flex; justify-content:space-between; align-items:center; padding:20px; margin-bottom:15px; text-align:left;";
-        div.innerHTML = `<div><div style="font-weight:700;">${t.judul}</div><div style="font-size:0.75rem; color:${sudah?'green':'#666'}">${sudah?'Selesai Dikerjakan':'Belum Dikerjakan'}</div></div> <span>${sudah?'✅':'➡'}</span>`;
-        if(!sudah) div.onclick = () => mulaiKerja(slot);
-        menu.appendChild(div);
+        const t = dataTugas[slot]; const sudah = rekapGlobal.some(r => r.nama === curUser && r.materi === t.judul);
+        const btn = document.createElement('div'); btn.className = "card-siswa"; btn.style = "margin-bottom:15px; padding:20px; display:flex; justify-content:space-between; align-items:center;";
+        btn.innerHTML = `<div><h4 style="text-align:left;">${t.judul}</h4><span class="badge ${sudah ? 'bg-green' : 'bg-red'}">${sudah ? 'Sudah Dikerjakan' : 'Belum Dikerjakan'}</span></div>`;
+        if(!sudah) btn.onclick = () => mulaiKerja(slot);
+        menu.appendChild(btn);
     });
     openView('panelPilihTugas');
 }
@@ -464,29 +398,26 @@ function mulaiKerja(slot) {
 
 function renderSoal() {
     const s = dataTugas[curSlot].soal[curIdx];
-    document.getElementById('teksSoal').innerHTML = `<span style="color:var(--brand); font-weight:800; font-size:0.8rem; display:block; margin-bottom:10px;">PERTANYAAN KE-${curIdx+1}</span> ${s.tanya}`;
-    
+    document.getElementById('teksSoal').innerHTML = `${curIdx + 1}. ${s.tanya}`;
+    document.getElementById('imgSoalSiswa').innerHTML = s.img ? `<img src="${s.img}" style="max-width:100%; border-radius:10px; margin-bottom:15px;">` : "";
     const g = document.getElementById('gridNomorCBT'); g.innerHTML = "";
     curAns.forEach((a, i) => {
         const d = document.createElement('div');
-        const isSelected = curIdx === i;
-        const isFilled = a !== "";
-        d.style = `width:35px; height:35px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:0.8rem; cursor:pointer; font-weight:700; border:1.5px solid ${isSelected ? 'var(--brand)' : (isFilled ? 'var(--brand)' : '#ddd')}; background:${isSelected ? 'var(--brand-light)' : (isFilled ? 'var(--brand)' : 'white')}; color:${isSelected ? 'var(--brand)' : (isFilled ? 'white' : '#666')}`;
+        d.style = `width:35px; height:35px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.8rem; cursor:pointer; font-weight:800; border: 2px solid ${curIdx === i ? 'var(--accent)' : (a !== "" ? 'var(--primary)' : '#ddd')}; background:${curIdx === i ? 'var(--accent)' : (a !== "" ? 'var(--primary)' : 'white')}; color:${(curIdx === i || a !== "") ? 'white' : 'black'}`;
         d.innerText = i + 1; d.onclick = () => { curIdx = i; renderSoal(); };
         g.appendChild(d);
     });
-
     const area = document.getElementById('areaJawaban'); area.innerHTML = "";
     if(s.jenis === 'PG') {
         s.opsi.forEach((o, i) => {
             const char = String.fromCharCode(65 + i);
-            const b = document.createElement('div'); b.className = `opt-btn ${curAns[curIdx] === char ? 'active' : ''}`;
-            b.innerHTML = `<div class="opt-label">${char}</div> <span>${o}</span>`;
+            const b = document.createElement('div'); b.className = `opt-box ${curAns[curIdx] === char ? 'selected' : ''}`;
+            b.innerHTML = `<div style="width:30px; height:30px; border-radius:50%; border:2px solid currentColor; display:flex; align-items:center; justify-content:center;">${char}</div> <span>${o}</span>`;
             b.onclick = () => { curAns[curIdx] = char; renderSoal(); };
             area.appendChild(b);
         });
     } else {
-        const tx = document.createElement('textarea'); tx.placeholder = "Ketik jawaban Anda di sini..."; tx.style = "width:100%; height:150px; padding:15px; border-radius:10px; border:1px solid #ddd;"; tx.value = curAns[curIdx];
+        const tx = document.createElement('textarea'); tx.placeholder = "Ketik jawaban Anda..."; tx.style = "width:100%; height:120px; padding:10px; border-radius:10px;"; tx.value = curAns[curIdx];
         tx.oninput = (e) => curAns[curIdx] = e.target.value; area.appendChild(tx);
     }
     document.getElementById('divKirim').style.display = (curIdx === dataTugas[curSlot].soal.length - 1) ? 'block' : 'none';
@@ -494,35 +425,143 @@ function renderSoal() {
 
 function submitJawaban() {
     if(!confirm("Kirim jawaban sekarang?")) return;
-    showLoader(); clearInterval(timerInterval);
+    showLoader("Mengirim..."); clearInterval(timerInterval);
     const t = dataTugas[curSlot];
     let benar = 0, totalPG = 0;
+    
     t.soal.forEach((s, i) => { if(s.jenis === 'PG') { totalPG++; if(curAns[i] === s.kunci) benar++; }});
     const skor = totalPG > 0 ? Math.round((benar / totalPG) * 100) : "Uraian";
     
-    db.ref('rekap_v2').push({ nama: curUser, materi: t.judul, nilai: skor }).then(() => {
-        hideLoader(); alert("Berhasil Terkirim!"); location.reload();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    doc.setFontSize(18); doc.setTextColor(5, 150, 105);
+    doc.text("LAPORAN HASIL TUGAS SISWA", 105, 20, {align: 'center'});
+    doc.setFontSize(12); doc.setTextColor(0, 0, 0);
+    doc.text("SD NEGERI PENGKOL", 105, 28, {align: 'center'});
+    
+    doc.setDrawColor(200, 200, 200);
+    doc.line(14, 32, 196, 32);
+    
+    doc.setFontSize(10);
+    doc.text(`Nama Lengkap : ${curUser}`, 14, 42);
+    doc.text(`Mata Pelajaran: ${t.judul}`, 14, 48);
+    doc.text(`Nilai (PG)    : ${skor}`, 14, 54);
+    doc.text(`Waktu Selesai : ${new Date().toLocaleString('id-ID')}`, 14, 60);
+
+    const rows = [];
+    t.soal.forEach((s, i) => {
+        const tanyaBersih = s.tanya.replace(/<[^>]*>?/gm, '');
+        let statusJawab = curAns[i] || "-";
+        
+        if(s.jenis === 'PG' && curAns[i]) {
+            const isBenar = curAns[i] === s.kunci;
+            statusJawab += isBenar ? " (Benar)" : ` (Salah, Kunci: ${s.kunci})`;
+        }
+        rows.push([i + 1, tanyaBersih, statusJawab]);
+    });
+
+    doc.autoTable({
+        startY: 68,
+        head: [['No', 'Pertanyaan', 'Jawaban Siswa']],
+        body: rows,
+        theme: 'grid',
+        headStyles: { fillColor: [5, 150, 105] }, 
+        columnStyles: { 0: { cellWidth: 10 }, 1: { cellWidth: 110 } }
+    });
+
+    const pdfB64 = doc.output('datauristring').split(',')[1];
+    db.ref('rekap_v2').push({ nama: curUser, materi: t.judul, nilai: skor, file: pdfB64 }).then(() => {
+        hideLoader(); 
+        alert("Berhasil Terkirim!");
+        closeView('panelSiswa');
+        masukHalamanPilihTugas(curUser);
     });
 }
 
-function filterRekap() {
-    const f = document.getElementById('filterTugas').value;
-    const b = document.getElementById('isiRekap'); b.innerHTML = "";
-    SISWA.forEach((s, i) => {
-        const d = rekapGlobal.find(r => r.nama === s.n && r.materi === f);
-        b.innerHTML += `<tr><td>${i+1}</td><td>${s.n}</td><td><span style="color:${d?'green':'red'}">${d?'Selesai':'Belum'}</span></td><td>${d?d.nilai:'-'}</td><td>-</td></tr>`;
-    });
+function viewPDF(b64) {
+    const blob = base64ToBlob(b64, 'application/pdf');
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
 }
 
-// --- UTILITY ---
+function base64ToBlob(base64, type) {
+    const bin = atob(base64);
+    const len = bin.length;
+    const arr = new Uint8Array(len);
+    for (let i = 0; i < len; i++) arr[i] = bin.charCodeAt(i);
+    return new Blob([arr], { type: type });
+}
+
+function hapusTugasAktif(slot) { if(confirm("Akhiri tugas?")) db.ref('tugas_multi/' + slot).remove(); }
+function showLoader(t) { document.getElementById('loaderText').innerText = t; document.getElementById('loader').style.display = 'flex'; }
+function hideLoader() { document.getElementById('loader').style.display = 'none'; }
 function openView(id) { document.getElementById(id).style.display = id.includes('modal') ? 'flex' : 'block'; }
 function closeView(id) { document.getElementById(id).style.display = 'none'; }
-function showLoader() { document.getElementById('loader').style.display = 'flex'; }
-function hideLoader() { document.getElementById('loader').style.display = 'none'; }
 function pindahSoal(n) { const max = dataTugas[curSlot].soal.length; if(curIdx+n >= 0 && curIdx+n < max) { curIdx += n; renderSoal(); } }
 function startTimer() { timerInterval = setInterval(() => { sisaWaktu--; let m = Math.floor(sisaWaktu/60), s = sisaWaktu%60; document.getElementById('displayTimer').innerText = `${m}:${s < 10 ? '0'+s : s}`; if(sisaWaktu <= 0) submitJawaban(); }, 1000); }
-function kembaliKeDaftarTugas() { if(confirm("Keluar dari ujian? Progres tidak disimpan.")) location.reload(); }
-function hapusTugasAktif(slot) { if(confirm("Hapus tugas?")) db.ref('tugas_multi/' + slot).remove(); }
+function kembaliKeDaftarTugas() { if(confirm("Kembali ke daftar?")) { clearInterval(timerInterval); closeView('panelSiswa'); openView('panelPilihTugas'); } }
+
+// FUNGSI EKSPORT REKAP KELAS PDF (SIAP CETAK)
+function exportRekapPDF() {
+    const filter = document.getElementById('filterTugas').value;
+    if (!filter) return alert("Silakan pilih judul tugas terlebih dahulu!");
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Judul Laporan
+    doc.setFontSize(16); doc.setTextColor(5, 150, 105);
+    doc.text("REKAPITULASI NILAI HARIAN SISWA", 105, 20, {align: 'center'});
+    doc.setFontSize(12); doc.setTextColor(0, 0, 0);
+    doc.text("SD NEGERI PENGKOL - KELAS V", 105, 28, {align: 'center'});
+    doc.text("Tahun Pelajaran 2025/2026", 105, 34, {align: 'center'});
+    
+    doc.line(14, 38, 196, 38);
+
+    // Keterangan Tugas
+    doc.setFontSize(10);
+    doc.text(`Judul Tugas : ${filter}`, 14, 46);
+    doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 52);
+
+    // Persiapan Data Tabel
+    const tableData = [];
+    SISWA.forEach((s, idx) => {
+        const d = rekapGlobal.find(r => r.nama === s.n && r.materi === filter);
+        tableData.push([
+            idx + 1,
+            s.n,
+            d ? "SELESAI" : "BELUM",
+            d ? d.nilai : "-"
+        ]);
+    });
+
+    // Generate Tabel Otomatis
+    doc.autoTable({
+        startY: 58,
+        head: [['No', 'Nama Lengkap Siswa', 'Status', 'Nilai PG']],
+        body: tableData,
+        theme: 'grid',
+        headStyles: { fillColor: [5, 150, 105], halign: 'center' },
+        columnStyles: {
+            0: { cellWidth: 10, halign: 'center' },
+            2: { cellWidth: 30, halign: 'center' },
+            3: { cellWidth: 30, halign: 'center' }
+        },
+        styles: { fontSize: 9 }
+    });
+
+    // Bagian Tanda Tangan Wali Kelas
+    const finalY = doc.lastAutoTable.finalY + 20;
+    doc.text("Mengetahui,", 150, finalY);
+    doc.text("Wali Kelas V", 150, finalY + 6);
+    doc.setFont("helvetica", "bold");
+    doc.text("Aditya W. Wardana., S.Pd", 150, finalY + 30);
+    doc.setFont("helvetica", "normal");
+    doc.text("NIP. 19940319 202321 1 005", 150, finalY + 35);
+
+    doc.save(`Rekap_Nilai_${filter.replace(/\s+/g, '_')}.pdf`);
+}
 </script>
 </body>
 </html>
