@@ -13,11 +13,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* Palette Warna Sesuai Request */
-      --primary-gradient: linear-gradient(135deg, #0D9488 0%, #06B6D4 100%); /* Deep Teal to Electric Aqua */
+      --primary-gradient: linear-gradient(135deg, #0D9488 0%, #06B6D4 100%);
       --primary: #0D9488;
-      --bg: #F8F9FA; /* Off-White */
-      --white: #FFFFFF; /* Pure White untuk Cards */
+      --bg: #F8F9FA;
+      --white: #FFFFFF;
       --text-charcoal: #334155; 
       --text-light: #94A3B8; 
       --border: #E2E8F0;
@@ -31,7 +30,7 @@
     header { 
       background: var(--primary-gradient); 
       color: var(--white); 
-      padding: 30px 20px; /* Ukuran Tinggi Dikurangi agar Ringkas */
+      padding: 30px 20px;
       text-align: center; 
       border-radius: 0 0 30px 30px; 
       box-shadow: 0 8px 20px rgba(13, 148, 136, 0.15); 
@@ -62,9 +61,8 @@
         font-size: 1.5rem; 
     }
     
-    /* CSS Tambahan & Perbaikan */
     .status-banner { 
-        background: transparent; /* Ubah jadi transparan karena isi di dalamnya akan punya background sendiri */
+        background: transparent;
         padding: 0; 
         box-shadow: none;
         border: none;
@@ -202,7 +200,7 @@
           </div>
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
               <button class="btn btn-blue" onclick="bukaBuatTugas('tugas1')">Edit Tugas</button>
-              <button class="btn btn-danger" onclick="hapusTugasAktif('tugas1')">Hapus</button>
+              <button class="btn btn-danger" onclick="nonaktifkanTugas('tugas1')">Nonaktifkan</button>
           </div>
       </div>
       <div class="soal-box">
@@ -212,7 +210,7 @@
           </div>
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
               <button class="btn btn-blue" onclick="bukaBuatTugas('tugas2')">Edit Tugas</button>
-              <button class="btn btn-danger" onclick="hapusTugasAktif('tugas2')">Hapus</button>
+              <button class="btn btn-danger" onclick="nonaktifkanTugas('tugas2')">Nonaktifkan</button>
           </div>
       </div>
       <button class="btn btn-dark" style="width:100%; margin-top:10px;" onclick="openView('panelRekap')"> REKAPITULASI NILAI</button>
@@ -239,7 +237,7 @@
     <div class="panel-content">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
           <h2 style="font-size:1.2rem;">Rekap Nilai</h2>
-          <button class="btn btn-blue" onclick="exportRekapPDF()" style="font-size: 0.75rem;">📥 CETAK PDF</button>
+          <button class="btn btn-blue" onclick="exportRekapPDF()" style="font-size: 0.75rem;">📥 CETAK PDF REKAP</button>
       </div>
       <select id="filterTugas" onchange="filterRekap()" style="margin-bottom:20px; font-weight:700; border-color: var(--primary);">
           <option value="">-- Pilih Judul Tugas --</option>
@@ -287,7 +285,6 @@
 </div>
 
 <script>
-// Seluruh logika Firebase, data siswa, dan fungsi pengerjaan tetap dipertahankan sesuai aslinya
 const firebaseConfig = {
   apiKey: "AIzaSyCfzJJpq32AltXRcP0ZB6fM1mvYpJVSVl4",
   authDomain: "ruang-belajar-kelas-v.firebaseapp.com",
@@ -323,33 +320,21 @@ window.onload = () => {
     db.ref('tugas_multi').on('value', (snap) => {
         dataTugas = snap.val() || {};
         const containerTugas = document.getElementById('listTugasAktif');
-        containerTugas.innerHTML = ""; // Bersihkan isi sebelumnya
-
-        const keys = Object.keys(dataTugas);
-        
+        containerTugas.innerHTML = ""; 
+        const keys = Object.keys(dataTugas).filter(k => dataTugas[k].aktif === true);
         if (keys.length === 0) {
-            containerTugas.innerHTML = `<div class="tugas-item" style="border-left-color: var(--text-light); justify-content: center;">
-                <p class="judul" style="color: var(--text-light);">🔔 Tidak Ada Tugas Aktif</p>
-            </div>`;
+            containerTugas.innerHTML = `<div class="tugas-item" style="border-left-color: var(--text-light); justify-content: center;"><p class="judul" style="color: var(--text-light);">🔔 Tidak Ada Tugas Aktif</p></div>`;
         } else {
-            keys.forEach((key, index) => {
+            keys.forEach((key) => {
                 const t = dataTugas[key];
                 const div = document.createElement('div');
                 div.className = 'tugas-item';
-                div.innerHTML = `
-                    <div>
-                        <span class="label">Tugas Aktif ${keys.length > 1 ? index + 1 : ''}</span>
-                        <p class="judul">${t.judul}</p>
-                    </div>
-                    <div class="badge bg-green">SEDANG BERLANGSUNG</div>
-                `;
+                div.innerHTML = `<div><span class="label">Tugas Aktif</span><p class="judul">${t.judul}</p></div><div class="badge bg-green">AKTIF</div>`;
                 containerTugas.appendChild(div);
             });
         }
-
-        // Tetap update info slot untuk dashboard guru
-        document.getElementById('infoSlot1').innerText = dataTugas.tugas1 ? dataTugas.tugas1.judul : "Kosong";
-        document.getElementById('infoSlot2').innerText = dataTugas.tugas2 ? dataTugas.tugas2.judul : "Kosong";
+        document.getElementById('infoSlot1').innerText = dataTugas.tugas1 ? (dataTugas.tugas1.aktif ? dataTugas.tugas1.judul : dataTugas.tugas1.judul + " (Nonaktif)") : "Kosong";
+        document.getElementById('infoSlot2').innerText = dataTugas.tugas2 ? (dataTugas.tugas2.aktif ? dataTugas.tugas2.judul : dataTugas.tugas2.judul + " (Nonaktif)") : "Kosong";
     });
 
     db.ref('rekap_v2').on('value', (snap) => {
@@ -372,6 +357,7 @@ function bukaBuatTugas(slot) {
     curSlot = slot;
     document.getElementById('wadahInput').innerHTML = "";
     document.getElementById('jdlMateri').value = dataTugas[slot] ? dataTugas[slot].judul : "";
+    document.getElementById('waktuTugas').value = dataTugas[slot] ? dataTugas[slot].durasi : "60";
     if(dataTugas[slot] && dataTugas[slot].soal) {
         dataTugas[slot].soal.forEach(s => { tambahSoalManual(s); });
     }
@@ -405,62 +391,34 @@ function buatElemenSoal(no, jenis, data) {
     const wadah = document.getElementById('wadahInput');
     const div = document.createElement('div');
     div.className = "soal-box"; div.dataset.jenis = jenis;
-    
-    let html = `<button class="btn-hapus-soal" onclick="hapusSoal(this)">HAPUS</button>
-    <b class="label-nomor">Soal No ${no}</b>
-    <div class="toolbar">
-        <button class="btn-tool" onclick="formatDoc('bold')">B</button>
-        <button class="btn-tool" onclick="formatDoc('italic')">I</button>
-        <label class="btn-tool" style="font-size:0.7rem; display:flex; align-items:center; justify-content:center;">🖼️<input type="file" hidden onchange="insertImage(this, 'prev-${no}')" accept="image/*"></label>
-    </div>
+    let html = `<button class="btn-hapus-soal" onclick="hapusSoal(this)">HAPUS</button><b class="label-nomor">Soal No ${no}</b>
+    <div class="toolbar"><button class="btn-tool" onclick="formatDoc('bold')">B</button><button class="btn-tool" onclick="formatDoc('italic')">I</button><label class="btn-tool" style="font-size:0.7rem; display:flex; align-items:center; justify-content:center;">🖼️<input type="file" hidden onchange="insertImage(this, 'prev-${no}')" accept="image/*"></label></div>
     <div class="editor" id="ed-${no}" contenteditable="true">${data.tanya || ''}</div>
     <img id="prev-${no}" src="${data.img || ''}" class="img-preview" style="display:${data.img ? 'block' : 'none'}; max-width:100%; border-radius:8px; margin-bottom:10px;">`;
-    
     if(jenis === 'PG') {
         const o = data.opsi || ["","","",""];
-        html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-            <input class="oa" placeholder="A" value="${o[0]}"> <input class="ob" placeholder="B" value="${o[1]}">
-            <input class="oc" placeholder="C" value="${o[2]}"> <input class="od" placeholder="D" value="${o[3]}">
-        </div>
-        <select class="q-kunci" style="color:var(--primary); font-weight:700;">
-            <option value="A" ${data.kunci === 'A' ? 'selected' : ''}>Kunci: A</option>
-            <option value="B" ${data.kunci === 'B' ? 'selected' : ''}>Kunci: B</option>
-            <option value="C" ${data.kunci === 'C' ? 'selected' : ''}>Kunci: C</option>
-            <option value="D" ${data.kunci === 'D' ? 'selected' : ''}>Kunci: D</option>
-        </select>`;
+        html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;"><input class="oa" placeholder="A" value="${o[0]}"> <input class="ob" placeholder="B" value="${o[1]}"><input class="oc" placeholder="C" value="${o[2]}"> <input class="od" placeholder="D" value="${o[3]}"></div>
+        <select class="q-kunci" style="color:var(--primary); font-weight:700;"><option value="A" ${data.kunci === 'A' ? 'selected' : ''}>Kunci: A</option><option value="B" ${data.kunci === 'B' ? 'selected' : ''}>Kunci: B</option><option value="C" ${data.kunci === 'C' ? 'selected' : ''}>Kunci: C</option><option value="D" ${data.kunci === 'D' ? 'selected' : ''}>Kunci: D</option></select>`;
     }
     div.innerHTML = html; wadah.appendChild(div);
 }
 
-function hapusSoal(btn) {
-    if(confirm("Hapus soal ini?")) {
-        btn.parentElement.remove();
-        document.querySelectorAll('#wadahInput .soal-box').forEach((box, i) => {
-            box.querySelector('.label-nomor').innerText = `Soal No ${i + 1}`;
-        });
-    }
-}
+function hapusSoal(btn) { if(confirm("Hapus soal ini?")) { btn.parentElement.remove(); document.querySelectorAll('#wadahInput .soal-box').forEach((box, i) => { box.querySelector('.label-nomor').innerText = `Soal No ${i + 1}`; }); } }
 
 function simpanKeFirebase() {
     const jdl = document.getElementById('jdlMateri').value;
     if(!jdl) return alert("Judul wajib diisi!");
     showLoader("Mempublikasikan...");
     const soalArr = [];
-    document.querySelectorAll('#wadahInput .soal-box').forEach((b, i) => {
-        const item = { 
-            jenis: b.dataset.jenis, 
-            tanya: b.querySelector('.editor').innerHTML,
-            img: b.querySelector('.img-preview').src || ""
-        };
-        if(item.jenis === 'PG') {
-            item.opsi = [b.querySelector('.oa').value, b.querySelector('.ob').value, b.querySelector('.oc').value, b.querySelector('.od').value];
-            item.kunci = b.querySelector('.q-kunci').value;
-        }
-        soalArr.push(item);
+    document.querySelectorAll('#wadahInput .soal-box').forEach((box) => {
+        const jenis = box.dataset.jenis;
+        const tanya = box.querySelector('.editor').innerHTML;
+        const img = box.querySelector('.img-preview').src;
+        if(jenis === 'PG') {
+            soalArr.push({ jenis, tanya, img: img.startsWith('data') ? img : (img || ""), opsi: [box.querySelector('.oa').value, box.querySelector('.ob').value, box.querySelector('.oc').value, box.querySelector('.od').value], kunci: box.querySelector('.q-kunci').value });
+        } else { soalArr.push({ jenis, tanya, img: img.startsWith('data') ? img : (img || "") }); }
     });
-    db.ref('tugas_multi/' + curSlot).set({ judul: jdl, durasi: document.getElementById('waktuTugas').value, soal: soalArr }).then(() => {
-        hideLoader(); alert("Berhasil!"); closeView('panelBuat');
-    });
+    db.ref('tugas_multi/' + curSlot).set({ judul: jdl, durasi: document.getElementById('waktuTugas').value, soal: soalArr, aktif: true }).then(() => { hideLoader(); alert("Tugas Berhasil Diaktifkan!"); closeView('panelBuat'); });
 }
 
 function filterRekap() {
@@ -473,14 +431,17 @@ function filterRekap() {
 }
 
 function masukHalamanPilihTugas(nama) {
-    curUser = nama; document.getElementById('salamSiswa').innerText = "Halo, " + nama.split(' ')[0] + "!";
-    const menu = document.getElementById('menuTugasSiswa'); menu.innerHTML = "";
+    curUser = nama; const menu = document.getElementById('menuTugasSiswa'); menu.innerHTML = "";
     Object.keys(dataTugas).forEach(slot => {
-        const t = dataTugas[slot]; const sudah = rekapGlobal.some(r => r.nama === curUser && r.materi === t.judul);
-        const btn = document.createElement('div'); btn.className = "card-siswa"; btn.style = "margin-bottom:12px; padding:15px; display:flex; justify-content:space-between; align-items:center; text-align:left;";
-        btn.innerHTML = `<div><h4 style="font-size:0.9rem">${t.judul}</h4><span class="badge ${sudah ? 'bg-green' : 'bg-red'}">${sudah ? 'Selesai' : 'Tersedia'}</span></div>`;
-        if(!sudah) btn.onclick = () => mulaiKerja(slot);
-        menu.appendChild(btn);
+        const t = dataTugas[slot];
+        if (t.aktif === true) {
+            const sudah = rekapGlobal.some(r => r.nama === curUser && r.materi === t.judul);
+            const btn = document.createElement('div');
+            btn.className = "tugas-item"; btn.style.cursor = sudah ? "default" : "pointer"; btn.style.opacity = sudah ? "0.6" : "1";
+            btn.innerHTML = `<div><span class="label">Materi</span><p class="judul">${t.judul}</p></div><div class="badge ${sudah ? 'bg-green' : 'bg-red'}">${sudah ? 'SELESAI' : 'MULAI'}</div>`;
+            if(!sudah) btn.onclick = () => mulaiKerja(slot);
+            menu.appendChild(btn);
+        }
     });
     openView('panelPilihTugas');
 }
@@ -498,8 +459,7 @@ function renderSoal() {
     curAns.forEach((a, i) => {
         const d = document.createElement('div');
         d.style = `width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.8rem; cursor:pointer; font-weight:800; border: 1.5px solid ${curIdx === i ? 'var(--primary)' : (a !== "" ? 'var(--accent-emerald)' : '#E2E8F0')}; background:${curIdx === i ? 'var(--primary)' : (a !== "" ? 'var(--accent-emerald)' : 'white')}; color:${(curIdx === i || a !== "") ? 'white' : 'var(--text-light)'}`;
-        d.innerText = i + 1; d.onclick = () => { curIdx = i; renderSoal(); };
-        g.appendChild(d);
+        d.innerText = i + 1; d.onclick = () => { curIdx = i; renderSoal(); }; g.appendChild(d);
     });
     const area = document.getElementById('areaJawaban'); area.innerHTML = "";
     if(s.jenis === 'PG') {
@@ -507,8 +467,7 @@ function renderSoal() {
             const char = String.fromCharCode(65 + i);
             const b = document.createElement('div'); b.className = `opt-box ${curAns[curIdx] === char ? 'selected' : ''}`;
             b.innerHTML = `<div style="width:28px; height:28px; border-radius:50%; border:2px solid currentColor; display:flex; align-items:center; justify-content:center;">${char}</div> <span>${o}</span>`;
-            b.onclick = () => { curAns[curIdx] = char; renderSoal(); };
-            area.appendChild(b);
+            b.onclick = () => { curAns[curIdx] = char; renderSoal(); }; area.appendChild(b);
         });
     } else {
         const tx = document.createElement('textarea'); tx.placeholder = "Jawaban kamu..."; tx.style = "width:100%; height:120px; padding:12px; border-radius:12px; border:1px solid var(--border);"; tx.value = curAns[curIdx];
@@ -521,39 +480,108 @@ function submitJawaban() {
     if(!confirm("Kirim jawaban sekarang?")) return;
     showLoader("Mengirim..."); clearInterval(timerInterval);
     const t = dataTugas[curSlot];
-    let benar = 0, totalPG = 0;
-    t.soal.forEach((s, i) => { if(s.jenis === 'PG') { totalPG++; if(curAns[i] === s.kunci) benar++; }});
-    const skor = totalPG > 0 ? Math.round((benar / totalPG) * 100) : "Uraian";
+    let benarCount = 0, totalPG = 0;
     
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.setFontSize(18); doc.setTextColor(13, 148, 136);
-    doc.text("LAPORAN HASIL TUGAS", 105, 20, {align: 'center'});
-    doc.setFontSize(10); doc.setTextColor(51, 65, 85);
-    doc.text(`Siswa: ${curUser} | Materi: ${t.judul}`, 105, 30, {align: 'center'});
-
+    // Perhitungan Nilai & Pengecekan Benar/Salah
     const rows = [];
     t.soal.forEach((s, i) => {
-        const tanyaBersih = s.tanya.replace(/<[^>]*>?/gm, '');
-        rows.push([i + 1, tanyaBersih, curAns[i] || "-"]);
+        let status = "-"; 
+        const tanyaBersih = s.tanya.replace(/<[^>]*>?/gm, ''); 
+        const jwbSiswa = curAns[i] || "-";
+
+        if(s.jenis === 'PG') {
+            totalPG++;
+            if(jwbSiswa === s.kunci) {
+                status = "BENAR";
+                benarCount++;
+            } else {
+                status = "SALAH";
+            }
+        }
+        rows.push([i + 1, tanyaBersih, jwbSiswa, status]);
     });
-    doc.autoTable({ startY: 40, head: [['No', 'Soal', 'Jawaban']], body: rows, theme: 'grid', headStyles: { fillColor: [13, 148, 136] } });
+
+    const skor = totalPG > 0 ? Math.round((benarCount / totalPG) * 100) : "Uraian";
+    
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
+
+    // Header Laporan (Persis Versi Sebelumnya)
+    doc.setFont("helvetica", "bold"); doc.setFontSize(14);
+    doc.text("SD NEGERI PENGKOL", 105, 15, { align: 'center' });
+    doc.setFontSize(10); doc.setFont("helvetica", "normal");
+    doc.text("Tahun Pelajaran 2025/2026", 105, 20, { align: 'center' });
+    doc.setLineWidth(0.8); doc.line(15, 25, 195, 25);
+    doc.setLineWidth(0.2); doc.line(15, 26, 195, 26);
+    doc.setFontSize(12); doc.setFont("helvetica", "bold");
+    doc.text("LAPORAN HASIL PEKERJAAN SISWA", 105, 35, { align: 'center' });
+
+    // Kotak Identitas
+    doc.setDrawColor(200, 200, 200); doc.setFillColor(248, 250, 252);
+    doc.roundedRect(15, 42, 180, 25, 3, 3, 'FD');
+    doc.setFontSize(10); doc.setTextColor(50);
+    doc.text(`Nama Lengkap   : ${curUser}`, 20, 50);
+    doc.text(`Materi Tugas       : ${t.judul}`, 20, 56);
+    doc.text(`Waktu Selesai     : ${new Date().toLocaleString('id-ID')}`, 20, 62);
+    doc.setFontSize(9); doc.text("Nilai Akhir:", 160, 50);
+    doc.setFontSize(18); doc.setTextColor(13, 148, 136);
+    doc.text(`${skor}`, 168, 60, { align: 'center' });
+    doc.setTextColor(0);
+
+    // Tabel dengan Kolom Benar/Salah (Status)
+    doc.autoTable({
+        startY: 75,
+        head: [['No', 'Pertanyaan / Butir Soal', 'Jawaban', 'Status']],
+        body: rows,
+        theme: 'striped',
+        headStyles: { fillColor: [13, 148, 136], halign: 'center' },
+        columnStyles: {
+            0: { cellWidth: 10, halign: 'center' },
+            1: { cellWidth: 95 },
+            2: { cellWidth: 45, fontStyle: 'bold' },
+            3: { cellWidth: 30, halign: 'center', fontStyle: 'bold' }
+        },
+        styles: { fontSize: 9, cellPadding: 4 },
+        didParseCell: function (data) {
+            // Beri warna Hijau untuk BENAR dan Merah untuk SALAH
+            if (data.section === 'body' && data.column.index === 3) {
+                if (data.cell.raw === "BENAR") data.cell.styles.textColor = [16, 185, 129];
+                if (data.cell.raw === "SALAH") data.cell.styles.textColor = [239, 68, 68];
+            }
+        },
+        margin: { left: 15, right: 15 }
+    });
+
+    const finalY = doc.lastAutoTable.finalY + 20;
+    if(finalY < 270) {
+        doc.setFontSize(10); doc.text("Mengetahui,", 150, finalY);
+        doc.text("Wali Kelas V", 150, finalY + 5);
+        doc.setFont("helvetica", "bold");
+        doc.text("Aditya W. Wardana, S.Pd", 150, finalY + 25);
+    }
 
     const pdfB64 = doc.output('datauristring').split(',')[1];
     db.ref('rekap_v2').push({ nama: curUser, materi: t.judul, nilai: skor, file: pdfB64 }).then(() => {
-        hideLoader(); alert("Berhasil Terkirim!"); closeView('panelSiswa'); masukHalamanPilihTugas(curUser);
+        hideLoader(); alert("Jawaban Berhasil Terkirim!");
+        closeView('panelSiswa'); masukHalamanPilihTugas(curUser);
     });
 }
 
 function viewPDF(b64) {
+    showLoader("Membuka Laporan...");
     const bin = atob(b64);
     const arr = new Uint8Array(bin.length);
     for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-    const url = URL.createObjectURL(new Blob([arr], { type: 'application/pdf' }));
-    window.open(url, '_blank');
+    const blob = new Blob([arr], { type: 'application/pdf' });
+    const blobUrl = URL.createObjectURL(blob);
+    const newWindow = window.open(blobUrl, '_blank');
+    if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+        alert("Mohon izinkan Pop-up browser.");
+    }
+    hideLoader();
 }
 
-function hapusTugasAktif(slot) { if(confirm("Hapus tugas ini?")) db.ref('tugas_multi/' + slot).remove(); }
+function nonaktifkanTugas(slot) { if(confirm("Nonaktifkan tugas ini?")) { db.ref('tugas_multi/' + slot).update({ aktif: false }); } }
 function showLoader(t) { document.getElementById('loaderText').innerText = t; document.getElementById('loader').style.display = 'flex'; }
 function hideLoader() { document.getElementById('loader').style.display = 'none'; }
 function openView(id) { document.getElementById(id).style.display = id.includes('modal') ? 'flex' : 'block'; }
@@ -568,11 +596,8 @@ function exportRekapPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     doc.text(`REKAP NILAI: ${filter}`, 105, 20, {align: 'center'});
-    const data = SISWA.map((s, i) => {
-        const d = rekapGlobal.find(r => r.nama === s.n && r.materi === filter);
-        return [i+1, s.n, d ? 'Selesai' : 'Belum', d ? d.nilai : '-'];
-    });
-    doc.autoTable({ startY: 30, head: [['No', 'Nama', 'Status', 'Nilai']], body: data, headStyles: { fillColor: [13, 148, 136] } });
+    const data = SISWA.map((s, i) => { const d = rekapGlobal.find(r => r.nama === s.n && r.materi === filter); return [i+1, s.n, d ? 'Selesai' : 'Belum', d ? d.nilai : '-']; });
+    doc.autoTable({ startY: 30, head: [['No', 'Nama', 'Status', 'Nilai']], headStyles: { fillColor: [13, 148, 136] }, body: data });
     doc.save(`Rekap_${filter}.pdf`);
 }
 </script>
