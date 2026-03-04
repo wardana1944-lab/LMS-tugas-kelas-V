@@ -192,10 +192,10 @@
 
 <div id="panelGuru" class="panel">
     <div class="panel-content" style="max-width: 600px;">
-      <h2 style="margin-bottom:25px; text-align:center; color: var(--primary);">Dashboard Kelola Tugas</h2>
+      <h2 style="margin-bottom:25px; text-align:center; color: var(--primary);">DASHBOARD GURU</h2>
       <div class="soal-box">
           <div style="display:flex; justify-content:space-between; align-items:center;">
-              <h4 style="font-size: 0.9rem;">TUGAS SLOT 1</h4>
+              <h4 style="font-size: 0.9rem;">DAFTAR TUGAS 1</h4>
               <div id="infoSlot1" class="badge bg-green">Kosong</div>
           </div>
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
@@ -205,7 +205,7 @@
       </div>
       <div class="soal-box">
           <div style="display:flex; justify-content:space-between; align-items:center;">
-              <h4 style="font-size: 0.9rem;">TUGAS SLOT 2</h4>
+              <h4 style="font-size: 0.9rem;">DAFTAR TUGAS 2</h4>
               <div id="infoSlot2" class="badge bg-green">Kosong</div>
           </div>
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
@@ -431,7 +431,9 @@ function filterRekap() {
 }
 
 function masukHalamanPilihTugas(nama) {
-    curUser = nama; const menu = document.getElementById('menuTugasSiswa'); menu.innerHTML = "";
+    curUser = nama; 
+    document.getElementById('salamSiswa').innerText = `Halo, ${nama}!`; // Perubahan Baris Ini
+    const menu = document.getElementById('menuTugasSiswa'); menu.innerHTML = "";
     Object.keys(dataTugas).forEach(slot => {
         const t = dataTugas[slot];
         if (t.aktif === true) {
@@ -506,7 +508,7 @@ function submitJawaban() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'a4');
 
-    // Header Laporan (Persis Versi Sebelumnya)
+    // Header Laporan
     doc.setFont("helvetica", "bold"); doc.setFontSize(14);
     doc.text("SD NEGERI PENGKOL", 105, 15, { align: 'center' });
     doc.setFontSize(10); doc.setFont("helvetica", "normal");
@@ -528,7 +530,7 @@ function submitJawaban() {
     doc.text(`${skor}`, 168, 60, { align: 'center' });
     doc.setTextColor(0);
 
-    // Tabel dengan Kolom Benar/Salah (Status)
+    // Tabel dengan Kolom Status
     doc.autoTable({
         startY: 75,
         head: [['No', 'Pertanyaan / Butir Soal', 'Jawaban', 'Status']],
@@ -543,7 +545,6 @@ function submitJawaban() {
         },
         styles: { fontSize: 9, cellPadding: 4 },
         didParseCell: function (data) {
-            // Beri warna Hijau untuk BENAR dan Merah untuk SALAH
             if (data.section === 'body' && data.column.index === 3) {
                 if (data.cell.raw === "BENAR") data.cell.styles.textColor = [16, 185, 129];
                 if (data.cell.raw === "SALAH") data.cell.styles.textColor = [239, 68, 68];
