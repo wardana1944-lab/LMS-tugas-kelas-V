@@ -133,6 +133,25 @@
     .bg-green { background: #F0FDFA; color: var(--accent-emerald); }
     .bg-red { background: #FFF1F2; color: var(--danger); }
 
+    /* CSS MODERN MODAL NOTIFIKASI */
+    #customAlert {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(4px);
+        display: none; align-items: center; justify-content: center;
+        z-index: 100000;
+    }
+    .alert-box {
+        background: white; padding: 30px; border-radius: 24px;
+        width: 90%; max-width: 400px; text-align: center;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        animation: slideUp 0.3s ease-out;
+    }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .alert-icon { font-size: 3rem; margin-bottom: 15px; display: block; }
+    .alert-title { font-weight: 800; font-size: 1.2rem; margin-bottom: 10px; color: var(--text-charcoal); }
+    .alert-msg { color: var(--text-light); font-size: 0.95rem; margin-bottom: 25px; }
+
     #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; }
     .spinner { width: 40px; height: 40px; border: 4px solid #F1F5F9; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -157,6 +176,15 @@
 <body>
 
 <div id="loader"><div class="spinner"></div><p id="loaderText" style="margin-top:10px; font-weight:700; color: var(--primary);">Memproses...</p></div>
+
+<div id="customAlert">
+    <div class="alert-box">
+        <span class="alert-icon" id="alertIcon">✅</span>
+        <div class="alert-title" id="alertTitle">Berhasil</div>
+        <div class="alert-msg" id="alertMsg">Pesan anda di sini.</div>
+        <button class="btn btn-blue" style="width: 100%; padding: 15px;" onclick="closeAlert()">OKE, MENGERTI</button>
+    </div>
+</div>
 
 <header>
   <h1>RUANG BELAJAR</h1>
@@ -192,10 +220,10 @@
 
 <div id="panelGuru" class="panel">
     <div class="panel-content" style="max-width: 600px;">
-      <h2 style="margin-bottom:25px; text-align:center; color: var(--primary);">DASHBOARD GURU</h2>
+      <h2 style="margin-bottom:25px; text-align:center; color: var(--primary);">Dashboard Kelola Tugas</h2>
       <div class="soal-box">
           <div style="display:flex; justify-content:space-between; align-items:center;">
-              <h4 style="font-size: 0.9rem;">DAFTAR TUGAS 1</h4>
+              <h4 style="font-size: 0.9rem;">TUGAS 1</h4>
               <div id="infoSlot1" class="badge bg-green">Kosong</div>
           </div>
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
@@ -205,7 +233,7 @@
       </div>
       <div class="soal-box">
           <div style="display:flex; justify-content:space-between; align-items:center;">
-              <h4 style="font-size: 0.9rem;">DAFTAR TUGAS 2</h4>
+              <h4 style="font-size: 0.9rem;">TUGAS 2</h4>
               <div id="infoSlot2" class="badge bg-green">Kosong</div>
           </div>
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
@@ -305,7 +333,7 @@ const SISWA = [
     {n:"Tanca Al Verosa",i:"👦"}
 ];
 
-let dataTugas = {}, curSlot = "", curUser = "", curIdx = 0, curAns = [], timerInterval, sisaWaktu, rekapGlobal = [];
+let dataTugas = {}, curSlot = "", curUser = "", curIdx = 0, curAns = [], timerInterval, sisaWaktu, rekapGlobal = [], currentSoalAcak = [];
 
 window.onload = () => {
     const g = document.getElementById('gridSiswa');
@@ -333,8 +361,8 @@ window.onload = () => {
                 containerTugas.appendChild(div);
             });
         }
-        document.getElementById('infoSlot1').innerText = dataTugas.tugas1 ? (dataTugas.tugas1.aktif ? dataTugas.tugas1.judul : dataTugas.tugas1.judul + " (Nonaktif)") : "Kosong";
-        document.getElementById('infoSlot2').innerText = dataTugas.tugas2 ? (dataTugas.tugas2.aktif ? dataTugas.tugas2.judul : dataTugas.tugas2.judul + " (Nonaktif)") : "Kosong";
+        document.getElementById('infoSlot1').innerText = (dataTugas.tugas1 && dataTugas.tugas1.aktif) ? dataTugas.tugas1.judul : "Kosong";
+        document.getElementById('infoSlot2').innerText = (dataTugas.tugas2 && dataTugas.tugas2.aktif) ? dataTugas.tugas2.judul : "Kosong";
     });
 
     db.ref('rekap_v2').on('value', (snap) => {
@@ -346,20 +374,36 @@ window.onload = () => {
     });
 };
 
+/* FUNGSI ALERT MODERN */
+function showAlert(title, msg, icon = "✅") {
+    document.getElementById('alertIcon').innerText = icon;
+    document.getElementById('alertTitle').innerText = title;
+    document.getElementById('alertMsg').innerText = msg;
+    document.getElementById('customAlert').style.display = 'flex';
+}
+function closeAlert() { document.getElementById('customAlert').style.display = 'none'; }
+
 function prosesLogin() {
     if(document.getElementById('pin').value === "guru123") {
         closeView('modalLogin'); openView('panelGuru');
         document.getElementById('pin').value = "";
-    } else alert("PIN Salah!");
+    } else { showAlert("Gagal", "PIN yang anda masukkan salah!", "❌"); }
 }
 
 function bukaBuatTugas(slot) {
     curSlot = slot;
-    document.getElementById('wadahInput').innerHTML = "";
-    document.getElementById('jdlMateri').value = dataTugas[slot] ? dataTugas[slot].judul : "";
-    document.getElementById('waktuTugas').value = dataTugas[slot] ? dataTugas[slot].durasi : "60";
-    if(dataTugas[slot] && dataTugas[slot].soal) {
-        dataTugas[slot].soal.forEach(s => { tambahSoalManual(s); });
+    // RESET FORM AGAR KOSONG SAAT BUKA BARU
+    document.getElementById('wadahInput').innerHTML = ""; 
+    document.getElementById('jdlMateri').value = "";
+    document.getElementById('waktuTugas').value = "60";
+
+    // JIKA TUGAS SUDAH ADA (EDIT), MAKA ISI KEMBALI
+    if(dataTugas[slot] && dataTugas[slot].aktif) {
+        document.getElementById('jdlMateri').value = dataTugas[slot].judul;
+        document.getElementById('waktuTugas').value = dataTugas[slot].durasi;
+        if(dataTugas[slot].soal) {
+            dataTugas[slot].soal.forEach(s => { tambahSoalManual(s); });
+        }
     }
     openView('panelBuat');
 }
@@ -407,7 +451,7 @@ function hapusSoal(btn) { if(confirm("Hapus soal ini?")) { btn.parentElement.rem
 
 function simpanKeFirebase() {
     const jdl = document.getElementById('jdlMateri').value;
-    if(!jdl) return alert("Judul wajib diisi!");
+    if(!jdl) return showAlert("Peringatan", "Judul materi wajib diisi!", "⚠️");
     showLoader("Mempublikasikan...");
     const soalArr = [];
     document.querySelectorAll('#wadahInput .soal-box').forEach((box) => {
@@ -418,7 +462,11 @@ function simpanKeFirebase() {
             soalArr.push({ jenis, tanya, img: img.startsWith('data') ? img : (img || ""), opsi: [box.querySelector('.oa').value, box.querySelector('.ob').value, box.querySelector('.oc').value, box.querySelector('.od').value], kunci: box.querySelector('.q-kunci').value });
         } else { soalArr.push({ jenis, tanya, img: img.startsWith('data') ? img : (img || "") }); }
     });
-    db.ref('tugas_multi/' + curSlot).set({ judul: jdl, durasi: document.getElementById('waktuTugas').value, soal: soalArr, aktif: true }).then(() => { hideLoader(); alert("Tugas Berhasil Diaktifkan!"); closeView('panelBuat'); });
+    db.ref('tugas_multi/' + curSlot).set({ judul: jdl, durasi: document.getElementById('waktuTugas').value, soal: soalArr, aktif: true }).then(() => { 
+        hideLoader(); 
+        showAlert("Berhasil Terbit", "Tugas '" + jdl + "' telah berhasil diterbitkan dan siap dikerjakan siswa."); 
+        closeView('panelBuat'); 
+    });
 }
 
 function filterRekap() {
@@ -432,7 +480,7 @@ function filterRekap() {
 
 function masukHalamanPilihTugas(nama) {
     curUser = nama; 
-    document.getElementById('salamSiswa').innerText = `Halo, ${nama}!`; // Perubahan Baris Ini
+    document.getElementById('salamSiswa').innerText = `Halo, ${nama}!`; 
     const menu = document.getElementById('menuTugasSiswa'); menu.innerHTML = "";
     Object.keys(dataTugas).forEach(slot => {
         const t = dataTugas[slot];
@@ -449,12 +497,28 @@ function masukHalamanPilihTugas(nama) {
 }
 
 function mulaiKerja(slot) {
-    const t = dataTugas[slot]; curSlot = slot; curIdx = 0; curAns = new Array(t.soal.length).fill("");
+    const t = dataTugas[slot]; curSlot = slot; curIdx = 0; 
+    currentSoalAcak = t.soal.map(s => {
+        if(s.jenis === 'PG') {
+            const teksKunciAsli = s.opsi[s.kunci.charCodeAt(0) - 65];
+            let opsiObj = s.opsi.map((teks, i) => ({ teks: teks, asliIdx: i }));
+            opsiObj.sort(() => Math.random() - 0.5);
+            const kunciBaruIdx = opsiObj.findIndex(o => o.teks === teksKunciAsli);
+            return {
+                ...s,
+                opsi: opsiObj.map(o => o.teks),
+                kunci: String.fromCharCode(65 + kunciBaruIdx)
+            };
+        }
+        return s;
+    }).sort(() => Math.random() - 0.5);
+
+    curAns = new Array(currentSoalAcak.length).fill("");
     sisaWaktu = t.durasi * 60; openView('panelSiswa'); startTimer(); renderSoal();
 }
 
 function renderSoal() {
-    const s = dataTugas[curSlot].soal[curIdx];
+    const s = currentSoalAcak[curIdx];
     document.getElementById('teksSoal').innerHTML = `${curIdx + 1}. ${s.tanya}`;
     document.getElementById('imgSoalSiswa').innerHTML = s.img ? `<img src="${s.img}" style="max-width:100%; border-radius:10px; margin-bottom:15px;">` : "";
     const g = document.getElementById('gridNomorCBT'); g.innerHTML = "";
@@ -475,7 +539,7 @@ function renderSoal() {
         const tx = document.createElement('textarea'); tx.placeholder = "Jawaban kamu..."; tx.style = "width:100%; height:120px; padding:12px; border-radius:12px; border:1px solid var(--border);"; tx.value = curAns[curIdx];
         tx.oninput = (e) => curAns[curIdx] = e.target.value; area.appendChild(tx);
     }
-    document.getElementById('divKirim').style.display = (curIdx === dataTugas[curSlot].soal.length - 1) ? 'block' : 'none';
+    document.getElementById('divKirim').style.display = (curIdx === currentSoalAcak.length - 1) ? 'block' : 'none';
 }
 
 function submitJawaban() {
@@ -484,9 +548,8 @@ function submitJawaban() {
     const t = dataTugas[curSlot];
     let benarCount = 0, totalPG = 0;
     
-    // Perhitungan Nilai & Pengecekan Benar/Salah
     const rows = [];
-    t.soal.forEach((s, i) => {
+    currentSoalAcak.forEach((s, i) => {
         let status = "-"; 
         const tanyaBersih = s.tanya.replace(/<[^>]*>?/gm, ''); 
         const jwbSiswa = curAns[i] || "-";
@@ -508,7 +571,6 @@ function submitJawaban() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'a4');
 
-    // Header Laporan
     doc.setFont("helvetica", "bold"); doc.setFontSize(14);
     doc.text("SD NEGERI PENGKOL", 105, 15, { align: 'center' });
     doc.setFontSize(10); doc.setFont("helvetica", "normal");
@@ -518,7 +580,6 @@ function submitJawaban() {
     doc.setFontSize(12); doc.setFont("helvetica", "bold");
     doc.text("LAPORAN HASIL PEKERJAAN SISWA", 105, 35, { align: 'center' });
 
-    // Kotak Identitas
     doc.setDrawColor(200, 200, 200); doc.setFillColor(248, 250, 252);
     doc.roundedRect(15, 42, 180, 25, 3, 3, 'FD');
     doc.setFontSize(10); doc.setTextColor(50);
@@ -530,7 +591,6 @@ function submitJawaban() {
     doc.text(`${skor}`, 168, 60, { align: 'center' });
     doc.setTextColor(0);
 
-    // Tabel dengan Kolom Status
     doc.autoTable({
         startY: 75,
         head: [['No', 'Pertanyaan / Butir Soal', 'Jawaban', 'Status']],
@@ -563,7 +623,8 @@ function submitJawaban() {
 
     const pdfB64 = doc.output('datauristring').split(',')[1];
     db.ref('rekap_v2').push({ nama: curUser, materi: t.judul, nilai: skor, file: pdfB64 }).then(() => {
-        hideLoader(); alert("Jawaban Berhasil Terkirim!");
+        hideLoader(); 
+        showAlert("Selamat!", "Selamat jawaban kamu telah terkirim.", "🚀"); 
         closeView('panelSiswa'); masukHalamanPilihTugas(curUser);
     });
 }
@@ -577,23 +638,30 @@ function viewPDF(b64) {
     const blobUrl = URL.createObjectURL(blob);
     const newWindow = window.open(blobUrl, '_blank');
     if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
-        alert("Mohon izinkan Pop-up browser.");
+        showAlert("Info", "Mohon izinkan Pop-up pada browser anda.", "ℹ️");
     }
     hideLoader();
 }
 
-function nonaktifkanTugas(slot) { if(confirm("Nonaktifkan tugas ini?")) { db.ref('tugas_multi/' + slot).update({ aktif: false }); } }
+function nonaktifkanTugas(slot) { 
+    if(confirm("Nonaktifkan tugas ini?")) { 
+        db.ref('tugas_multi/' + slot).update({ aktif: false }).then(() => {
+            showAlert("Berhasil", "Tugas telah dinonaktifkan.", "🗑️");
+        }); 
+    } 
+}
+
 function showLoader(t) { document.getElementById('loaderText').innerText = t; document.getElementById('loader').style.display = 'flex'; }
 function hideLoader() { document.getElementById('loader').style.display = 'none'; }
 function openView(id) { document.getElementById(id).style.display = id.includes('modal') ? 'flex' : 'block'; }
 function closeView(id) { document.getElementById(id).style.display = 'none'; }
-function pindahSoal(n) { const max = dataTugas[curSlot].soal.length; if(curIdx+n >= 0 && curIdx+n < max) { curIdx += n; renderSoal(); } }
+function pindahSoal(n) { const max = currentSoalAcak.length; if(curIdx+n >= 0 && curIdx+n < max) { curIdx += n; renderSoal(); } }
 function startTimer() { timerInterval = setInterval(() => { sisaWaktu--; let m = Math.floor(sisaWaktu/60), s = sisaWaktu%60; document.getElementById('displayTimer').innerText = `${m}:${s < 10 ? '0'+s : s}`; if(sisaWaktu <= 0) submitJawaban(); }, 1000); }
 function kembaliKeDaftarTugas() { if(confirm("Kembali ke daftar?")) { clearInterval(timerInterval); closeView('panelSiswa'); openView('panelPilihTugas'); } }
 
 function exportRekapPDF() {
     const filter = document.getElementById('filterTugas').value;
-    if (!filter) return alert("Pilih tugas!");
+    if (!filter) return showAlert("Peringatan", "Pilih judul tugas terlebih dahulu!", "⚠️");
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     doc.text(`REKAP NILAI: ${filter}`, 105, 20, {align: 'center'});
