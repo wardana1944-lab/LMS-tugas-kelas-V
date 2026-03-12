@@ -291,12 +291,18 @@
         #panelRekap .panel-content h2 { font-size: 1.2rem !important; }
         
         /* Ensure table overflow is scrollable */
-        table { display: block; overflow-x: auto; white-space: nowrap; }
+        table { display: block; overflow-x: auto; white-space: nowrap; width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px 8px; font-size: 0.8rem; }
         
         /* Make split buttons block on mobile */
         .soal-box > div:last-child {
             grid-template-columns: 1fr !important;
         }
+        
+        /* Fix dropdown cutting off */
+        #filterTugas { width: 100% !important; flex: none; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+        #panelRekap .btn-blue { width: 100%; justify-content: center; }
+        #panelRekap > div > div > div:nth-child(2) { flex-direction: column; gap: 10px; }
     }
 
     /* CSS MODERN MODAL NOTIFIKASI */
@@ -519,12 +525,12 @@
           </div>
 
           <!-- Body Area (Filter & Table) -->
-          <div style="padding: 30px; background: #F8FAFC; position: relative; border-radius: 28px 28px 0 0; margin-top: -20px;">
-              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 15px; margin-bottom:20px;">
-                  <select id="filterTugas" onchange="filterRekap()" style="margin:0; width: auto; flex: 1; font-weight:700; border-color: var(--primary); box-shadow: 0 4px 10px rgba(13, 148, 136, 0.05);">
+          <div style="padding: 20px; background: #F8FAFC; position: relative; border-radius: 28px 28px 0 0; margin-top: -20px; box-sizing: border-box;">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 10px; margin-bottom:15px;">
+                  <select id="filterTugas" onchange="filterRekap()" style="margin:0; width: auto; flex: 1; font-weight:700; border-color: var(--primary); box-shadow: 0 4px 10px rgba(13, 148, 136, 0.05); min-width: 0;">
                       <option value="">-- Pilih Judul Tugas --</option>
                   </select>
-                  <button class="btn btn-blue" onclick="exportRekapPDF()" style="font-size: 0.75rem; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);">
+                  <button class="btn btn-blue" onclick="exportRekapPDF()" style="font-size: 0.75rem; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2); white-space: nowrap;">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="margin-right: 6px;">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                       </svg>
@@ -532,8 +538,8 @@
                   </button>
               </div>
               
-              <div style="overflow-x:auto; background: var(--white); border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
-                  <table style="margin: 0; border: none;">
+              <div style="overflow-x:auto; background: var(--white); border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.02); width: 100%;">
+                  <table style="margin: 0; border: none; width: 100%; min-width: 500px;">
                       <thead>
                           <tr>
                               <th style="border-bottom: 2px solid #E2E8F0;">No</th>
