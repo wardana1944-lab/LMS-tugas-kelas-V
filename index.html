@@ -1286,13 +1286,13 @@
                         Wali Kelas V</p>
                 </div>
             </div>
-            <button class="btn btn-blue" onclick="openView('modalLogin')" style="border-radius: 12px;">
+            <button class="btn btn-blue" onclick="aksesDashboardGuru()" style="border-radius: 12px;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
                     stroke-width="2" stroke="currentColor" style="margin-right: -4px;">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
                 </svg>
-                LOG IN GURU
+                AKSES GURU
             </button>
         </div>
         <div class="grid-siswa" id="gridSiswa"></div>
@@ -1823,7 +1823,10 @@
             { n: "Tanca Al Verosa", i: "👦", a: "15" }
         ];
         let SISWA = [];
-        let lmsEmailGuru = (localStorage.getItem('lmsEmailGuru') || "guru@sekolah.com").toLowerCase().trim();
+        let lmsEmailGuru = (localStorage.getItem('lmsEmailGuru') || "wardana1944@gmail.com").toLowerCase().trim();
+        if (!localStorage.getItem('lmsEmailGuru')) {
+            localStorage.setItem('lmsEmailGuru', "wardana1944@gmail.com");
+        }
         let BASE_PATH = "";
 
         function dbRef(path) {
@@ -1894,7 +1897,7 @@
             SISWA = [...SISWA_DEFAULT];
             renderGridSiswa();
 
-            if(!storedEmail || storedEmail === "guru@sekolah.com") {
+            if(!storedEmail) {
                 hideLoader(); 
                 // Tidak otomatis buka pengaturan, agar siswa tidak masuk ke sana
                 return; 
@@ -2075,6 +2078,10 @@
             alertEl.classList.remove('hide');
             alertEl.classList.add('show');
         }
+        function aksesDashboardGuru() {
+            openView('modalLogin');
+        }
+
         function closeAlert() {
             const alertEl = document.getElementById('customAlert');
             alertEl.classList.remove('show');
@@ -2086,8 +2093,8 @@
         }
 
         function prosesLogin() {
-            if (document.getElementById('pin').value === "guru123" || localStorage.getItem('lmsGuruAuth') === 'true') {
-                localStorage.setItem('lmsGuruAuth', 'true');
+            if (document.getElementById('pin').value === "guru123") {
+                sessionStorage.setItem('lmsGuruAuth', 'true');
                 closeView('modalLogin');
                 
                 // Cek apakah email sudah diseting atau belum
@@ -2502,7 +2509,7 @@
         function openView(id) {
             // Proteksi: Panel Guru hanya bisa dibuka jika sudah Log In
             const guruPanels = ['panelGuru', 'panelBuat', 'panelRekap', 'panelPengaturan', 'panelMenuTugas'];
-            if (guruPanels.includes(id) && localStorage.getItem('lmsGuruAuth') !== 'true') {
+            if (guruPanels.includes(id) && sessionStorage.getItem('lmsGuruAuth') !== 'true') {
                 openView('modalLogin');
                 return;
             }
