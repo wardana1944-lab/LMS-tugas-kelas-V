@@ -803,6 +803,36 @@
                 border-collapse: collapse;
             }
 
+            /* Fix Panel Pengaturan Mobile */
+            #panelPengaturan .panel-content {
+                padding: 10px !important;
+                padding-top: 2vh !important;
+            }
+
+            #panelPengaturan > div > div > div:nth-child(2) {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+                padding: 15px !important;
+            }
+
+            #panelPengaturan .btn-blue, #panelPengaturan .btn-outline {
+                padding: 12px !important;
+            }
+
+            #panelPengaturan div[style*="grid-template-columns: 80px 1fr 150px 80px 60px"] {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 10px !important;
+            }
+
+            #panelPengaturan div[style*="grid-template-columns: 80px 1fr 150px 80px 60px"] div:nth-child(2) {
+                grid-column: span 2;
+            }
+
+            #panelPengaturan div[style*="grid-template-columns: 80px 1fr 150px 80px 60px"] div:last-child {
+                grid-column: span 2;
+            }
+
+
             th,
             td {
                 padding: 9px 8px;
@@ -1866,7 +1896,7 @@
 
             if(!storedEmail || storedEmail === "guru@sekolah.com") {
                 hideLoader(); 
-                if(!storedEmail) openView('panelPengaturan');
+                // Tidak otomatis buka pengaturan, agar siswa tidak masuk ke sana
                 return; 
             }
 
@@ -2000,11 +2030,6 @@
                     const state = JSON.parse(savedState);
                     if (state.view === 'panelPilihTugas' && state.user) {
                         masukHalamanPilihTugas(state.user, false);
-                    } else if (state.view === 'panelGuru' || state.view === 'panelRekap' || state.view === 'panelBuat') {
-                        if (sessionStorage.getItem('lmsGuruAuth') === 'true') {
-                            if (state.view === 'panelBuat') curSlot = state.slot;
-                            openView(state.view);
-                        }
                     }
                 } catch (e) { sessionStorage.removeItem('lmsState'); }
             }
@@ -2061,10 +2086,19 @@
         }
 
         function prosesLogin() {
-            if (document.getElementById('pin').value === "guru123" || sessionStorage.getItem('lmsGuruAuth') === 'true') {
-                sessionStorage.setItem('lmsGuruAuth', 'true');
+            if (document.getElementById('pin').value === "guru123" || localStorage.getItem('lmsGuruAuth') === 'true') {
+                localStorage.setItem('lmsGuruAuth', 'true');
                 closeView('modalLogin');
-                openView('panelGuru');
+                
+                // Cek apakah email sudah diseting atau belum
+                const storedEmail = localStorage.getItem('lmsEmailGuru');
+                if (!storedEmail || storedEmail === "guru@sekolah.com") {
+                    showAlert("Selamat Datang", "Mohon lengkapi identitas dan email Firebase Anda terlebih dahulu.", "📧");
+                    openView('panelPengaturan');
+                } else {
+                    openView('panelGuru');
+                }
+                
                 document.getElementById('pin').value = "";
             } else { showAlert("Gagal", "PIN yang anda masukkan salah!", "❌"); }
         }
@@ -2466,6 +2500,13 @@
         function showLoader(t) { document.getElementById('loaderText').innerText = t; document.getElementById('loader').style.display = 'flex'; }
         function hideLoader() { document.getElementById('loader').style.display = 'none'; }
         function openView(id) {
+            // Proteksi: Panel Guru hanya bisa dibuka jika sudah Log In
+            const guruPanels = ['panelGuru', 'panelBuat', 'panelRekap', 'panelPengaturan', 'panelMenuTugas'];
+            if (guruPanels.includes(id) && localStorage.getItem('lmsGuruAuth') !== 'true') {
+                openView('modalLogin');
+                return;
+            }
+
             // Smooth exit all existing panels if they are entering
             document.querySelectorAll('.panel.entering').forEach(p => {
                 p.classList.remove('entering');
@@ -2513,7 +2554,6 @@
                 } else if (id === 'panelGuru' || id === 'panelBuat' || id === 'panelRekap') {
                     // Soft-refresh: restore home without page reload
                     sessionStorage.removeItem('lmsState');
-                    if (id === 'panelGuru') sessionStorage.removeItem('lmsGuruAuth');
                 }
             }, 110);
         }
