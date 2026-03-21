@@ -1580,7 +1580,7 @@
             width: 0%;
             background: linear-gradient(90deg, #1E3A8A, #00F0FF, #1E3A8A);
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.8);
-            animation: loadProgress 1.2s ease-in-out forwards;
+            animation: loadProgress 1.7s ease-in-out forwards;
         }
 
         @keyframes loadProgress {
@@ -2437,14 +2437,14 @@
         }
 
         window.onload = () => {
-            // Snappy & Fast Splash Screen
+            // Snappy & Fast Splash Screen with 1.7s Duration
             setTimeout(() => {
                 const splash = document.getElementById('welcomeSplash');
                 if (splash) {
                     splash.classList.add('fade-out');
-                    setTimeout(() => splash.remove(), 600);
+                    setTimeout(() => splash.remove(), 800);
                 }
-            }, 1200); // 1.2s total duration for a fast experience
+            }, 1700); // Updated to 1.7s as requested
 
             initListeners();
 
