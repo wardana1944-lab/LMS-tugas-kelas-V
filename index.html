@@ -948,20 +948,22 @@
             }
         }
 
+        /* === MODERN GAME ALERT (MODAL) === */
         #customAlert {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(26, 36, 92, 0.8);
-            backdrop-filter: blur(8px);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 100000;
+            z-index: 1000001;
             opacity: 0;
-            transition: opacity 0.15s ease;
+            transition: opacity 0.25s ease;
         }
 
         #customAlert.show {
@@ -969,107 +971,264 @@
         }
 
         .alert-box {
-            background: linear-gradient(135deg, var(--white) 0%, #F8FAFC 100%);
-            padding: 35px 30px;
-            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 35px;
             width: 90%;
-            max-width: 420px;
+            max-width: 400px;
+            padding: 40px 30px;
             text-align: center;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(42, 57, 141, 0.1);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(255, 255, 255, 0.05);
             position: relative;
             overflow: hidden;
-            border-top: 6px solid var(--accent-emerald);
+            transform: scale(0.8) translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         #customAlert.show .alert-box {
-            animation: alertPopup 0.22s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
+            transform: scale(1) translateY(0);
         }
 
-        #customAlert.hide .alert-box {
-            animation: alertPopdown 0.15s ease-in forwards;
-        }
-
-        .alert-box::after {
+        /* Status-based Glow Line */
+        .alert-box::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.6), transparent);
-            transform: rotate(45deg) translateX(-120%);
-            animation: shine 3s 0.3s ease-out 1;
-            pointer-events: none;
-            z-index: 1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: #00F0FF;
+            box-shadow: 0 0 20px #00F0FF;
         }
 
-        @keyframes shine {
-            0% {
-                transform: rotate(45deg) translateX(-120%);
-            }
-
-            100% {
-                transform: rotate(45deg) translateX(200%);
-            }
+        .alert-icon-container {
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
         }
 
-        @keyframes alertPopup {
-            0% {
-                transform: scale(0.85);
-                opacity: 0;
-            }
-
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
+        .alert-icon-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 110%;
+            height: 110%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.2) 0%, transparent 70%);
+            animation: iconPulse 2s infinite ease-in-out;
         }
 
-        @keyframes alertPopdown {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-
-            100% {
-                transform: scale(0.9);
-                opacity: 0;
-            }
+        @keyframes iconPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
         }
 
         .alert-icon {
-            font-size: 3.5rem;
-            margin-bottom: 15px;
-            display: block;
-            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+            font-size: 3.2rem;
             position: relative;
             z-index: 2;
+            filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5));
         }
 
         .alert-title {
-            font-weight: 900;
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-            color: var(--primary);
+            font-weight: 800;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: #FFFFFF;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            position: relative;
-            z-index: 2;
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         .alert-msg {
-            color: var(--text-charcoal);
-            font-size: 1.05rem;
-            margin-bottom: 25px;
-            line-height: 1.5;
+            color: #E2E8F0;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
             font-weight: 600;
-            position: relative;
-            z-index: 2;
+            opacity: 0.9;
         }
 
-        .alert-box button {
+        .alert-btn {
+            background: linear-gradient(135deg, #2A398D 0%, #1A245C 100%);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 18px 30px;
+            border-radius: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 25px rgba(26, 36, 92, 0.4);
             position: relative;
-            z-index: 2;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .alert-btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(26, 36, 92, 0.5);
+            background: linear-gradient(135deg, #3A4AB8 0%, #2A398D 100%);
+        }
+
+        .alert-btn:active {
+            transform: translateY(1px);
+        }
+
+        .alert-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -120%;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: rotate(45deg);
+            transition: left 0.6s ease;
+        }
+
+        /* === SHARED PORTAL MODAL STYLE === */
+        .portal-modal {
+            background: rgba(15, 23, 42, 0.7) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000000;
+        }
+
+        .modal-glass {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 40px;
+            padding: 45px 30px;
+            width: 92%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.7);
+            position: relative;
+            animation: modalPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.85) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .exiting.portal-modal .modal-glass {
+            animation: modalOut 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes modalOut {
+            from { opacity: 1; transform: scale(1) translateY(0); }
+            to { opacity: 0; transform: scale(0.9) translateY(10px); }
+        }
+
+        .modal-icon-header {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #00F0FF;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+        }
+
+        .modal-glass h2, .modal-glass h3 {
+            color: white;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            font-size: 1.35rem;
+        }
+
+        .modal-glass p {
+            color: #94A3B8;
+            font-weight: 600;
+            margin-bottom: 25px;
+            font-size: 0.85rem;
+        }
+
+        .pin-input-wrapper input {
+            background: rgba(15, 23, 42, 0.5) !important;
+            border: 1.5px solid rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+            text-align: center;
+            font-size: 1.4rem !important;
+            letter-spacing: 8px;
+            font-weight: 800;
+            border-radius: 18px !important;
+            padding: 18px !important;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        .pin-input-wrapper input:focus {
+            border-color: #00F0FF !important;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+            background: rgba(15, 23, 42, 0.7) !important;
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .modal-btn-primary {
+            background: linear-gradient(135deg, #2A398D 0%, #1A245C 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 800;
+            border: none;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: 0.3s;
+        }
+
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(42, 57, 141, 0.4);
+        }
+
+        .modal-btn-ghost {
+            background: transparent;
+            color: #94A3B8;
+            padding: 10px;
+            border: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .modal-btn-ghost:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
         }
 
         #loader {
@@ -1209,70 +1368,208 @@
         }
 
         /* === WELCOME SPLASH === */
+        /* === MLBB STYLE SPLASH SCREEN === */
         #welcomeSplash {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--primary-gradient);
+            background: #020617;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 1000000;
             color: white;
-            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s ease;
+            overflow: hidden;
+            transition: opacity 1s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        #welcomeSplash.fade-out {
-            transform: translateY(-100%);
-            opacity: 0;
+        /* Moving Nebula Background */
+        .splash-nebula {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 30%, rgba(0, 240, 255, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 70% 70%, rgba(42, 57, 141, 0.2) 0%, transparent 40%);
+            animation: nebulaMove 15s linear infinite;
+            filter: blur(50px);
+            z-index: -2;
+        }
+
+        @keyframes nebulaMove {
+            0% { transform: translate(-25%, -25%) rotate(0deg); }
+            100% { transform: translate(-25%, -25%) rotate(360deg); }
+        }
+
+        /* Horizontal Light Sweep */
+        .splash-sweep {
+            position: absolute;
+            width: 300px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.3), transparent);
+            transform: skewX(-45deg) translateX(-150%);
+            animation: sweepMove 3s infinite ease-in-out;
+            z-index: -1;
             pointer-events: none;
         }
 
-        .splash-content {
+        @keyframes sweepMove {
+            0% { transform: skewX(-45deg) translateX(-300%); }
+            100% { transform: skewX(-45deg) translateX(500%); }
+        }
+
+        .splash-bg-anim {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png'); /* Star-like texture */
+            opacity: 0.15;
+            z-index: -1;
+        }
+
+        /* Floating Particles */
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            filter: blur(1px);
+            z-index: -1;
+            box-shadow: 0 0 10px #00F0FF;
+            animation: floatParticle 8s infinite linear;
+            opacity: 0;
+        }
+
+        @keyframes mlCorePulse {
+            from { opacity: 0.4; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        #welcomeSplash.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.95);
+            transition: all 0.8s ease-in;
+        }
+
+        @keyframes rotateBG {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .splash-glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            padding: 50px 40px;
+            width: 90%;
+            max-width: 450px;
             text-align: center;
-            animation: splashEntry 1s ease-out;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.05);
+            animation: glassIn 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes glassIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .splash-logo-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+        }
+
+        .splash-logo-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.3) 0%, transparent 70%);
+            animation: pulseGlow 2s infinite ease-in-out;
+            z-index: -1;
         }
 
         .splash-logo {
-            width: 100px;
-            height: 100px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 30px;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border-radius: 35px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 25px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            animation: pulse 2s infinite ease-in-out;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            animation: floatLogo 4s infinite ease-in-out;
+            color: #00F0FF;
+        }
+
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
         }
 
         .splash-title {
-            font-size: 2.2rem;
+            font-size: 2.25rem;
             font-weight: 800;
-            letter-spacing: 2px;
-            margin-bottom: 8px;
-            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            letter-spacing: 3px;
+            margin-bottom: 2px;
+            color: #FFFFFF;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3);
+            animation: mlReveal 0.8s ease-out both;
         }
 
-        .splash-subtitle {
-            font-size: 1rem;
-            opacity: 0.8;
+        .splash-school {
+            font-size: 1.1rem;
+            color: #FFD700; /* Gold like MLBB accents */
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+            animation: mlReveal 0.8s 0.2s ease-out both;
+        }
+
+        .splash-year {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.7);
             font-weight: 600;
             letter-spacing: 1px;
+            margin-bottom: 45px;
+            text-transform: uppercase;
+            animation: mlReveal 0.8s 0.4s ease-out both;
+        }
+
+        @keyframes mlReveal {
+            from { opacity: 0; transform: scale(1.1); filter: blur(5px); }
+            to { opacity: 1; transform: scale(1); filter: blur(0); }
         }
 
         .splash-loader {
-            margin: 40px auto 0;
-            width: 160px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
+            width: 80%;
+            max-width: 250px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
             overflow: hidden;
             position: relative;
+            margin: 0 auto;
         }
 
         .splash-loader-bar {
@@ -1281,41 +1578,38 @@
             left: 0;
             height: 100%;
             width: 0%;
-            background: #00F0FF;
-            box-shadow: 0 0 15px #00F0FF;
-            animation: loadProgress 2s ease-in-out forwards;
-        }
-
-        @keyframes splashEntry {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
-            50% { transform: scale(1.05); box-shadow: 0 20px 45px rgba(0,240,255,0.3); }
-            100% { transform: scale(1); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+            background: linear-gradient(90deg, #1E3A8A, #00F0FF, #1E3A8A);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.8);
+            animation: loadProgress 1.2s ease-in-out forwards;
         }
 
         @keyframes loadProgress {
-            from { width: 0%; }
-            to { width: 100%; }
+            0% { width: 0%; }
+            100% { width: 100%; }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Welcome Splash Screen -->
+    <!-- MLBB Style Splash Screen -->
     <div id="welcomeSplash">
-        <div class="splash-content">
-            <div class="splash-logo">
-                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 3L1 9L5 11.18V17C5 18.66 8.13 20 12 20C15.87 20 19 18.66 19 17V11.18L23 9L12 3ZM12 18C9.52 18 7 17.06 7 17V12.27L12 15L17 12.27V17C17 17.06 14.48 18 12 18ZM23 14V17C23 17.55 22.55 18 22 18C21.45 18 21 17.55 21 17V12.91L23 11.82V14Z" />
-                </svg>
+        <div class="splash-nebula"></div>
+        <div class="splash-sweep"></div>
+        <div class="splash-bg-anim"></div>
+        
+        <div class="splash-content" style="text-align: center; z-index: 10;">
+            <div class="splash-logo-container" style="width: 120px; height: 120px; margin-bottom: 30px; position: relative;">
+                <div class="splash-logo-glow" style="width: 180px; height: 180px; background: radial-gradient(circle, rgba(0, 240, 255, 0.6) 0%, transparent 70%); animation: mlCorePulse 1.5s infinite alternate ease-in-out;"></div>
+                <div class="splash-logo" style="border: none; background: transparent; color: white; filter: drop-shadow(0 0 15px #00F0FF);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="65" height="65" fill="#FFD700" viewBox="0 0 24 24">
+                        <path d="M12 3L1 9L5 11.18V17C5 18.66 8.13 20 12 20C15.87 20 19 18.66 19 17V11.18L23 9L12 3ZM12 18C9.52 18 7 17.06 7 17V12.27L12 15L17 12.27V17C17 17.06 14.48 18 12 18ZM23 14V17C23 17.55 22.55 18 22 18C21.45 18 21 17.55 21 17V12.91L23 11.82V14Z" />
+                    </svg>
+                </div>
             </div>
             <h1 class="splash-title">RUANG BELAJAR</h1>
-            <p class="splash-subtitle">SD NEGERI PENGKOL</p>
+            <p class="splash-school">SD NEGERI PENGKOL</p>
+            <p class="splash-year">KELAS V TAHUN 2025/2026</p>
             <div class="splash-loader">
                 <div class="splash-loader-bar"></div>
             </div>
@@ -1327,36 +1621,40 @@
         <p id="loaderText" style="margin-top:10px; font-weight:700; color: var(--primary);">Memproses...</p>
     </div>
 
+    <!-- Achievement-style Modal Notification -->
     <div id="customAlert">
         <div class="alert-box">
-            <span class="alert-icon" id="alertIcon">✅</span>
-            <div class="alert-title" id="alertTitle">Berhasil</div>
+            <div class="alert-icon-container">
+                <div class="alert-icon-glow" id="alertGlow"></div>
+                <div class="alert-icon" id="alertIcon"></div>
+            </div>
+            <div class="alert-title" id="alertTitle">BERHASIL</div>
             <div class="alert-msg" id="alertMsg">Pesan anda di sini.</div>
-            <button class="btn btn-blue" style="width: 100%; padding: 16px;" onclick="closeAlert()">LANJUTKAN</button>
+            <button class="alert-btn" onclick="closeAlert()">
+                <span>LANJUTKAN</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                </svg>
+            </button>
         </div>
     </div>
 
-    <div id="modalPinSiswa" class="panel"
-        style="background: rgba(15, 23, 42, 0.9); display: none; align-items: center; justify-content: center;">
-        <div class="panel-content" style="max-width: 400px; padding: 0;">
-            <div
-                style="background: var(--white); border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
-                <div style="background: var(--primary-gradient); color: white; padding: 25px; text-align: center;">
-                    <div style="font-size: 2.5rem; margin-bottom: 10px;">🔐</div>
-                    <h3 id="labelPinSiswa" style="font-size: 1.2rem; font-weight: 800;">VERIFIKASI AKSES</h3>
-                </div>
-                <div style="padding: 25px; text-align: center;">
-                    <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 15px;">Masukkan Pasword / PIN
-                        Anda.</p>
-                    <input type="password" id="pinSiswaInp" placeholder="Pasword"
-                        style="text-align: center; font-size: 1.2rem; font-weight: 700; background: #f1f5f9; border: 2px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 20px;">
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn btn-outline" style="flex: 1; border-radius: 10px;"
-                            onclick="closeView('modalPinSiswa')">BATAL</button>
-                        <button class="btn btn-blue" style="flex: 1; border-radius: 10px;"
-                            onclick="verifikasiPinSiswa()">MASUK</button>
-                    </div>
-                </div>
+    <!-- Modern Student PIN Verification Modal -->
+    <div id="modalPinSiswa" class="panel portal-modal">
+        <div class="modal-glass">
+            <div class="modal-icon-header">
+                <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
+                </svg>
+            </div>
+            <h3 id="labelPinSiswa">VERIFIKASI AKSES</h3>
+            <p>Silakan masukkan PIN Anda untuk melanjutkan.</p>
+            <div class="pin-input-wrapper">
+                <input type="password" id="pinSiswaInp" placeholder="Password PIN">
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn-primary" onclick="verifikasiPinSiswa()">MASUK</button>
+                <button class="modal-btn-ghost" onclick="closeView('modalPinSiswa')">KEMBALI</button>
             </div>
         </div>
     </div>
@@ -1408,18 +1706,23 @@
         <div class="grid-siswa" id="gridSiswa"></div>
     </div>
 
-    <div id="modalLogin" class="panel"
-        style="background:rgba(15,23,42,0.95); align-items:center; justify-content:center; display:none;">
-        <div
-            style="background:var(--white); padding:35px; border-radius:24px; width:90%; max-width:340px; text-align:center; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
-            <h2 style="margin-bottom:10px; font-size: 1.3rem;">Login Guru</h2>
-            <p style="color: var(--text-light); font-size: 0.8rem; margin-bottom: 20px;">Masukkan PIN Keamanan</p>
-            <input type="password" id="pin" placeholder="••••"
-                style="text-align:center; font-size: 1.5rem; letter-spacing: 10px; border-radius: 12px;">
-            <button class="btn btn-blue" style="width:100%; margin-top:15px; padding: 15px;"
-                onclick="prosesLogin()">MASUK DASHBOARD</button>
-            <button class="btn-outline btn" style="width:100%; margin-top:8px; border:none; color: var(--text-light);"
-                onclick="closeView('modalLogin')">Batal</button>
+    <!-- Modern Guru/Teacher Login Modal -->
+    <div id="modalLogin" class="panel portal-modal">
+        <div class="modal-glass">
+            <div class="modal-icon-header">
+                <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                </svg>
+            </div>
+            <h2>AKSES GURU</h2>
+            <p>Masukkan PIN Keamanan untuk Masuk</p>
+            <div class="pin-input-wrapper">
+                <input type="password" id="pin" placeholder="••••" maxlength="10">
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn-primary" onclick="prosesLogin()">MASUK DASHBOARD</button>
+                <button class="modal-btn-ghost" onclick="closeView('modalLogin')">BATAL</button>
+            </div>
         </div>
     </div>
 
@@ -2134,14 +2437,14 @@
         }
 
         window.onload = () => {
-            // Handle Splash Screen
+            // Snappy & Fast Splash Screen
             setTimeout(() => {
                 const splash = document.getElementById('welcomeSplash');
                 if (splash) {
                     splash.classList.add('fade-out');
-                    setTimeout(() => splash.remove(), 800);
+                    setTimeout(() => splash.remove(), 600);
                 }
-            }, 2000);
+            }, 1200); // 1.2s total duration for a fast experience
 
             initListeners();
 
@@ -2186,26 +2489,41 @@
             });
         }
 
-        /* FUNGSI ALERT MODERN */
-        function showAlert(title, msg, icon = "✅") {
+        /* FUNGSI ALERT MODERN GAME-STYLE DENGAN SVG ICON */
+        function showAlert(title, msg, iconType = "✅") {
             const alertEl = document.getElementById('customAlert');
             const alertBox = alertEl.querySelector('.alert-box');
+            const alertStatus = document.getElementById('alertGlow');
+            const iconContainer = document.getElementById('alertIcon');
 
-            // Set colors per type like FIFA pack animations
-            if (icon === "❌" || icon === "⚠️" || icon === "🗑️") {
-                alertBox.style.borderTopColor = 'var(--danger)';
-            } else {
-                alertBox.style.borderTopColor = 'var(--accent-emerald)';
-            }
+            // Modern SVG Icons Library
+            const svgs = {
+                '✅': '<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>',
+                '❌': '<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>',
+                '⚠️': '<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" /></svg>',
+                '🗑️': '<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>',
+                '🔒': '<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>'
+            };
 
-            document.getElementById('alertIcon').innerText = icon;
+            // Dynamic Styling based on Icon/Type
+            let themeColor = '#00F0FF'; // Default Cyan
+            if (iconType === "❌" || iconType === "⚠️" || iconType === "🗑️") themeColor = '#E61D25'; // Red
+            else if (iconType === "✅") themeColor = '#3CAC3B'; // Green
+
+            // Apply SVG Icon
+            iconContainer.innerHTML = svgs[iconType] || svgs['✅'];
+
+            // Neon Glow Effects
+            alertBox.style.boxShadow = `0 40px 80px rgba(0, 0, 0, 0.6), 0 0 30px ${themeColor}33`;
+            iconContainer.style.color = themeColor;
+            iconContainer.style.filter = `drop-shadow(0 0 12px ${themeColor}66)`;
+            alertStatus.style.background = `radial-gradient(circle, ${themeColor}33 0%, transparent 70%)`;
+
             document.getElementById('alertTitle').innerText = title;
             document.getElementById('alertMsg').innerText = msg;
 
             alertEl.style.display = 'flex';
-            // Trigger reflow & add show class
             void alertEl.offsetWidth;
-            alertEl.classList.remove('hide');
             alertEl.classList.add('show');
         }
         function aksesDashboardGuru() {
@@ -2215,11 +2533,10 @@
         function closeAlert() {
             const alertEl = document.getElementById('customAlert');
             alertEl.classList.remove('show');
-            alertEl.classList.add('hide');
+            // Wait for the exit animation (0.4s for the box scaling down)
             setTimeout(() => {
                 alertEl.style.display = 'none';
-                alertEl.classList.remove('hide');
-            }, 110); // Wait for Popdown animation
+            }, 400); 
         }
 
         function prosesLogin() {
@@ -2675,6 +2992,7 @@
             const panel = document.getElementById(id);
             panel.classList.remove('entering');
             panel.classList.add('exiting');
+            const timeout = (id.includes('modal') || panel.classList.contains('portal-modal')) ? 400 : 110;
             setTimeout(() => {
                 panel.style.display = 'none';
                 panel.classList.remove('exiting');
@@ -2682,10 +3000,9 @@
                     curUser = "";
                     sessionStorage.removeItem('lmsState');
                 } else if (id === 'panelGuru' || id === 'panelBuat' || id === 'panelRekap') {
-                    // Soft-refresh: restore home without page reload
                     sessionStorage.removeItem('lmsState');
                 }
-            }, 110);
+            }, timeout);
         }
         function pindahSoal(n) { const max = currentSoalAcak.length; if (curIdx + n >= 0 && curIdx + n < max) { curIdx += n; renderSoal(); } }
         function startTimer() { timerInterval = setInterval(() => { sisaWaktu--; let m = Math.floor(sisaWaktu / 60), s = sisaWaktu % 60; document.getElementById('displayTimer').innerText = `${m}:${s < 10 ? '0' + s : s}`; if (sisaWaktu <= 0) submitJawaban(); }, 1000); }
