@@ -1207,10 +1207,120 @@
             font-weight: 800;
             font-size: 0.9rem;
         }
+
+        /* === WELCOME SPLASH === */
+        #welcomeSplash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-gradient);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000000;
+            color: white;
+            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s ease;
+        }
+
+        #welcomeSplash.fade-out {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .splash-content {
+            text-align: center;
+            animation: splashEntry 1s ease-out;
+        }
+
+        .splash-logo {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        .splash-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .splash-subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .splash-loader {
+            margin: 40px auto 0;
+            width: 160px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .splash-loader-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: #00F0FF;
+            box-shadow: 0 0 15px #00F0FF;
+            animation: loadProgress 2s ease-in-out forwards;
+        }
+
+        @keyframes splashEntry {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 20px 45px rgba(0,240,255,0.3); }
+            100% { transform: scale(1); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        }
+
+        @keyframes loadProgress {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- Welcome Splash Screen -->
+    <div id="welcomeSplash">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 3L1 9L5 11.18V17C5 18.66 8.13 20 12 20C15.87 20 19 18.66 19 17V11.18L23 9L12 3ZM12 18C9.52 18 7 17.06 7 17V12.27L12 15L17 12.27V17C17 17.06 14.48 18 12 18ZM23 14V17C23 17.55 22.55 18 22 18C21.45 18 21 17.55 21 17V12.91L23 11.82V14Z" />
+                </svg>
+            </div>
+            <h1 class="splash-title">RUANG BELAJAR</h1>
+            <p class="splash-subtitle">SD NEGERI PENGKOL</p>
+            <div class="splash-loader">
+                <div class="splash-loader-bar"></div>
+            </div>
+        </div>
+    </div>
 
     <div id="loader">
         <div class="spinner"></div>
@@ -1312,6 +1422,8 @@
                 onclick="closeView('modalLogin')">Batal</button>
         </div>
     </div>
+
+
 
     <div id="panelGuru" class="panel" style="background: rgba(15, 23, 42, 0.9);">
         <div class="panel-content" style="max-width: 1000px; padding-top: 5vh;">
@@ -1681,13 +1793,7 @@
                             </h3>
 
                             <div style="display: flex; flex-direction: column; gap: 12px;">
-                                <div>
-                                    <label
-                                        style="font-size: 0.7rem; font-weight: 800; color: var(--text-light); text-transform: uppercase;">Email
-                                        Terhubung (Firebase)</label>
-                                    <input type="email" id="set_email_guru" placeholder="Email untuk simpan data"
-                                        style="font-weight: 700; border-radius: 10px; border: 2px solid #E2E8F0;">
-                                </div>
+
                                 <div>
                                     <label
                                         style="font-size: 0.7rem; font-weight: 800; color: var(--text-light); text-transform: uppercase;">Nama
@@ -1823,10 +1929,8 @@
             { n: "Tanca Al Verosa", i: "👦", a: "15" }
         ];
         let SISWA = [];
-        let lmsEmailGuru = (localStorage.getItem('lmsEmailGuru') || "wardana1944@gmail.com").toLowerCase().trim();
-        if (!localStorage.getItem('lmsEmailGuru')) {
-            localStorage.setItem('lmsEmailGuru', "wardana1944@gmail.com");
-        }
+        let lmsEmailGuru = "wardana1944@gmail.com";
+        localStorage.setItem('lmsEmailGuru', "wardana1944@gmail.com");
         let BASE_PATH = "";
 
         function dbRef(path) {
@@ -1962,6 +2066,23 @@
             getRef('rekap_v2').on('value', mergeRekap);
             getRef('rekapitulasi').on('value', mergeRekap);
             getRef('rekap').on('value', mergeRekap);
+
+            // Synchronize Identity from Firebase
+            getRef('identitas').on('value', (snap) => {
+                if (snap.exists()) {
+                    const iden = snap.val();
+                    localStorage.setItem('lmsNamaSekolah', iden.sekolah || "");
+                    localStorage.setItem('lmsTahunAjaran', iden.tahun || "");
+                    localStorage.setItem('lmsNamaGuru', iden.nama || "");
+                    localStorage.setItem('lmsNipGuru', iden.nip || "");
+                    
+                    // Update UI elements
+                    const hs = document.getElementById('header_school'); if (hs) hs.innerText = iden.sekolah;
+                    const hy = document.getElementById('header_year'); if (hy) hy.innerText = "Tahun Pelajaran " + iden.tahun;
+                    const gn = document.querySelectorAll('.guru-info h3'); gn.forEach(el => el.innerText = iden.nama);
+                    const sn = document.getElementById('sub_nip_guru'); if (sn) sn.innerText = iden.nip.startsWith('NIP') ? iden.nip : 'NIP ' + iden.nip;
+                }
+            });
         }
 
         function loadPrimaryListeners() {
@@ -2013,6 +2134,15 @@
         }
 
         window.onload = () => {
+            // Handle Splash Screen
+            setTimeout(() => {
+                const splash = document.getElementById('welcomeSplash');
+                if (splash) {
+                    splash.classList.add('fade-out');
+                    setTimeout(() => splash.remove(), 800);
+                }
+            }, 2000);
+
             initListeners();
 
             // Load Identity from LocalStorage
@@ -2096,19 +2226,12 @@
             if (document.getElementById('pin').value === "guru123") {
                 sessionStorage.setItem('lmsGuruAuth', 'true');
                 closeView('modalLogin');
-                
-                // Cek apakah email sudah diseting atau belum
-                const storedEmail = localStorage.getItem('lmsEmailGuru');
-                if (!storedEmail || storedEmail === "guru@sekolah.com") {
-                    showAlert("Selamat Datang", "Mohon lengkapi identitas dan email Firebase Anda terlebih dahulu.", "📧");
-                    openView('panelPengaturan');
-                } else {
-                    openView('panelGuru');
-                }
-                
+                openView('panelGuru');
                 document.getElementById('pin').value = "";
             } else { showAlert("Gagal", "PIN yang anda masukkan salah!", "❌"); }
         }
+
+
 
         function bukaBuatTugas(slot) {
             curSlot = slot;
@@ -2790,7 +2913,7 @@
 
         // === FUNGSI PENGATURAN & KELOLA SISWA ===
         function bukaPengaturan() {
-            document.getElementById('set_email_guru').value = lmsEmailGuru;
+
             document.getElementById('set_nama_guru').value = localStorage.getItem('lmsNamaGuru') || "Aditya W. Wardana, S.Pd";
             document.getElementById('set_nip_guru').value = localStorage.getItem('lmsNipGuru') || "19940319 202321 1 005";
             document.getElementById('set_sekolah').value = localStorage.getItem('lmsNamaSekolah') || "SD NEGERI PENGKOL";
@@ -2799,25 +2922,30 @@
         }
 
         function simpanPengaturanGuru() {
-            const email = document.getElementById('set_email_guru').value.trim();
+            const email = "wardana1944@gmail.com";
             const nama = document.getElementById('set_nama_guru').value.trim();
             const nip = document.getElementById('set_nip_guru').value.trim();
             const sekolah = document.getElementById('set_sekolah').value.trim();
             const tahun = document.getElementById('set_tahun').value.trim();
 
-            if (!email) return showAlert("Gagal", "Email guru tidak boleh kosong!", "❌");
+            const emailBerubah = false;
 
-            const emailBerubah = email !== localStorage.getItem('lmsEmailGuru');
-
-            const cleanEmail = email.toLowerCase();
-            localStorage.setItem('lmsEmailGuru', cleanEmail);
+            localStorage.setItem('lmsEmailGuru', email);
             localStorage.setItem('lmsNamaGuru', nama);
             localStorage.setItem('lmsNipGuru', nip);
             localStorage.setItem('lmsNamaSekolah', sekolah);
             localStorage.setItem('lmsTahunAjaran', tahun);
 
-            localStorage.removeItem('lmsCachedPaths'); // Hapus cache jika email ganti
-            lmsEmailGuru = cleanEmail;
+            // Sync to Firebase for other users (students)
+            dbRef('identitas').set({
+                nama: nama,
+                nip: nip,
+                sekolah: sekolah,
+                tahun: tahun
+            });
+
+            localStorage.removeItem('lmsCachedPaths'); 
+            lmsEmailGuru = email;
 
             // Update display in the real-time elements
             const hs = document.getElementById('header_school'); if (hs) hs.innerText = sekolah;
@@ -2825,12 +2953,7 @@
             const sn = document.getElementById('sub_nip_guru'); if (sn) sn.innerText = nip.startsWith('NIP') ? nip : 'NIP ' + nip;
             document.querySelectorAll('.guru-info h3').forEach(el => el.innerText = nama);
 
-            if (emailBerubah) {
-                showAlert("Email Berubah", "Sistem akan memuat ulang data dari email baru...", "📧");
-                setTimeout(() => { location.reload(); }, 1500);
-            } else {
-                showAlert("Berhasil Dimuat", "Pengaturan identitas berhasil disimpan.");
-            }
+            showAlert("Berhasil Dimuat", "Pengaturan identitas berhasil disimpan.");
         }
 
         function renderTableSiswaSetting() {
@@ -2890,6 +3013,7 @@
             showLoader("Menyimpan Siswa...");
             dbRef('siswa').set(siswaObj).then(() => {
                 hideLoader();
+                showAlert("Berhasil", "Data siswa " + nama + " berhasil ditambahkan.");
                 document.getElementById('inpAbsenBaru').value = "";
                 document.getElementById('inpSiswaBaru').value = "";
                 document.getElementById('inpPinBaru').value = "";
@@ -2903,7 +3027,10 @@
                 SISWA.forEach((s, idx) => { siswaObj["s_" + idx] = s; });
 
                 showLoader("Menghapus Siswa...");
-                dbRef('siswa').set(siswaObj).then(() => hideLoader());
+                dbRef('siswa').set(siswaObj).then(() => {
+                    hideLoader();
+                    showAlert("Terhapus", "Data siswa telah dihapus dari kelas.", "🗑️");
+                });
             }
         }
 
