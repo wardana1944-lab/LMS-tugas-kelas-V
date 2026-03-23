@@ -360,8 +360,8 @@
 
         .card-siswa {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(42, 57, 141, 0.95);
+            -webkit-background: rgba(42, 57, 141, 0.95);
             padding: 30px 15px 20px;
             border-radius: 28px;
             text-align: center;
@@ -617,30 +617,30 @@
             .guru-profile {
                 flex-direction: column;
                 align-items: center;
-                gap: 12px;
-                padding: 18px 12px;
-                border-radius: 25px;
-                margin-bottom: 25px;
+                gap: 10px;
+                padding: 15px 10px;
+                border-radius: 20px;
+                margin-bottom: 20px;
                 text-align: center;
             }
 
             .guru-profile .avatar-frame {
-                width: 65px !important;
-                height: 65px !important;
+                width: 55px !important;
+                height: 55px !important;
             }
 
             .guru-profile h3 {
-                font-size: 1.15rem !important;
-                margin-bottom: 2px !important;
+                font-size: 1rem !important;
+                margin-bottom: 0px !important;
             }
 
             .guru-profile p {
-                font-size: 0.75rem !important;
+                font-size: 0.7rem !important;
             }
 
             .guru-profile span {
-                font-size: 0.65rem !important;
-                padding: 3px 12px !important;
+                font-size: 0.6rem !important;
+                padding: 2px 10px !important;
             }
 
             /* === STUDENT GRID === */
@@ -1086,18 +1086,16 @@
 
         /* === SHARED PORTAL MODAL STYLE === */
         .portal-modal {
-            background: rgba(15, 23, 42, 0.7) !important;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: #010411 !important; /* Solid background for privacy and performance */
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 1000000;
+            z-index: 2000000;
         }
 
         .modal-glass {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: linear-gradient(135deg, #173B8F, #011242);
+            border: 2px solid rgba(0, 240, 255, 0.4);
             border-radius: 30px;
             padding: 30px 25px;
             width: 90%;
@@ -1279,7 +1277,7 @@
             gap: 15px;
             transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 600;
-            color: var(--text-charcoal);
+            color: #1A245C;
         }
 
         .opt-box:hover {
@@ -1622,26 +1620,32 @@
         <div class="year" id="header_year" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 8px 30px; font-weight: 900; color: #FFFFFF; display: inline-block; margin-top: 12px; font-size: 0.95rem; backdrop-filter: blur(10px);">TAHUN PELAJARAN 2025/2026</div>
     </header>
 
-    <div class="container" style="max-width: 1000px; margin: -30px auto 40px; padding: 0 20px; position: relative; z-index: 10;">
-        <div class="guru-profile" style="background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06)); border: 1.5px solid rgba(0, 240, 255, 0.4); backdrop-filter: blur(8px); border-radius: 35px; box-shadow: 0 30px 80px rgba(0,0,0,0.5); padding: 25px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; position: relative; z-index: 20;">
-            <div class="guru-info" style="display: flex; align-items: center; gap: 20px;">
-                <div class="avatar-frame" style="width: 75px; height: 75px; background: linear-gradient(135deg, #2A398D, #00F0FF); border: 3px solid #FFFFFF; box-shadow: 0 0 20px rgba(0,240,255,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" stroke="#FFFFFF" stroke-width="2">
+    <div class="container" style="max-width: 1000px; margin: -16px auto 30px; padding: 0 15px; position: relative; z-index: 10;">
+        <div class="guru-profile" style="background: #173B8F; border: 1.5px solid rgba(0, 240, 255, 0.4); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; position: relative; z-index: 20;">
+            <div class="guru-info" style="display: flex; align-items: center; gap: 12px;">
+                <div class="avatar-frame" style="width: 50px; height: 50px; background: linear-gradient(135deg, #2A398D, #00F0FF); border: 2.5px solid #FFFFFF; box-shadow: 0 0 12px rgba(0,240,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="none" viewBox="0 0 24 24" stroke="#FFFFFF" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                     </svg>
                 </div>
                 <div>
-                    <h3 style="color: #FFFFFF; font-weight: 1000; font-size: 1.45rem; margin-bottom: 3px; text-shadow: 0 4px 15px rgba(0,0,0,0.6); letter-spacing: -0.5px;">Aditya W. Wardana, S.Pd</h3>
-                    <p id="sub_nip_guru" style="color: #00F0FF; font-weight: 900; font-size: 0.95rem; letter-spacing: 2px; text-transform: uppercase;">NIP: 19940319 202321 1 005</p>
-                    <div style="display: flex; gap: 10px; margin-top: 12px;">
-                        <span style="background: #FFFFFF; color: #173B8F; font-size: 0.75rem; font-weight: 1000; padding: 4px 15px; border-radius: 30px; display: inline-block; text-transform: uppercase; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">WALI KELAS V</span>
+                    <h3 style="color: #FFFFFF; font-weight: 1000; font-size: 1.05rem; margin-bottom: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); letter-spacing: -0.2px;">Aditya W. Wardana, S.Pd</h3>
+                    <p id="sub_nip_guru" style="color: #00F0FF; font-weight: 900; font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase;">NIP: 19940319 202321 1 005</p>
+                    <div style="display: flex; gap: 8px; margin-top: 5px;">
+                        <span style="background: #FFFFFF; color: #173B8F; font-size: 0.6rem; font-weight: 1000; padding: 2px 10px; border-radius: 15px; display: inline-block; text-transform: uppercase;">WALI KELAS V</span>
                     </div>
                 </div>
             </div>
-            <button class="btn btn-blue" onclick="aksesDashboardGuru()" style="border-radius: 25px; padding: 22px 40px; box-shadow: 0 20px 50px rgba(0,240,255,0.4); font-weight: 1000; font-size: 1.1rem; border: 2.5px solid rgba(255,255,255,0.3); background: linear-gradient(135deg, #2A398D, #00F0FF); text-shadow: 0 2px 5px rgba(0,0,0,0.3); transition: 0.3s; transform: perspective(500px) rotateY(-5deg);" onmouseover="this.style.transform='perspective(500px) rotateY(0deg) scale(1.05)';" onmouseout="this.style.transform='perspective(500px) rotateY(-5deg)';">
+            <button class="btn btn-blue" onclick="aksesDashboardGuru()" style="border-radius: 20px; padding: 15px 25px; box-shadow: 0 15px 35px rgba(0,240,255,0.3); font-weight: 1000; font-size: 0.95rem; border: 2px solid rgba(255,255,255,0.3); background: linear-gradient(135deg, #2A398D, #00F0FF); text-shadow: 0 1.5px 3px rgba(0,0,0,0.3); transition: 0.2s; transform: perspective(500px) rotateY(-5deg);" onmouseover="this.style.transform='perspective(500px) rotateY(0deg) scale(1.03)';" onmouseout="this.style.transform='perspective(500px) rotateY(-5deg)';">
                 🔐 KONTROL GURU
             </button>
         </div>
+        
+        <!-- Dashboard Global Status Bar (Tugas Aktif) -->
+        <div id="globalTaskStatus" style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; min-height: 45px;">
+            <!-- Dinamis via updateBadgeSiswa -->
+        </div>
+
         <div class="grid-siswa" id="gridSiswa"></div>
     </div>
 
@@ -1695,7 +1699,7 @@
                 
                 <!-- Card 1: Manage Tasks -->
                 <div class="menu-guru-card" onclick="openView('panelMenuTugas')"
-                    style="background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%); border-radius: 35px; padding: 40px 30px; display: flex; flex-direction: column; gap: 20px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden;"
+                    style="background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%); border-radius: 35px; padding: 40px 30px; display: flex; flex-direction: column; gap: 20px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); background: rgba(42, 57, 141, 0.95); transition: 0.1s; position: relative; overflow: hidden;"
                     onmouseover="this.style.background='linear-gradient(135deg, rgba(42, 57, 141, 0.4) 0%, rgba(26, 36, 92, 0.2) 100%)'; this.style.borderColor='rgba(0, 240, 255, 0.5)'; this.style.transform='translateY(-10px)'; this.style.boxShadow='0 30px 60px rgba(0,0,0,0.5), 0 0 30px rgba(0, 240, 255, 0.1)';"
                     onmouseout="this.style.background='linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)'; this.style.borderColor='rgba(255,255,255,0.1)'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                     
@@ -1718,7 +1722,7 @@
 
                 <!-- Card 2: Student Reports -->
                 <div class="menu-guru-card" onclick="openView('panelRekap')"
-                    style="background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%); border-radius: 35px; padding: 40px 30px; display: flex; flex-direction: column; gap: 20px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden;"
+                    style="background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%); border-radius: 35px; padding: 40px 30px; display: flex; flex-direction: column; gap: 20px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); background: rgba(42, 57, 141, 0.95); transition: 0.1s; position: relative; overflow: hidden;"
                     onmouseover="this.style.background='linear-gradient(135deg, rgba(42, 57, 141, 0.4) 0%, rgba(26, 36, 92, 0.2) 100%)'; this.style.borderColor='rgba(0, 240, 255, 0.5)'; this.style.transform='translateY(-10px)'; this.style.boxShadow='0 30px 60px rgba(0,0,0,0.5), 0 0 30px rgba(0, 240, 255, 0.1)';"
                     onmouseout="this.style.background='linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)'; this.style.borderColor='rgba(255,255,255,0.1)'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                     
@@ -1741,7 +1745,7 @@
 
                 <!-- Card 3: Settings -->
                 <div class="menu-guru-card" onclick="openView('panelPengaturan')"
-                    style="background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%); border-radius: 35px; padding: 40px 30px; display: flex; flex-direction: column; gap: 20px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden;"
+                    style="background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%); border-radius: 35px; padding: 40px 30px; display: flex; flex-direction: column; gap: 20px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); background: rgba(42, 57, 141, 0.95); transition: 0.1s; position: relative; overflow: hidden;"
                     onmouseover="this.style.background='linear-gradient(135deg, rgba(42, 57, 141, 0.4) 0%, rgba(26, 36, 92, 0.2) 100%)'; this.style.borderColor='rgba(0, 240, 255, 0.5)'; this.style.transform='translateY(-10px)'; this.style.boxShadow='0 30px 60px rgba(0,0,0,0.5), 0 0 30px rgba(0, 240, 255, 0.1)';"
                     onmouseout="this.style.background='linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)'; this.style.borderColor='rgba(255,255,255,0.1)'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                     
@@ -1769,7 +1773,7 @@
             <div style="margin-top: 50px; display: flex; flex-direction: column; align-items: center; gap: 20px;">
                 <div style="height: 1px; width: 100%; background: linear-gradient(to right, transparent, rgba(0, 240, 255, 0.3), transparent);"></div>
                 <button class="btn" onclick="closeView('panelGuru')"
-                    style="background: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.4); color: #FF4D4D; border-radius: 20px; padding: 18px 60px; font-weight: 900; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 3px; transition: all 0.3s; box-shadow: 0 0 20px rgba(220, 38, 38, 0.1); position: relative; overflow: hidden;"
+                    style="background: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.4); color: #FF4D4D; border-radius: 20px; padding: 18px 60px; font-weight: 900; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 3px; transition: 0.15s; box-shadow: 0 0 20px rgba(220, 38, 38, 0.1); position: relative; overflow: hidden;"
                     onmouseover="this.style.background='rgba(220, 38, 38, 0.2)'; this.style.boxShadow='0 0 40px rgba(220, 38, 38, 0.3)'; this.style.transform='scale(1.05)';"
                     onmouseout="this.style.background='rgba(220, 38, 38, 0.1)'; this.style.boxShadow='0 0 20px rgba(220, 38, 38, 0.1)'; this.style.transform='scale(1)';">
                     <span style="position: relative; z-index: 1;">Keluar dari Sistem Kontrol</span>
@@ -1834,7 +1838,7 @@
     <div id="panelBuat" class="panel" style="background: radial-gradient(at 0% 0%, #2A398D 0%, #020617 100%); overflow-y: auto;">
         <div style="position: fixed; bottom: 10%; left: 5%; width: 500px; height: 500px; background: rgba(147, 51, 234, 0.05); border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0;"></div>
         <div class="panel-content" style="max-width: 1000px; padding: 40px 20px; position: relative; z-index: 1;">
-            <div class="glass-card" style="background: rgba(42, 57, 141, 0.3); border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); padding: 40px; backdrop-filter: blur(8px); margin-bottom: 30px;">
+            <div class="glass-card" style="background: rgba(42, 57, 141, 0.3); border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); padding: 40px; background: rgba(42, 57, 141, 0.95); margin-bottom: 30px;">
                 <div style="text-align: center; margin-bottom: 40px;">
                     <h2 id="labelTugas" style="color: white; font-size: 2rem; font-weight: 1000; text-transform: uppercase;">Konfigurasi Naskah</h2>
                     <p style="color: #FFFFFF; opacity: 1; font-weight: 800; letter-spacing: 2px;">Atur Materi, Durasi, dan Butir Soal</p>
@@ -1908,7 +1912,7 @@
 
             <div id="gridNomorCBT" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 40px; background: rgba(255,255,255,0.03); padding: 20px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.05);"></div>
 
-            <div class="glass-card" style="background: rgba(255,255,255,0.05); border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); padding: 40px; backdrop-filter: blur(8px); margin-bottom: 30px; min-height: 200px;">
+            <div class="glass-card" style="background: rgba(255,255,255,0.05); border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); padding: 40px; background: rgba(42, 57, 141, 0.95); margin-bottom: 30px; min-height: 200px;">
                 <div id="imgSoalSiswa" style="margin-bottom: 25px;"></div>
                 <div id="teksSoal" style="color: white; font-size: 1.3rem; font-weight: 700; line-height: 1.5; margin-bottom: 30px;"></div>
                 <div id="areaJawaban"></div>
@@ -1928,7 +1932,7 @@
     <!-- RESTORED REKAP PANEL -->
     <div id="panelRekap" class="panel" style="background: radial-gradient(at 0% 0%, #2A398D 0%, #020617 100%); overflow-y: auto;">
         <div class="panel-content" style="max-width: 1100px; padding: 40px 20px; position: relative; z-index: 1;">
-            <div class="glass-card" style="background: rgba(42, 57, 141, 0.3); border-radius: 40px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px); overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.5);">
+            <div class="glass-card" style="background: rgba(42, 57, 141, 0.3); border-radius: 40px; border: 1px solid rgba(255,255,255,0.1); background: rgba(42, 57, 141, 0.95); overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.5);">
                 <div style="background: linear-gradient(135deg, rgba(42, 57, 141, 0.6), rgba(0, 240, 255, 0.2)); padding: 40px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1);">
                     <div style="width: 70px; height: 70px; background: rgba(255,255,255,0.1); border-radius: 20px; display: flex; align-items: center; justify-content: center; color: #00F0FF; margin: 0 auto 20px; border: 1px solid rgba(255,255,255,0.2);">
                         <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -1983,7 +1987,7 @@
 
             <div style="display: grid; grid-template-columns: 400px 1fr; gap: 30px;">
                 <!-- Identitas -->
-                <div class="glass-card" style="background: rgba(255,255,255,0.05); border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); padding: 30px; backdrop-filter: blur(8px);">
+                <div class="glass-card" style="background: rgba(255,255,255,0.05); border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); padding: 30px; background: rgba(42, 57, 141, 0.95);">
                     <h3 style="color: #00F0FF; font-weight: 900; margin-bottom: 25px; text-transform: uppercase; font-size: 1rem;">⚙️ Identitas Aplikasi</h3>
                     <div style="display: flex; flex-direction: column; gap: 15px;">
                         <div class="premium-input-box">
@@ -2009,7 +2013,7 @@
                 </div>
 
                 <!-- Database Siswa -->
-                <div class="glass-card" style="background: rgba(255,255,255,0.05); border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); padding: 30px; backdrop-filter: blur(8px);">
+                <div class="glass-card" style="background: rgba(255,255,255,0.05); border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); padding: 30px; background: rgba(42, 57, 141, 0.95);">
                     <h3 style="color: #00F0FF; font-weight: 900; margin-bottom: 25px; text-transform: uppercase; font-size: 1rem;">👥 Database Siswa</h3>
                     
                     <div style="display: grid; grid-template-columns: 70px 1fr 120px 80px 60px; gap: 10px; margin-bottom: 20px;">
@@ -2181,9 +2185,15 @@
                 const val = snap.val();
                 if (!val) return;
                 Object.keys(val).forEach(k => {
-                    if (!dataTugas[k] || !dataTugas[k].aktif) dataTugas[k] = val[k];
+                    dataTugas[k] = val[k];
                 });
                 updateDashboardTugas();
+                updateBadgeSiswa();
+                
+                // Hanya perbarui layar jika siswa sedang berada di menu pilih tugas (bukan saat sedang ujian)
+                if (curUser && document.getElementById('panelPilihTugas').style.display === 'block') {
+                    masukHalamanPilihTugas(curUser, false);
+                }
             };
             getRef('tugas_multi').on('value', mergeTugas);
             getRef('tugas').on('value', mergeTugas);
@@ -2198,6 +2208,12 @@
                     if (!rekapGlobal.some(r => r.key === k)) rekapGlobal.push(item);
                 });
                 updateFilterRekap();
+                updateBadgeSiswa();
+                
+                // Hindari menarik paksa siswa jika sedang mengerjakan ujian
+                if (curUser && document.getElementById('panelPilihTugas').style.display === 'block') {
+                    masukHalamanPilihTugas(curUser, false);
+                }
             };
             getRef('rekap_v2').on('value', mergeRekap);
             getRef('rekapitulasi').on('value', mergeRekap);
@@ -2261,20 +2277,36 @@
         };
 
         function updateBadgeSiswa() {
-            const tugasAktifJudul = Object.values(dataTugas).filter(t => t.aktif).map(t => t.judul);
-            if (tugasAktifJudul.length === 0) return;
+            const now = new Date().getTime();
+            const tugasAktifSistem = Object.values(dataTugas).filter(t => {
+                if (!t.aktif) return false;
+                if (t.expiredAt && new Date(t.expiredAt).getTime() < now) return false;
+                return true;
+            });
+
+            // Update Global Status Bar (Di bawah profil guru)
+            const globalBar = document.getElementById('globalTaskStatus');
+            if (globalBar) {
+                globalBar.innerHTML = "";
+                tugasAktifSistem.forEach((t, idx) => {
+                    const pill = document.createElement('div');
+                    pill.style = "background: rgba(42, 57, 141, 0.95); border: 1.5px solid #00F0FF; padding: 10px 20px; border-radius: 15px; color: white; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);";
+                    let wktExp = "--:--";
+                    if (t.expiredAt) {
+                        const d = new Date(t.expiredAt);
+                        wktExp = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+                    }
+                    pill.innerHTML = `<span style="background: #00F0FF; color: #173B8F; font-size: 0.65rem; font-weight: 900; padding: 3px 10px; border-radius: 10px;">AKTIF ${idx+1}</span> <span style="font-weight: 800; font-size: 0.85rem; letter-spacing: -0.2px;">${t.judul}</span> <span style="color: #00F0FF; font-size: 0.72rem; font-weight: 800; border-left: 1px solid rgba(255,255,255,0.2); padding-left: 10px;">⏱️ S/D ${wktExp}</span>`;
+                    globalBar.appendChild(pill);
+                });
+            }
             SISWA.forEach((s, i) => {
                 const card = document.getElementById(`card-siswa-${i}`);
                 if (!card) return;
+
+                // Reset Status Selesai jika masih ada sisa
                 const existing = card.querySelector('.badge-selesai-semua');
                 if (existing) existing.remove();
-                const selesaiSemua = tugasAktifJudul.every(judul => rekapGlobal.some(r => r.nama === s.n && r.materi === judul));
-                if (selesaiSemua) {
-                    const badge = document.createElement('div');
-                    badge.className = 'badge-selesai-semua';
-                    badge.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg> Selesai`;
-                    card.appendChild(badge);
-                }
             });
         }
 
@@ -2284,7 +2316,7 @@
                 const labelWkt = document.getElementById(`labelWaktuSlot${slot.replace('tugas', '')}`);
                 const labelLim = document.getElementById(`labelLimitSlot${slot.replace('tugas', '')}`);
                 const t = dataTugas[slot];
-                if (t && t.aktif === true) {
+                if (t && t.aktif) {
                     labelJdl.innerText = t.judul;
                     labelJdl.style.color = "#1A245C";
                     labelJdl.style.opacity = "1";
@@ -2325,7 +2357,10 @@
 
         /* FUNGSI ALERT MODERN GAME-STYLE DENGAN SVG ICON */
         let currentAlertScore = null;
-        function showAlert(title, msg, iconType = "✅", showScore = null) {
+        function showAlert(title, msg, iconType = "✅", showScore = null, autoCloseMs = 0) {
+            if (autoCloseMs > 0) {
+                setTimeout(() => closeAlert(), autoCloseMs);
+            }
             const alertEl = document.getElementById('customAlert');
             const alertBox = alertEl.querySelector('.alert-box');
             const alertStatus = document.getElementById('alertGlow');
@@ -2430,6 +2465,7 @@
                 closeView('modalLogin');
                 openView('panelGuru');
                 document.getElementById('pin').value = "";
+                showAlert("Berhasil", "Selamat datang di Sistem Kontrol Guru!", "✅");
             } else { showAlert("Gagal", "PIN yang anda masukkan salah!", "❌"); }
         }
 
@@ -2537,7 +2573,7 @@
 
             if (!filter) return;
             SISWA.forEach((s, idx) => {
-                const d = rekapGlobal.find(r => r.nama === s.n && r.materi === filter);
+                const d = rekapGlobal.find(r => r.nama === s.n && (r.materi || "").trim().toLowerCase() === filter.trim().toLowerCase());
                 const aksiButtons = d ? `
             <div style="display:flex; gap:6px; justify-content:center;">
                 <button onclick="viewPDF('${d.file}')" class="btn btn-blue" style="width: 32px; height: 32px; padding: 0; box-shadow: 0 4px 6px rgba(42, 57, 141, 0.15); display: flex; align-items: center; justify-content: center; border-radius: 8px;" title="Lihat PDF Jawaban Siswa">
@@ -2561,6 +2597,10 @@
         function masukHalamanPilihTugas(nama, saveToStorage = true) {
             curUser = nama;
             document.getElementById('salamSiswa').innerText = `Halo, ${nama}!`;
+            openView('panelPilihTugas');
+            if (saveToStorage) {
+                showAlert("Berhasil", `Selamat datang, ${nama}!`, "👋", null, 2000);
+            }
 
             if (saveToStorage) {
                 sessionStorage.setItem('lmsState', JSON.stringify({ view: 'panelPilihTugas', user: nama }));
@@ -2568,8 +2608,8 @@
             const menu = document.getElementById('menuTugasSiswa'); menu.innerHTML = "";
             Object.keys(dataTugas).forEach(slot => {
                 const t = dataTugas[slot];
-                if (t.aktif === true) {
-                    const sudah = rekapGlobal.some(r => r.nama === curUser && r.materi === t.judul);
+                if (t && t.aktif) {
+                    const sudah = rekapGlobal.some(r => r.nama === curUser && (r.materi || "").trim().toLowerCase() === (t.judul || "").trim().toLowerCase());
 
                     // Cek Expired
                     let isExpired = false;
@@ -2588,7 +2628,7 @@
                     let badgeClass = sudah ? 'selesai' : (isExpired ? 'expired' : 'aktif');
 
                     if (sudah) {
-                        const rekap = rekapGlobal.find(r => r.nama === curUser && r.materi === t.judul);
+                        const rekap = rekapGlobal.find(r => r.nama === curUser && (r.materi || "").trim().toLowerCase() === (t.judul || "").trim().toLowerCase());
                         if (rekap) {
                             badgeContent = `Lihat Jawaban`;
                             btn.onclick = () => viewPDF(rekap.file, t.judul);
@@ -2813,10 +2853,12 @@
             }
             const pdfB64 = doc.output('datauristring').split(',')[1];
             dbRef('rekap_v2').push({ nama: curUser, materi: t.judul, nilai: skor, file: pdfB64 }).then(() => {
+                // Update ke memori lokal secara langsung untuk responsivitas instan
+                rekapGlobal.push({ nama: curUser, materi: t.judul, nilai: skor, file: pdfB64 });
                 hideLoader();
                 showAlert("Tugas Berhasil Terkirim!", "Jawaban kamu telah masuk ke sistem. Hubungi guru jika ada kendala.", "🚀", skor);
                 closeView('panelSiswa');
-                setTimeout(() => masukHalamanPilihTugas(curUser), 100);
+                setTimeout(() => masukHalamanPilihTugas(curUser, false), 100);
             });
         }
 
@@ -2979,9 +3021,9 @@
             doc.text(`${SISWA.length} Siswa`, 145, 62);
 
             // === SUMMARY ROW ===
-            const selesaiCount = SISWA.filter(s => rekapGlobal.some(r => r.nama === s.n && r.materi === filter)).length;
+            const selesaiCount = SISWA.filter(s => rekapGlobal.some(r => r.nama === s.n && (r.materi || "").trim().toLowerCase() === (filter || "").trim().toLowerCase())).length;
             const belumCount = SISWA.length - selesaiCount;
-            const nilaiArr = SISWA.map(s => { const d = rekapGlobal.find(r => r.nama === s.n && r.materi === filter); return d && typeof d.nilai === 'number' ? d.nilai : null; }).filter(v => v !== null);
+            const nilaiArr = SISWA.map(s => { const d = rekapGlobal.find(r => r.nama === s.n && (r.materi || "").trim().toLowerCase() === (filter || "").trim().toLowerCase()); return d && typeof d.nilai === 'number' ? d.nilai : null; }).filter(v => v !== null);
             const rataRata = nilaiArr.length > 0 ? Math.round(nilaiArr.reduce((a, b) => a + b, 0) / nilaiArr.length) : '-';
 
             const summaryY = 73;
