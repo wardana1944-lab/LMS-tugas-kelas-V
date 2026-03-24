@@ -39,12 +39,15 @@
         }
 
         body {
-            background: radial-gradient(at 50% 50%, #1C2536 0%, #090D14 100%);
-            background-attachment: fixed;
+            background: #090D14 radial-gradient(at 50% 50%, #1C2536 0%, #090D14 100%);
+            /* Dihapus: background-attachment: fixed menyebabkan lag parah saat scroll di HP */
+            background-size: cover;
             color: #FFFFFF;
             line-height: 1.6;
             overflow-x: hidden;
             min-height: 100vh;
+            /* Tambahkan touch-action untuk responsivitas sentuhan */
+            touch-action: manipulation;
         }
 
         header {
@@ -375,6 +378,8 @@
             flex-direction: column;
             align-items: center;
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            /* Optimasi Rendering: Mengisolasi elemen ini dari render tree induknya */
+            contain: content;
         }
 
         .card-siswa:hover {
@@ -427,7 +432,7 @@
             font-size: 0.72rem;
             font-weight: 900;
             color: #64B5F6;
-            background: rgba(10, 20, 50, 0.75);
+            background: rgba(10, 20, 50, 0.9);
             border: 1.5px solid rgba(100, 181, 246, 0.5);
             padding: 4px 9px;
             border-radius: 8px;
@@ -435,7 +440,7 @@
             letter-spacing: 0.5px;
             text-shadow: 0 0 8px rgba(100, 181, 246, 0.8);
             box-shadow: 0 0 8px rgba(30, 136, 229, 0.3);
-            backdrop-filter: blur(4px);
+            /* Backdrop-filter dihapus untuk performa */
         }
 
         .card-siswa .nama {
@@ -490,11 +495,14 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(at 50% 50%, #1C2536 0%, #090D14 100%) !important;
+            background: #090D14 radial-gradient(at 50% 50%, #1C2536 0%, #090D14 100%) !important;
             z-index: 9999;
             overflow-y: auto;
-            will-change: opacity, transform;
+            /* Mengurangi penggunaan will-change berlebih, hanya biarkan transform untuk animasi masuk */
+            will-change: transform;
             -webkit-overflow-scrolling: touch;
+            /* Container rendering isolation */
+            contain: strict;
         }
 
         .panel-content {
@@ -943,9 +951,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            /* Ganti background blur yang berat dengan overlay semi-transparan pekat */
+            background: rgba(4, 8, 15, 0.85);
             display: none;
             align-items: center;
             justify-content: center;
@@ -959,9 +966,8 @@
         }
 
         .alert-box {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            background: linear-gradient(135deg, rgba(28, 37, 54, 0.98), rgba(15, 23, 42, 0.98));
+            /* Ganti backdrop-filter blur 25px (sangat berat) dengan latar solid pekat */
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 35px;
             width: 90%;
@@ -1924,7 +1930,7 @@
                 ">SD NEGERI PENGKOL</div>
             </div>
         </div>
-        <div class="year" id="header_year" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 8px 30px; font-weight: 900; color: #FFFFFF; display: inline-block; margin-top: 8px; font-size: 0.95rem; backdrop-filter: blur(10px);">TAHUN PELAJARAN 2025/2026</div>
+        <div class="year" id="header_year" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 8px 30px; font-weight: 900; color: #FFFFFF; display: inline-block; margin-top: 8px; font-size: 0.95rem;">TAHUN PELAJARAN 2025/2026</div>
     </header>
 
     <div class="container" style="max-width: 1000px; margin: -16px auto 30px; padding: 0 15px; position: relative; z-index: 10;">
