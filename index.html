@@ -16,25 +16,28 @@
         rel="stylesheet">
     <style>
         :root {
-            /* eFootball 2026 Pro Theme Palette */
-            --ef-navy: #090e1b;
-            --ef-obsidian: #050811;
-            --ef-neon-lime: #d2ff00;
-            --ef-cyan: #00f0ff;
-            --ef-magenta: #ff007a;
-            --ef-white: #ffffff;
-            --ef-text-ghost: #8ca1b9;
+            /* eFootball 2026 Premium Stadium Palette */
+            --ef-navy: #121C2B;
+            --ef-obsidian: #0B131E;
+            --ef-gold: #D4AF37;
+            --ef-cyan: #00F2FF;
+            --ef-magenta: #FF004C;
+            --ef-white: #FFFFFF;
+            --ef-text-ghost: #A0AEC0;
+            --ef-grad-start: #1A2A44;
+            --ef-grad-end: #0B131E;
 
-            /* Mapping to original variable names for compatibility */
-            --primary-gradient: linear-gradient(135deg, var(--ef-neon-lime) 0%, #b8e000 100%);
-            --primary: var(--ef-neon-lime);
+            /* Mapping for existing logic compatibility */
+            --primary-gradient: linear-gradient(135deg, var(--ef-grad-start) 0%, var(--ef-grad-end) 100%);
+            --primary: var(--ef-gold);
             --bg: var(--ef-obsidian);
             --white: var(--ef-white);
             --text-charcoal: var(--ef-white);
             --text-light: var(--ef-text-ghost);
-            --border: rgba(0, 240, 255, 0.2);
+            --border: rgba(0, 242, 255, 0.2);
             --danger: var(--ef-magenta);
             --accent-emerald: var(--ef-cyan);
+            --ef-neon-lime: var(--ef-gold); /* User wants gold for premium CTA */
         }
 
         * {
@@ -43,6 +46,7 @@
             box-sizing: border-box;
             font-family: 'Exo 2', sans-serif;
             /* Sporty eFootball font */
+            overflow-wrap: anywhere;
         }
 
         html {
@@ -51,12 +55,13 @@
         }
 
         body {
-            background: #090D14 radial-gradient(at 50% 50%, #1C2536 0%, #090D14 100%);
+            background: var(--ef-obsidian) radial-gradient(circle at 50% 50%, var(--ef-grad-start) 0%, var(--ef-grad-end) 100%);
             background-size: cover;
+            background-attachment: fixed;
             color: #FFFFFF;
             line-height: 1.6;
             overflow: hidden;
-            /* Main window lock, scrolling handled by panels */
+            overflow-x: hidden;
             min-height: 100vh;
             touch-action: manipulation;
         }
@@ -68,22 +73,32 @@
             width: 100%;
             height: 100%;
             overflow-y: auto;
+            background: rgba(11, 19, 30, 0.98);
             -webkit-overflow-scrolling: touch;
             scroll-behavior: smooth;
             contain: content;
-            transition: opacity 0.4s cubic-bezier(0.2, 0, 0, 1), transform 0.4s cubic-bezier(0.2, 0, 0, 1);
-            transform: translateZ(0);
+            transform: translate3d(0,0,0);
+            z-index: 1000;
+        }
+
+        .panel-content {
+            position: relative;
+            z-index: 1001;
+            margin: 0 auto;
+            max-width: 1000px;
+            width: 100%;
+            padding: 40px 15px;
+            will-change: transform, opacity;
         }
 
         header {
             max-width: 1000px;
             margin: 0 auto;
-            background: linear-gradient(160deg, #121b30 0%, var(--ef-obsidian) 100%);
-            border-bottom: 4px solid var(--ef-neon-lime);
+            background: linear-gradient(160deg, var(--ef-grad-start) 0%, var(--ef-obsidian) 100%);
+            border-bottom: 4px solid var(--ef-gold);
             box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
             padding: 45px 25px;
             border-radius: 0 0 0 60px;
-            /* Sharp sporty cut */
             text-align: center;
             position: relative;
             z-index: 5;
@@ -412,41 +427,63 @@
             padding: 0 15px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 600px) {
             .grid-siswa {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 15px;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px !important;
+                padding: 0 10px !important;
             }
-        }
-
-        @media (max-width: 480px) {
-            .grid-siswa {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-
             .card-siswa {
-                padding: 15px 10px;
+                clip-path: none !important;
+                border-radius: 12px !important;
+                transform: none !important;
+                padding: 10px !important;
+            }
+            .player-card {
+                clip-path: none !important;
+                border-radius: 12px !important;
+                aspect-ratio: auto !important;
+                min-height: 280px !important;
+            }
+            .pro-name-title {
+                font-size: 0.85rem !important;
+            }
+            .pro-rating-hex {
+                width: 40px !important;
+                height: 44px !important;
+                font-size: 1.2rem !important;
+            }
+            * {
+                transform: none !important; /* Force reset all skews for mobile stability */
+            }
+            .panel-content {
+                padding: 20px 10px !important;
             }
         }
 
         .card-siswa {
-            background: var(--ef-navy);
+            background: linear-gradient(135deg, var(--ef-grad-start) 0%, var(--ef-obsidian) 100%);
             padding: 35px 20px 25px;
             clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
             text-align: center;
             cursor: pointer;
-            transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), border-color 0.25s;
-            border: 2px solid rgba(0, 240, 255, 0.1);
+            transition: 0.3s cubic-bezier(0.2, 0, 0, 1);
+            border: 2px solid rgba(255, 255, 255, 0.05);
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
             contain: content;
         }
 
-        .card-siswa .nama {
+        .card-siswa:hover {
+            transform: scale(1.05) translateY(-8px);
+            border-color: var(--ef-gold);
+            box-shadow: 0 20px 50px rgba(197, 160, 89, 0.3);
+            z-index: 10;
+        }
+ .nama {
             font-size: 1rem;
             margin-top: 10px;
             margin-bottom: 5px;
@@ -615,50 +652,62 @@
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px 15px;
+            padding: 30px 20px;
             position: relative;
+            background: linear-gradient(135deg, rgba(5, 8, 17, 0.4) 0%, transparent 100%);
+            border-left: 2px solid rgba(0, 240, 255, 0.1);
         }
 
         .btn {
-            padding: 12px 20px;
-            border-radius: 10px;
+            padding: 14px 28px;
+            border-radius: 0;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
             border: none;
-            font-weight: 800;
+            font-weight: 1000;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1.5px;
             cursor: pointer;
-            transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease;
+            transition: 0.2s cubic-bezier(0.19, 1, 0.22, 1);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            font-size: 0.85rem;
+            gap: 12px;
+            font-size: 0.82rem;
+            font-style: italic;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-blue {
-            background: var(--primary-gradient);
-            color: #0F172A;
-            font-weight: 900;
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            background: var(--ef-gold);
+            color: var(--ef-obsidian);
+            box-shadow: -8px 8px 0 rgba(212, 175, 55, 0.2);
+            border: 2px solid transparent;
+        }
+
+        .btn-blue:hover {
+            background: #fff;
+            transform: scale(1.05) translateX(5px);
+            box-shadow: -12px 12px 0 rgba(255,255,255,0.1);
         }
 
         .btn-dark {
-            background: var(--text-charcoal);
+            background: var(--ef-navy);
             color: white;
-            box-shadow: 0 4px 15px rgba(17, 24, 39, 0.2);
+            border: 2px solid var(--ef-cyan);
+            box-shadow: -8px 8px 0 rgba(0, 240, 255, 0.1);
         }
 
         .btn-outline {
             background: transparent;
-            border: 1.5px solid var(--border);
-            color: var(--text-charcoal);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
         }
 
         .btn-danger {
-            background: var(--danger);
+            background: #ff004c;
             color: white;
-            border: none;
-            box-shadow: 0 4px 15px rgba(230, 29, 37, 0.3);
+            box-shadow: -8px 8px 0 rgba(255, 0, 76, 0.2);
         }
 
         table {
@@ -1394,14 +1443,16 @@
         input,
         select {
             width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            margin: 6px 0;
+            padding: 16px 20px;
+            border-radius: 0;
+            clip-path: polygon(3% 0, 100% 0, 97% 100%, 0 100%);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-weight: 800;
+            font-family: 'Exo 2', sans-serif;
             font-size: 0.95rem;
-        }
-
-        input:focus {
+            transition: 0.3s;
             outline: none;
             border-color: var(--primary);
         }
@@ -1446,34 +1497,222 @@
             transform: translateX(8px);
         }
 
-        .toolbar {
-            background: #F8FAFC;
-            padding: 8px;
-            border-radius: 10px 10px 0 0;
-            border: 1px solid var(--border);
-            border-bottom: none;
+        /* --- ICONIC MOMENT E-FOOTBALL 2026 PRO CARD --- */
+        .card-siswa {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 8px !important;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            width: 100% !important;
+            max-width: 250px !important;
+            margin: 0 auto;
+            contain: unset !important;
+        }
+
+        .card-siswa:hover {
+            transform: scale(1.05) translateY(-5px) !important;
+            filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.3));
+            z-index: 100 !important;
+        }
+
+        .player-card {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1.7;
+            background: linear-gradient(165deg, #00142b 0%, #000000 70%, #000000 100%);
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 0 4px #004dc7, 0 15px 50px rgba(0,0,0,1);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 92%, 50% 100%, 0% 92%);
+            overflow: hidden;
             display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            color: white;
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        .player-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 60%),
+                linear-gradient(rgba(0,0,0,0.5), transparent);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .card-pro-content {
+            position: relative;
+            z-index: 10;
+            padding: 20px 15px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .card-pro-header {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            min-height: 40px;
+            justify-content: center;
+        }
+
+        .pro-name-title {
+            font-size: clamp(0.9rem, 4vw, 1.3rem);
+            font-weight: 1000;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            line-height: 1.1;
+            width: 100%;
+            word-break: break-word;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-mid-section {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: fit-content;
+        }
+
+        .pro-rating-hex {
+            width: 54px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--ef-gold) 0%, #b8860b 100%);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.7rem;
+            font-weight: 1000;
+            color: #000;
+            box-shadow: 0 0 20px rgba(197, 160, 89, 0.4);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .pro-avatar-space {
+            position: absolute;
+            top: 25%;
+            right: -25%;
+            width: 130%;
+            height: 65%;
+            z-index: 5;
+            pointer-events: none;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .pro-avatar-space svg {
+            width: 100%;
+            height: 100%;
+            opacity: 0.15;
+            filter: drop-shadow(0 0 20px rgba(255,255,255,0.1));
+        }
+
+        .pro-bottom-area {
+            margin-top: auto;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.4));
+            border-top: 1px solid rgba(255,255,215,0.1);
+            padding: 15px 12px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .pro-school-name {
+            font-size: 0.8rem;
+            font-weight: 1000;
+            color: var(--ef-gold);
+            text-transform: uppercase;
+            text-align: center;
+            letter-spacing: 1.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .pro-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr;
             gap: 6px;
         }
 
+        .pro-stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--ef-cyan);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.05);
+            padding-bottom: 2px;
+        }
+
+        .pro-stat-item b {
+            font-size: 0.75rem;
+            color: #2ECC71; /* Green stat value */
+            font-weight: 1000;
+            margin-left: 5px;
+        }
+
+        .toolbar {
+            background: var(--ef-navy);
+            padding: 10px;
+            border-radius: 12px 12px 0 0;
+            border: 1.5px solid var(--border);
+            border-bottom: none;
+            display: flex;
+            gap: 8px;
+        }
+
         .btn-tool {
-            width: 32px;
-            height: 32px;
-            background: var(--white);
-            border: 1px solid #CBD5E1;
-            border-radius: 6px;
+            width: 36px;
+            height: 36px;
+            background: var(--ef-obsidian);
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
             cursor: pointer;
+            color: white;
             font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-tool:hover {
+            border-color: var(--ef-gold);
+            background: rgba(197, 160, 89, 0.1);
         }
 
         .editor {
-            min-height: 100px;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 0 0 10px 10px;
-            background: var(--white);
+            min-height: 120px;
+            padding: 15px;
+            border: 1.5px solid var(--border);
+            border-radius: 0 0 12px 12px;
+            background: var(--ef-obsidian);
+            color: white;
             outline: none;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .soal-box input, 
+        .soal-box select {
+            color: var(--ef-gold) !important;
+            font-weight: 800 !important;
+        }
+
+        .soal-box input::placeholder {
+            color: rgba(212, 175, 55, 0.4) !important;
         }
 
         .btn-hapus-soal {
@@ -1500,9 +1739,33 @@
         }
 
         /* ============================================
-           eFOOTBALL 2026: PRO STYLE OPENING SPLASH
+           eFOOTBALL 2026: CINEMATIC OPENING (VIRTUAL FIELD)
            ============================================ */
-        @import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,900&display=swap');
+        @keyframes efElectricArc {
+            0%, 100% { opacity: 0; transform: scale(1) translateX(0); }
+            2% { opacity: 1; transform: scale(1.2) translateX(30px); filter: brightness(3); }
+            4% { opacity: 0; transform: scale(0.8) translateX(-30px); }
+            10% { opacity: 0.9; transform: scale(1.5) translateX(0); filter: hue-rotate(90deg); }
+            15% { opacity: 0; }
+        }
+
+        @keyframes efStadiumFlash {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.4; filter: brightness(2); }
+            52% { opacity: 1; filter: brightness(10); }
+            54% { opacity: 0.3; }
+        }
+
+        @keyframes efLogoGlow {
+            0%, 100% { 
+                filter: drop-shadow(0 0 20px rgba(210, 255, 0, 0.4)) drop-shadow(0 0 40px rgba(0, 240, 255, 0.2)); 
+                transform: scale(1);
+            }
+            50% { 
+                filter: drop-shadow(0 0 60px rgba(210, 255, 0, 0.8)) drop-shadow(0 0 100px rgba(0, 240, 255, 0.4)); 
+                transform: scale(1.05);
+            }
+        }
 
         #welcomeSplash {
             position: fixed;
@@ -1519,241 +1782,170 @@
             font-family: 'Exo 2', sans-serif;
         }
 
-        /* ── Layer 1: KONAMI-style Transition ── */
-        .ef-konami-overlay {
+        .ef-flash-overlay {
             position: absolute;
             inset: 0;
-            background: #000;
+            background: white;
+            opacity: 0;
+            z-index: 100;
+            pointer-events: none;
+            animation: efStadiumFlash 4s infinite linear;
+        }
+
+        .ef-electric-lines {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .ef-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, var(--ef-cyan), transparent);
+            height: 1.5px;
+            width: 300px;
+            opacity: 0;
+            animation: lineFly 1.5s infinite linear;
+        }
+
+        @keyframes lineFly {
+            0% { left: -300px; opacity: 0; }
+            50% { opacity: 0.6; }
+            100% { left: 100%; opacity: 0; }
+        }
+
+        .ef-bg-overlay {
+            position: absolute;
+            inset: 0;
+            background: 
+                linear-gradient(135deg, rgba(5, 8, 17, 0.9) 0%, transparent 100%),
+                radial-gradient(circle at 70% 30%, rgba(210, 255, 0, 0.05) 0%, transparent 50%);
+            z-index: 1;
+        }
+
+        .ef-core-v2 {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            transform: perspective(1000px) rotateX(0deg);
+        }
+
+        .ef-diamond-outer {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 40px;
+            background: var(--ef-obsidian);
+            border: 3px solid var(--ef-neon-lime);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: efKonamiHide 1s ease-in-out 1.2s forwards;
-            z-index: 100;
-        }
-
-        .ef-konami-text {
-            color: #fff;
-            font-size: 2.2rem;
-            font-weight: 900;
-            letter-spacing: 8px;
-            opacity: 0;
-            transform: translateY(10px);
-            animation: efKonamiShow 1s ease-out 0.2s forwards;
-        }
-
-        @keyframes efKonamiShow {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes efKonamiHide {
-            to {
-                opacity: 0;
-                visibility: hidden;
-            }
-        }
-
-        /* ── Layer 2: Main Background ── */
-        .ef-bg {
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(circle at 50% 50%, #152038 0%, var(--ef-obsidian) 100%);
-            opacity: 0;
-            animation: efBgReveal 0.8s ease-out 2.2s forwards;
-        }
-
-        .ef-bg-pattern {
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(45deg, rgba(210, 255, 0, 0.03) 25%, transparent 25%),
-                linear-gradient(-45deg, rgba(210, 255, 0, 0.03) 25%, transparent 25%);
-            background-size: 40px 40px;
-            opacity: 0.3;
-        }
-
-        @keyframes efBgReveal {
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* ── Layer 3: Neon Rays ── */
-        .ef-rays {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.1) 0%, transparent 60%);
-            animation: efPulse 4s infinite ease-in-out;
-        }
-
-        @keyframes efPulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 0.5;
-            }
-
-            50% {
-                transform: scale(1.2);
-                opacity: 1;
-            }
-        }
-
-        /* ── Layer 4: Modern Scan Lines ── */
-        .ef-scanline {
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, transparent, rgba(0, 240, 255, 0.05) 50%, transparent);
-            top: -100%;
-            animation: efScanMove 3s linear infinite;
-            z-index: 4;
-        }
-
-        @keyframes efScanMove {
-            to {
-                top: 100%;
-            }
-        }
-
-        /* ── Layer 5: Logo & Typography ── */
-        .ef-core {
-            text-align: center;
-            z-index: 15;
             position: relative;
-            transform: scale(0.9);
-            opacity: 0;
-            animation: efCoreIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) 2.4s forwards;
+            animation: efLogoGlow 3s infinite;
         }
 
-        @keyframes efCoreIn {
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .ef-logo-box {
-            position: relative;
+        .ef-diamond-inner {
             width: 140px;
             height: 140px;
-            margin: 0 auto 30px;
             background: var(--ef-neon-lime);
-            clip-path: polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%);
-            /* eFootball sporty slant */
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 40px rgba(210, 255, 0, 0.4);
         }
 
-        .ef-logo-box span {
-            font-size: 5rem;
-            font-weight: 900;
-            color: var(--ef-obsidian);
-            font-style: italic;
-            transform: skewX(-15deg);
+        .ef-diamond-inner svg {
+            width: 70px;
+            height: 70px;
+            fill: var(--ef-obsidian);
+            transform: scale(1.2);
         }
 
-        .ef-title-main {
-            font-size: clamp(3rem, 10vw, 5.5rem);
-            font-weight: 900;
+        .ef-text-stack {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: efTextUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+        }
+
+        @keyframes efTextUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ef-main-title {
+            font-size: clamp(3rem, 12vw, 5rem);
+            font-weight: 1000;
             font-style: italic;
-            line-height: 0.85;
-            text-transform: uppercase;
             color: #fff;
-            letter-spacing: -2px;
-            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
-            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: -3px;
+            margin: 0;
+            line-height: 0.9;
         }
 
-        .ef-title-main span {
+        .ef-main-title span {
             color: var(--ef-neon-lime);
             display: block;
-            font-size: 0.8em;
-            letter-spacing: 4px;
+            font-size: 0.75em;
+            letter-spacing: 5px;
         }
 
-        .ef-sub {
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 6px;
-            color: var(--ef-cyan);
-            opacity: 0.8;
-            font-style: italic;
-        }
-
-        /* ── Loading Bar ── */
-        .ef-loader-wrap {
+        .ef-loading-v3 {
             position: absolute;
-            bottom: 60px;
+            bottom: 80px;
+            width: 300px;
             left: 50%;
             transform: translateX(-50%);
-            width: 250px;
-            z-index: 20;
             text-align: center;
         }
 
-        .ef-loader-bar {
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 0;
-            overflow: hidden;
-            margin-top: 10px;
-            transform: skewX(-15deg);
+        .ef-load-status {
+            font-size: 0.7rem;
+            font-weight: 900;
+            color: var(--ef-cyan);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+            font-style: italic;
         }
 
-        .ef-loader-fill {
+        .ef-load-track {
+            height: 5px;
+            background: rgba(255,255,255,0.05);
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            transform: skewX(-20deg);
+        }
+
+        .ef-load-bar-v3 {
+            position: absolute;
+            top: 0;
+            left: 0;
             height: 100%;
             width: 100%;
             background: linear-gradient(90deg, var(--ef-cyan), var(--ef-neon-lime));
-            transform: scaleX(0);
             transform-origin: left;
-            animation: efLoad 2.5s ease-out 3.2s forwards;
+            transform: scaleX(0);
+            animation: efProgress 2s cubic-bezier(0.65, 0, 0.35, 1) forwards;
         }
 
-        @keyframes efLoad {
-            to {
-                transform: scaleX(1);
-            }
+        @keyframes efProgress {
+            0% { transform: scaleX(0); }
+            40% { transform: scaleX(0.4); }
+            60% { transform: scaleX(0.45); }
+            100% { transform: scaleX(1); }
         }
 
-        .ef-loader-text {
-            font-size: 0.7rem;
-            color: var(--ef-neon-lime);
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            font-weight: 900;
-            font-style: italic;
-        }
-
-        /* ── Exit Fade ── */
         #welcomeSplash.fade-out {
-            pointer-events: none;
-            animation: efExit 0.8s ease-in forwards;
+            animation: efCinematicExit 0.6s cubic-bezier(0.7, 0, 0.3, 1) forwards;
         }
 
-        @keyframes efExit {
-            0% {
-                opacity: 1;
-                transform: scale(1);
-                filter: brightness(1);
-            }
-
-            50% {
-                filter: brightness(2) blur(10px);
-            }
-
-            100% {
+        @keyframes efCinematicExit {
+            to {
                 opacity: 0;
-                transform: scale(1.1);
-                filter: brightness(5) blur(20px);
+                transform: scale(1.5);
+                filter: brightness(3) blur(10px);
             }
         }
 
@@ -1793,46 +1985,43 @@
         </defs>
     </svg>
 
-    <!-- CINEMATIC eFOOTBALL 2026 STARTUP -->
+    <!-- PREMIUM eFOOTBALL 2026 STARTUP VIEW -->
     <div id="welcomeSplash">
-        <div class="ef-bg">
-            <div class="ef-bg-pattern"></div>
-            <!-- High Velocity Neon Streaks -->
-            <div
-                style="position:absolute; top:30%; left:-100%; width:200%; height:2px; background:var(--ef-neon-lime); filter:blur(2px); animation: streakRun 2s infinite linear; opacity:0.3;">
-            </div>
-            <div
-                style="position:absolute; top:70%; left:-100%; width:200%; height:2px; background:var(--ef-cyan); filter:blur(2px); animation: streakRun 3s infinite linear; opacity:0.3; animation-delay:1s;">
-            </div>
+        <div class="ef-flash-overlay"></div>
+        <div class="ef-stadium-lights"></div>
+        <div class="ef-electric-lines">
+            <div class="ef-line" style="top: 20%; animation: efElectricArc 2s infinite linear;"></div>
+            <div class="ef-line" style="top: 50%; animation: efElectricArc 3s infinite linear; animation-delay: 0.5s;"></div>
+            <div class="ef-line" style="top: 80%; animation: efElectricArc 1.5s infinite linear; animation-delay: 1.2s;"></div>
+            <div class="ef-line" style="top: 35%; width: 600px; opacity: 0.4; animation: lineFly 1s infinite linear;"></div>
         </div>
-        <div class="ef-rays"></div>
-        <div class="ef-scanline"></div>
 
-        <div class="ef-core" style="animation: efZoomIn 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;">
-            <!-- eFootball-style Diamond Box Logo with Toga -->
-            <div class="ef-logo-box"
-                style="transform: perspective(500px) rotateY(10deg); box-shadow: -15px 15px 40px rgba(0,0,0,0.8), 0 0 30px rgba(0, 240, 255, 0.3);">
-                <svg viewBox="0 0 24 24" style="width: 75%; height: 75%; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));"
-                    fill="var(--ef-obsidian)">
-                    <path
-                        d="M12 3L1 9L12 15L21 10.09V17H23V9M12 3L12 3M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z" />
-                </svg>
+        <div class="ef-bg-overlay"></div>
+        
+        <div class="ef-core-v2">
+            <!-- Iconic Moment Diamond Logo -->
+            <div class="ef-diamond-outer" style="animation: efIconicFlash 1.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;">
+                <div class="ef-diamond-inner">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 3L1 9L12 15L21 10.09V17H23V9M12 3L12 3M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z" />
+                    </svg>
+                </div>
             </div>
 
-            <div class="ef-title-box">
-                <h1 class="ef-title-main" style="letter-spacing:-3px; text-shadow: 0 0 30px rgba(255,255,255,0.3);">
-                    RUANG<span style="color: var(--ef-neon-lime);">BELAJAR</span></h1>
-                <div class="ef-sub"
-                    style="font-weight:900; background:rgba(0,0,0,0.5); padding:5px 20px; transform:skewX(-15deg); color:var(--ef-cyan);">
-                    SD NEGERI PENGKOL • KELAS V</div>
+            <div class="ef-text-stack">
+                <h1 class="ef-main-title">
+                    RUANG<span>BELAJAR</span>
+                </h1>
+                <div style="display:inline-block; border-top:1px solid rgba(0, 242, 255, 0.4); border-bottom:1px solid rgba(0, 242, 255, 0.4); padding:10px 40px; margin-top:15px; transform:skewX(-25deg); background: rgba(0,0,0,0.5);">
+                   <span style="font-size:0.85rem; font-weight:1000; color:var(--ef-neon-lime); letter-spacing:8px; text-transform:uppercase; transform:skewX(25deg); display:block; font-style:italic;">SD NEGERI PENGKOL</span>
+                </div>
             </div>
         </div>
 
-        <div class="ef-loader-wrap">
-            <div class="ef-loader-text" style="animation: efPulse 1.5s infinite alternate;">Initializing Ruang Guru
-                System...</div>
-            <div class="ef-loader-bar" style="height:6px; background:rgba(255,255,255,0.05);">
-                <div class="ef-loader-fill" style="box-shadow: 0 0 20px var(--ef-cyan);"></div>
+        <div class="ef-loading-v3">
+            <div class="ef-load-status">SINKRONISASI DATA...</div>
+            <div class="ef-load-track">
+                <div class="ef-load-bar-v3"></div>
             </div>
         </div>
     </div>
@@ -1880,9 +2069,9 @@
                 setTimeout(() => {
                     splash.style.display = 'none';
                     // Re-enable interactions if needed
-                }, 800);
+                }, 500); // Faster exit
             }
-        }, 5500); // 5.5s total duration
+        }, 2200); // 2.2s total duration (Half of before)
     </script>
 
     <style>
@@ -1944,7 +2133,7 @@
             </div>
             <div class="modal-actions">
                 <button class="modal-btn-primary" onclick="verifikasiPinSiswa()">MASUK</button>
-                <button class="modal-btn-ghost" onclick="openView('panelUtama')">KEMBALI</button>
+                <button class="modal-btn-ghost" onclick="closeView('modalPinSiswa')">KEMBALI</button>
             </div>
         </div>
     </div>
@@ -2053,7 +2242,7 @@
             </div>
             <div class="modal-actions">
                 <button class="modal-btn-primary" onclick="prosesLogin()">MASUK DASHBOARD</button>
-                <button class="modal-btn-ghost" onclick="openView('panelUtama')">BATAL</button>
+                <button class="modal-btn-ghost" onclick="closeView('modalLogin'); openView('panelUtama');">BATAL</button>
             </div>
         </div>
     </div>
@@ -2212,67 +2401,69 @@
                 <p
                     style="color: var(--ef-neon-lime); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;">
                     Pilih Slot untuk Konfigurasi Soal</p>
+                <div id="debugPath" style="font-family: monospace; font-size: 0.55rem; color: rgba(255,255,255,0.2); margin-top: 5px; text-transform: lowercase; letter-spacing: 1px;">SINKRONISASI: guru_data/wardanaaditya588_gmail_com</div>
+                <div id="statusTugasGlobal" style="margin-top: 15px; display: flex; justify-content: center;"></div>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
                 <!-- Slot 1 -->
                 <div class="glass-card"
-                    style="background: var(--ef-navy); border-radius: 0; padding: 25px; border: 2px solid var(--ef-cyan); box-shadow: 0 10px 30px rgba(0,240,255,0.1);">
+                    style="background: var(--ef-navy); border-radius: 0; padding: 25px; border: 2px solid var(--ef-gold); transform: skewX(-5deg); position: relative; overflow: hidden; contain: content; will-change: transform;">
+                    <div style="position: absolute; top:0; left:0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, transparent 100%); pointer-events: none;"></div>
                     <div
-                        style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                        style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; transform: skewX(5deg);">
                         <div>
                             <span
-                                style="background: var(--ef-neon-lime); color: var(--ef-obsidian); padding: 4px 12px; border-radius: 0; font-size: 0.7rem; font-weight: 900; letter-spacing: 1px; transform: skewX(-15deg); display: inline-block;"><span
-                                    style="transform: skewX(15deg); display: inline-block;">TUGAS #01</span></span>
+                                style="background: var(--ef-gold); color: var(--ef-obsidian); padding: 5px 15px; font-size: 0.7rem; font-weight: 1000; letter-spacing: 2px; text-transform: uppercase;">NASKAH SLOT #01</span>
                             <h3 id="labelJudulSlot1"
-                                style="color: white; font-size: 1.1rem; font-weight: 900; margin-top: 15px; font-style: italic;">
-                                ...</h3>
+                                style="color: white; font-size: 1.25rem; font-weight: 900; margin-top: 15px; font-style: italic; text-transform: uppercase;">
+                                SEDANG MEMUAT DATA...</h3>
                         </div>
                         <div style="text-align: right;">
                             <p id="labelWaktuSlot1"
-                                style="color: var(--ef-text-ghost); font-size: 0.72rem; font-weight: 900;">DURASI: --
+                                style="color: var(--ef-cyan); font-size: 0.75rem; font-weight: 1000;">DURASI: --
                             </p>
                             <p id="labelLimitSlot1"
-                                style="color: var(--ef-magenta); font-size: 0.65rem; font-weight: 800; margin-top: 5px;">
+                                style="color: var(--ef-magenta); font-size: 0.65rem; font-weight: 800; margin-top: 5px; opacity: 0.8;">
                                 --</p>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px;">
+                    <div style="display: flex; gap: 10px; transform: skewX(5deg);">
                         <button class="btn btn-blue"
-                            style="flex: 1.5; border-radius: 0; background: var(--ef-neon-lime); color: var(--ef-obsidian);"
+                            style="flex: 1.5; border-radius: 0; background: var(--ef-neon-lime); color: var(--ef-obsidian); font-weight: 900; font-style: italic; border: none; box-shadow: 0 5px 15px rgba(210, 255, 0, 0.2);"
                             onclick="bukaPanelBuat('tugas1')">BUAT / UBAH</button>
-                        <button class="btn btn-danger" style="flex: 1; border-radius: 0;"
+                        <button class="btn btn-danger" style="flex: 1; border-radius: 0; font-weight: 900; font-style: italic; background: #820000; border: none;"
                             onclick="nonaktifkanTugas('tugas1')">HAPUS</button>
                     </div>
                 </div>
 
                 <!-- Slot 2 -->
                 <div class="glass-card"
-                    style="background: var(--ef-navy); border-radius: 0; padding: 25px; border: 2px solid var(--ef-cyan); box-shadow: 0 10px 30px rgba(0,240,255,0.1);">
+                    style="background: var(--ef-navy); border-radius: 0; padding: 25px; border: 2px solid var(--ef-cyan); transform: skewX(-5deg); position: relative; overflow: hidden; contain: content; will-change: transform;">
+                    <div style="position: absolute; top:0; left:0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(0, 242, 255, 0.05) 0%, transparent 100%); pointer-events: none;"></div>
                     <div
-                        style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                        style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; transform: skewX(5deg);">
                         <div>
                             <span
-                                style="background: var(--ef-neon-lime); color: var(--ef-obsidian); padding: 4px 12px; border-radius: 0; font-size: 0.7rem; font-weight: 900; letter-spacing: 1px; transform: skewX(-15deg); display: inline-block;"><span
-                                    style="transform: skewX(15deg); display: inline-block;">TUGAS #02</span></span>
+                                style="background: var(--ef-cyan); color: var(--ef-obsidian); padding: 5px 15px; font-size: 0.7rem; font-weight: 1000; letter-spacing: 2px; text-transform: uppercase;">NASKAH SLOT #02</span>
                             <h3 id="labelJudulSlot2"
-                                style="color: white; font-size: 1.1rem; font-weight: 900; margin-top: 15px; font-style: italic;">
-                                ...</h3>
+                                style="color: white; font-size: 1.25rem; font-weight: 900; margin-top: 15px; font-style: italic; text-transform: uppercase;">
+                                SEDANG MEMUAT DATA...</h3>
                         </div>
                         <div style="text-align: right;">
                             <p id="labelWaktuSlot2"
-                                style="color: var(--ef-text-ghost); font-size: 0.72rem; font-weight: 900;">DURASI: --
+                                style="color: var(--ef-gold); font-size: 0.75rem; font-weight: 1000;">DURASI: --
                             </p>
                             <p id="labelLimitSlot2"
-                                style="color: var(--ef-magenta); font-size: 0.65rem; font-weight: 800; margin-top: 5px;">
+                                style="color: var(--ef-magenta); font-size: 0.65rem; font-weight: 800; margin-top: 5px; opacity: 0.8;">
                                 --</p>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px;">
+                    <div style="display: flex; gap: 10px; transform: skewX(5deg);">
                         <button class="btn btn-blue"
-                            style="flex: 1.5; border-radius: 0; background: var(--ef-neon-lime); color: var(--ef-obsidian);"
+                            style="flex: 1.5; border-radius: 0; background: var(--ef-neon-lime); color: var(--ef-obsidian); font-weight: 900; font-style: italic; border: none; box-shadow: 0 5px 15px rgba(210, 255, 0, 0.2);"
                             onclick="bukaPanelBuat('tugas2')">BUAT / UBAH</button>
-                        <button class="btn btn-danger" style="flex: 1; border-radius: 0;"
+                        <button class="btn btn-danger" style="flex: 1; border-radius: 0; font-weight: 900; font-style: italic; background: #820000; border: none;"
                             onclick="nonaktifkanTugas('tugas2')">HAPUS</button>
                     </div>
                 </div>
@@ -2382,9 +2573,9 @@
                 style="display: flex; flex-direction: column; gap: 20px; align-items: center; width: 100%;"></div>
 
             <button class="btn btn-outline"
-                style="width: 100%; max-width: 320px; margin-top: 60px; border-radius: 0; transform: skewX(-15deg); padding: 18px; border: 2px solid rgba(255,255,255,0.2); color: white; font-weight: 900;"
+                style="width: 100%; max-width: 320px; margin-top: 60px; border-radius: 0; transform: skewX(-15deg); padding: 18px; border: 2px solid var(--ef-gold); color: white; font-weight: 1000; font-style: italic; background: rgba(212, 175, 55, 0.1);"
                 onclick="openView('panelUtama')">
-                <span style="transform: skewX(15deg); display: inline-block;">KEMBALI KE BERANDA</span>
+                <span style="transform: skewX(15deg); display: inline-block;">TUTUP & LOG OUT</span>
             </button>
         </div>
     </div>
@@ -2627,14 +2818,14 @@
 
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyCfzJJpq32AltXRcP0ZB6fM1mvYpJVSVl4",
-            authDomain: "ruang-belajar-kelas-v.firebaseapp.com",
-            databaseURL: "https://ruang-belajar-kelas-v-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "ruang-belajar-kelas-v",
-            storageBucket: "ruang-belajar-kelas-v.firebasestorage.app",
-            messagingSenderId: "397105486119",
-            appId: "1:397105486119:web:4cfc9ad92dd36fed42b102",
-            measurementId: "G-69F6KWF0ZH"
+            apiKey: "AIzaSyDSsFDIaR5IBd8-pEtd6beDQNLr3T7dB2M",
+            authDomain: "ruang-belajar-kelas-v-632aa.firebaseapp.com",
+            databaseURL: "https://ruang-belajar-kelas-v-632aa-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "ruang-belajar-kelas-v-632aa",
+            storageBucket: "ruang-belajar-kelas-v-632aa.firebasestorage.app",
+            messagingSenderId: "116847177606",
+            appId: "1:116847177606:web:0cfaa4ac06dce5352d8607",
+            measurementId: "G-LENGQSKJY2"
         };
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
@@ -2650,16 +2841,15 @@
             { n: "Tanca Al Verosa", i: "👦", a: "15" }
         ];
         let SISWA = [];
-        let lmsEmailGuru = "wardana1944@gmail.com";
-        localStorage.setItem('lmsEmailGuru', "wardana1944@gmail.com");
+        let lmsEmailGuru = "wardanaaditya588@gmail.com";
+        localStorage.setItem('lmsEmailGuru', "wardanaaditya588@gmail.com");
         let BASE_PATH = "";
 
         function dbRef(path) {
-            if (!BASE_PATH) {
-                const e = lmsEmailGuru.replace(/[.#$[\]@]/g, "_");
-                BASE_PATH = `guru_data/${e}`;
-            }
-            return db.ref(`${BASE_PATH}/${path}`);
+            const stored = localStorage.getItem('lmsEmailGuru') || "wardanaaditya588@gmail.com";
+            const e = (stored).toLowerCase().trim().replace(/[.#$[\]@]/g, "_");
+            const baseFolder = `guru_data/${e}`;
+            return db.ref(`${baseFolder}/${path}`);
         }
 
         let dataTugas = {}, curSlot = "", curUser = "", curIdx = 0, curAns = [], timerInterval, sisaWaktu, rekapGlobal = [], currentSoalAcak = [];
@@ -2688,18 +2878,44 @@
 
             SISWA.forEach((s, i) => {
                 const noAbsen = s.a || (i + 1).toString().padStart(2, '0');
-                const jerseyIcon = getJerseySVG(noAbsen);
-
+                const isPutri = (s.i === "👧");
+                
                 const d = document.createElement('div');
                 d.className = 'card-siswa';
-                d.id = `card-siswa-${i}`;
                 d.innerHTML = `
-            <div class="absen">#${noAbsen}</div>
-            <div class="avatar-frame" style="background:transparent; border:none; box-shadow:none;">${jerseyIcon}</div>
-            <p class="nama" style="margin-top:0;">${s.n}</p>
-            <div class="kelas"> KELAS V</div>
-        `;
-                d.onclick = () => loginSiswa(s);
+                <div class="player-card" onclick="loginSiswa(SISWA[${i}])">
+                    <!-- Avatar Silhouette Layer -->
+                    <div class="pro-avatar-space">
+                        <svg viewBox="0 0 24 24" fill="white">
+                            <path d="${isPutri ? 'M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z' : 'M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z'}" />
+                            <!-- Simplified Gender Outline Difference can be added here if needed, but standard person icon is fine for profile look -->
+                        </svg>
+                    </div>
+
+                    <div class="card-pro-content">
+                        <!-- Name Only Header -->
+                        <div class="card-pro-header">
+                            <div class="pro-name-title">${s.n}</div>
+                        </div>
+
+                        <!-- Mid Content: Large Rating -->
+                        <div class="card-mid-section">
+                            <div class="pro-rating-hex">${noAbsen}</div>
+                        </div>
+
+                        <!-- Footer Area: High Quality Info Grid -->
+                        <div class="pro-bottom-area">
+                            <div class="pro-school-name">SD N PENGKOL</div>
+                            <div class="pro-stats-grid">
+                                <div class="pro-stat-item">KELAS <b>5</b></div>
+                                <div class="pro-stat-item">ABSEN <b>${noAbsen}</b></div>
+                                <div class="pro-stat-item">TP <b>2025/2026</b></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+                d.id = `card-siswa-${i}`;
                 g.appendChild(d);
             });
             updateBadgeSiswa();
@@ -2707,47 +2923,41 @@
 
         let selectedSiswaForPin = null;
         function loginSiswa(siswa) {
-            if (!siswa.p) {
-                // If no PIN set, just go in
-                masukHalamanPilihTugas(siswa.n);
-            } else {
-                selectedSiswaForPin = siswa;
-                document.getElementById('pinSiswaInp').value = "";
-                document.getElementById('labelPinSiswa').innerText = "PIN - " + siswa.n;
-                openView('modalPinSiswa');
-                setTimeout(() => document.getElementById('pinSiswaInp').focus(), 150);
-            }
+            selectedSiswaForPin = siswa;
+            document.getElementById('pinSiswaInp').value = "";
+            document.getElementById('labelPinSiswa').innerText = "AKSES - " + siswa.n;
+            openView('modalPinSiswa');
+            setTimeout(() => document.getElementById('pinSiswaInp').focus(), 150);
         }
 
         function verifikasiPinSiswa() {
-            const inp = document.getElementById('pinSiswaInp').value;
-            if (inp === selectedSiswaForPin.p) {
+            const inp = document.getElementById('pinSiswaInp').value.trim();
+            const targetPin = (selectedSiswaForPin.p || "").toString().trim();
+            
+            if (inp === targetPin) {
                 closeView('modalPinSiswa');
                 masukHalamanPilihTugas(selectedSiswaForPin.n);
             } else {
-                showAlert("Gagal", "PIN yang anda masukkan salah!", "❌");
+                showAlert("Akses Ditolak", "PIN/Password yang anda masukkan salah!", "❌");
                 document.getElementById('pinSiswaInp').value = "";
             }
         }
 
         async function initListeners() {
-            const storedEmail = localStorage.getItem('lmsEmailGuru') || "";
+            const storedEmail = localStorage.getItem('lmsEmailGuru') || "wardanaaditya588@gmail.com";
             SISWA = [...SISWA_DEFAULT];
             renderGridSiswa();
-
-            if (!storedEmail) {
-                hideLoader();
-                // Tidak otomatis buka pengaturan, agar siswa tidak masuk ke sana
-                return;
-            }
-
-            // PATEN: Satu jalur per email (Format Bersih)
+            
             const e_safe = storedEmail.toLowerCase().trim().replace(/[.#$[\]@]/g, "_");
             BASE_PATH = `guru_data/${e_safe}`;
+            const dbInfo = document.getElementById('debugPath');
+            if (dbInfo) dbInfo.innerText = `SINKRONISASI: ${BASE_PATH}`;
 
             dataTugas = {}; rekapGlobal = [];
             setupListenersForPath(BASE_PATH);
-
+            setupListenersForPath(""); // Root Backup
+            
+            updateDashboardTugas();
             hideLoader();
         }
 
@@ -2777,15 +2987,19 @@
 
             const mergeTugas = (snap) => {
                 const val = snap.val();
-                if (!val) return;
+                if (!val) {
+                    updateDashboardTugas();
+                    return;
+                }
                 Object.keys(val).forEach(k => {
                     dataTugas[k] = val[k];
                 });
                 updateDashboardTugas();
                 updateBadgeSiswa();
-
-                // Hanya perbarui layar jika siswa sedang berada di menu pilih tugas (bukan saat sedang ujian)
-                if (curUser && document.getElementById('panelPilihTugas').style.display === 'block') {
+                
+                // PENTING: Jika siswa sedang di halaman pilih tugas, langsung update tanpa refresh!
+                const panel = document.getElementById('panelPilihTugas');
+                if (curUser && panel && (panel.style.display === 'block' || panel.classList.contains('entering'))) {
                     masukHalamanPilihTugas(curUser, false);
                 }
             };
@@ -2836,20 +3050,20 @@
         }
 
         window.onload = () => {
-            // PRO-UI ANIMATION SEQUENCE
             const splash = document.getElementById('welcomeSplash');
             if (splash) {
-                // Add click-to-skip fail-safe
-                splash.onclick = () => { splash.classList.add('fade-out'); setTimeout(() => splash.remove(), 500); };
-
+                splash.onclick = () => { 
+                    splash.classList.add('fade-out'); 
+                    setTimeout(() => splash.remove(), 500); 
+                };
                 setTimeout(() => {
-                    if (splash.parentNode) { // Check if splash is still in DOM
+                    if (splash && splash.parentNode) {
                         splash.classList.add('fade-out');
-                        setTimeout(() => { if (splash.parentNode) splash.remove(); }, 800);
+                        setTimeout(() => { if (splash && splash.parentNode) splash.remove(); }, 800);
                     }
-                }, 3500); // 3.5s: The complete definitive PES/eFootball sequence
+                }, 4000); 
             }
-
+            
             initListeners();
 
             // Load Identity from LocalStorage
@@ -2883,75 +3097,110 @@
                 return true;
             });
 
-            // Update Global Status Bar (Di bawah profil guru)
             const globalBar = document.getElementById('globalTaskStatus');
             if (globalBar) {
                 globalBar.innerHTML = "";
+                globalBar.style.marginTop = "20px";
 
                 if (tugasAktifSistem.length === 0) {
-                    globalBar.style.justifyContent = 'center';
-                    const noTask = document.createElement('div');
-                    noTask.style = "background: rgba(28, 37, 54, 0.4); border: 1.5px solid rgba(255, 255, 255, 0.2); padding: 10px 20px; border-radius: 15px; color: #E2E8F0; font-weight: 800; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,0,0,0.2);";
-                    noTask.innerText = "TIDAK ADA TUGAS AKTIF";
-                    globalBar.appendChild(noTask);
+                    globalBar.innerHTML = `
+                        <div style="display:flex; align-items:center; background:rgba(0,0,0,0.5); border:1.5px solid rgba(255,255,255,0.05); border-left:4px solid var(--ef-text-ghost); transform:skewX(-15deg); overflow:hidden; margin:0 auto;">
+                            <div style="background:var(--ef-text-ghost); color:white; padding:8px 15px; font-weight:1000; font-size:0.7rem;">OFF</div>
+                            <div style="padding:8px 25px; color:var(--ef-text-ghost); font-weight:900; font-size:0.75rem; letter-spacing:1px;">TIDAK ADA TUGAS AKTIF</div>
+                        </div>
+                    `;
                 } else {
-                    globalBar.style.justifyContent = tugasAktifSistem.length === 1 ? 'center' : 'space-between';
-
+                    const containers = document.createElement('div');
+                    containers.style = "display:flex; flex-wrap:wrap; gap:12px; justify-content:center; width:100%;";
+                    
                     tugasAktifSistem.forEach((t, idx) => {
-                        const pill = document.createElement('div');
-                        const widthStyle = tugasAktifSistem.length === 1 ? "auto" : "calc(50% - 7.5px)";
-                        // Modern eFootball Skewed Pill
-                        pill.style = `flex: 1; max-width: ${widthStyle}; background: var(--ef-navy); border: 2.2px solid var(--ef-cyan); padding: 8px 20px; border-radius: 0; color: white; display: flex; align-items: center; justify-content: space-between; gap: 10px; transform: skewX(-15deg); box-shadow: 0 10px 20px rgba(0,0,0,0.4);`;
-
                         let wktExp = "--:--";
                         if (t.expiredAt) {
                             const d = new Date(t.expiredAt);
                             wktExp = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
                         }
-
-                        pill.innerHTML = `
-                            <div style="display: flex; align-items: center; gap: 12px; transform: skewX(15deg);">
-                                <span style="background: var(--ef-neon-lime); color: var(--ef-obsidian); font-size: 0.65rem; font-weight: 1000; padding: 4px 12px; text-transform: uppercase;">AKTIF ${idx + 1}</span>
-                                <span style="font-weight: 950; font-size: 0.85rem; letter-spacing: -0.5px; font-style: italic;">${t.judul.toUpperCase()}</span>
-                            </div>
-                            <span style="color: var(--ef-cyan); font-size: 0.72rem; font-weight: 900; border-left: 2px solid rgba(255,255,255,0.1); padding-left: 12px; transform: skewX(15deg);">⏱️ ${wktExp}</span>`;
-                        globalBar.appendChild(pill);
+                        
+                        const scoreboard = document.createElement('div');
+                        scoreboard.style = "display:flex; align-items:center; background:var(--ef-navy); border:1.5px solid rgba(255,255,255,0.1); border-left:5px solid var(--ef-cyan); transform:skewX(-15deg); overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.5);";
+                        scoreboard.innerHTML = `
+                            <div style="background:var(--ef-cyan); color:var(--ef-obsidian); padding:8px 15px; font-weight:1000; font-size:0.7rem; text-transform:uppercase;">TUGAS ${idx+1}</div>
+                            <div style="padding:8px 25px; color:white; font-weight:900; font-size:0.85rem; letter-spacing:1px; border-right:1px solid rgba(255,255,255,0.1); font-style:italic;">${t.judul.toUpperCase()}</div>
+                            <div style="padding:8px 15px; color:var(--ef-cyan); font-weight:1000; font-size:0.75rem; font-family:monospace;">${wktExp}</div>
+                        `;
+                        containers.appendChild(scoreboard);
                     });
+                    globalBar.appendChild(containers);
                 }
             }
+            
             SISWA.forEach((s, i) => {
                 const card = document.getElementById(`card-siswa-${i}`);
                 if (!card) return;
-
-                // Reset Status Selesai jika masih ada sisa
-                const existing = card.querySelector('.badge-selesai-semua');
-                if (existing) existing.remove();
+                
+                let badge = card.querySelector('.card-mini-scoreboard');
+                if (badge) badge.style.display = 'none'; // Clear match status badges on main grid
             });
         }
 
         function updateDashboardTugas() {
-            ['tugas1', 'tugas2'].forEach(slot => {
-                const labelJdl = document.getElementById(`labelJudulSlot${slot.replace('tugas', '')}`);
-                const labelWkt = document.getElementById(`labelWaktuSlot${slot.replace('tugas', '')}`);
-                const labelLim = document.getElementById(`labelLimitSlot${slot.replace('tugas', '')}`);
-                const t = dataTugas[slot];
-                if (t && t.aktif) {
-                    labelJdl.innerText = t.judul;
-                    labelJdl.style.color = "#161D2B";
-                    labelJdl.style.opacity = "1";
-                    labelWkt.innerText = `DURASI: ${t.durasi} MIN`;
-                    if (t.expiredAt) {
-                        const d = new Date(t.expiredAt);
-                        labelLim.innerText = `Exp: ${d.toLocaleDateString('id-ID')} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+            const count = Object.keys(dataTugas).filter(k => dataTugas[k] && dataTugas[k].aktif).length;
+            const el = document.getElementById('statusTugasGlobal');
+            
+            if (el) {
+                if (count > 0) {
+                el.innerHTML = `
+                    <div style="display:flex; align-items:center; background:var(--ef-obsidian); border:1px solid rgba(255,255,255,0.1); border-left:6px solid var(--ef-neon-lime); padding:0; transform:skewX(-10deg); overflow:hidden; box-shadow:0 10px 20px rgba(0,0,0,0.5);">
+                        <div style="background:var(--ef-neon-lime); color:var(--ef-obsidian); padding:12px 18px; font-weight:1000; font-size:0.9rem; letter-spacing:1px; transform:skewX(0);">TUGAS</div>
+                        <div style="padding:12px 25px; color:white; font-weight:900; font-size:0.85rem; letter-spacing:1.5px;">${count} TUGAS AKTIF</div>
+                    </div>
+                `;
+            } else {
+                    el.innerHTML = `
+                        <div style="display:flex; align-items:center; background:#1a1a1a; border:1px solid rgba(255,255,255,0.05); border-left:6px solid #e53e3e; padding:0; transform:skewX(-10deg); overflow:hidden; opacity:0.8;">
+                            <div style="background:rgba(229, 62, 62, 0.2); color:#e53e3e; padding:12px 18px; font-weight:1000; font-size:0.9rem; letter-spacing:1px;">OFF</div>
+                            <div style="padding:12px 25px; color:#a0aec0; font-weight:900; font-size:0.85rem; letter-spacing:1.5px;">TIDAK ADA MATCH</div>
+                        </div>
+                    `;
+                }
+            }
+
+            const sList = ['tugas1', 'tugas2'];
+            sList.forEach(sn => {
+                const idN = sn.replace('tugas', '');
+                const lJ = document.getElementById('labelJudulSlot' + idN);
+                const lW = document.getElementById('labelWaktuSlot' + idN);
+                const lL = document.getElementById('labelLimitSlot' + idN);
+                
+                if (lJ) {
+                    const task = dataTugas[sn];
+                    if (task && (task.judul || task.aktif)) {
+                        lJ.innerText = (task.judul || "TANPA JUDUL").toUpperCase();
+                        lJ.style.color = "#FFFFFF";
+                        lJ.style.opacity = "1";
+                        if (lW) {
+                            lW.innerText = "DURASI: " + (task.durasi || 60) + " MENIT";
+                            lW.style.color = "var(--ef-cyan)";
+                        }
+                        if (lL) {
+                            lL.style.color = "var(--ef-magenta)";
+                            if (task.expiredAt) {
+                                const dE = new Date(task.expiredAt);
+                                lL.innerText = `BATAS: ${dE.toLocaleDateString('id-ID')} ${dE.getHours().toString().padStart(2, '0')}:${dE.getMinutes().toString().padStart(2, '0')}`;
+                            } else { lL.innerText = "TANPA BATAS WAKTU"; }
+                        }
                     } else {
-                        labelLim.innerText = "TANPA BATAS";
+                        lJ.innerText = "NASKAH KOSONG";
+                        lJ.style.color = "rgba(255,255,255,0.4)";
+                        lJ.style.opacity = "0.7";
+                        if (lW) {
+                            lW.innerText = "DURASI: --";
+                            lW.style.color = "rgba(255,255,255,0.2)";
+                        }
+                        if (lL) {
+                            lL.innerText = "--";
+                            lL.style.color = "rgba(255,255,255,0.1)";
+                        }
                     }
-                } else {
-                    labelJdl.innerText = "KOSONG";
-                    labelJdl.style.color = "#374151";
-                    labelJdl.style.opacity = "0.7";
-                    labelWkt.innerText = "DURASI: --";
-                    labelLim.innerText = "--";
                 }
             });
         }
@@ -3083,7 +3332,7 @@
 
 
 
-        function bukaBuatTugas(slot) {
+        function bukaPanelBuat(slot) {
             curSlot = slot;
             document.getElementById('wadahInput').innerHTML = "";
             document.getElementById('jdlMateri').value = "";
@@ -3136,7 +3385,7 @@
             if (jenis === 'PG') {
                 const o = data.opsi || ["", "", "", ""];
                 html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;"><input class="oa" placeholder="A" value="${o[0]}"> <input class="ob" placeholder="B" value="${o[1]}"><input class="oc" placeholder="C" value="${o[2]}"> <input class="od" placeholder="D" value="${o[3]}"></div>
-        <select class="q-kunci" style="color:var(--primary); font-weight:700;"><option value="A" ${data.kunci === 'A' ? 'selected' : ''}>Kunci: A</option><option value="B" ${data.kunci === 'B' ? 'selected' : ''}>Kunci: B</option><option value="C" ${data.kunci === 'C' ? 'selected' : ''}>Kunci: C</option><option value="D" ${data.kunci === 'D' ? 'selected' : ''}>Kunci: D</option></select>`;
+        <select class="q-kunci" style="color:var(--ef-gold); font-weight:800; border: 1.5px solid var(--ef-gold); padding: 5px 10px; background: var(--ef-obsidian);"><option value="A" ${data.kunci === 'A' ? 'selected' : ''}>Kunci: A</option><option value="B" ${data.kunci === 'B' ? 'selected' : ''}>Kunci: B</option><option value="C" ${data.kunci === 'C' ? 'selected' : ''}>Kunci: C</option><option value="D" ${data.kunci === 'D' ? 'selected' : ''}>Kunci: D</option></select>`;
             }
             div.innerHTML = html; wadah.appendChild(div);
         }
@@ -3173,6 +3422,10 @@
                 hideLoader();
                 showAlert("Berhasil Terbit", "Tugas '" + jdl + "' telah berhasil diterbitkan.");
                 openView('panelMenuTugas');
+            }).catch(err => {
+                hideLoader();
+                showAlert("Gagal Terbit", "Kesalahan Firebase: " + err.message, "❌");
+                console.error("Firebase Update Error:", err);
             });
         }
 
@@ -3217,53 +3470,83 @@
             if (saveToStorage) {
                 sessionStorage.setItem('lmsState', JSON.stringify({ view: 'panelPilihTugas', user: nama }));
             }
-            const menu = document.getElementById('menuTugasSiswa'); menu.innerHTML = "";
+
+            const menu = document.getElementById('menuTugasSiswa');
+            if (menu) menu.innerHTML = "";
+
             Object.keys(dataTugas).forEach(slot => {
                 const t = dataTugas[slot];
                 if (t && t.aktif) {
-                    const sudah = rekapGlobal.some(r => r.nama === curUser && (r.materi || "").trim().toLowerCase() === (t.judul || "").trim().toLowerCase());
+                    const itemRekap = rekapGlobal.find(r => r.nama === curUser && (r.materi || "").trim().toLowerCase() === (t.judul || "").trim().toLowerCase());
+                    const sudah = !!itemRekap;
 
                     // Cek Expired
                     let isExpired = false;
+                    let expStr = "TANPA BATAS";
                     if (t.expiredAt) {
                         const now = new Date();
                         const expDate = new Date(t.expiredAt);
                         if (now > expDate) isExpired = true;
+                        expStr = expDate.toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
                     }
                     const btn = document.createElement('div');
                     btn.className = `kartu-soal${sudah || isExpired ? ' sudah' : ''}`;
-                    btn.style = `background: var(--ef-navy); padding: 35px; border: 2px solid ${sudah ? 'rgba(255,255,255,0.1)' : 'var(--ef-cyan)'}; clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%); transition: 0.3s; cursor: pointer; position: relative; overflow: hidden;`;
+                    const borderColor = sudah ? 'var(--ef-cyan)' : 'var(--ef-gold)';
+                    const shadowColor = sudah ? 'rgba(0, 242, 255, 0.2)' : 'rgba(212, 175, 55, 0.3)';
+                    
+                    btn.style = `background: var(--ef-navy); padding: 25px; border: 2px solid ${borderColor}; clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%); transition: 0.3s; cursor: pointer; position: relative; box-shadow: 0 10px 30px ${shadowColor}; width: 100%; max-width: 450px; display: flex; flex-direction: column; min-height: 380px; justify-content: flex-start;`;
+                    
                     if (!sudah && !isExpired) {
+                        btn.onclick = () => mulaiKerja(slot);
                         btn.onmouseover = () => { btn.style.background = 'var(--ef-obsidian)'; btn.style.borderColor = 'var(--ef-neon-lime)'; btn.style.transform = 'scale(1.02)'; };
-                        btn.onmouseout = () => { btn.style.background = 'var(--ef-navy)'; btn.style.borderColor = 'var(--ef-cyan)'; btn.style.transform = 'scale(1)'; };
+                        btn.onmouseout = () => { btn.style.background = 'var(--ef-navy)'; btn.style.borderColor = borderColor; btn.style.transform = 'scale(1)'; };
+                    } else if (sudah) {
+                        btn.onclick = () => viewPDF(itemRekap.file, t.judul);
+                    } else {
+                        btn.onclick = () => showAlert("Terkunci", "Batas waktu pengerjaan match ini telah berakhir.", "🔒");
                     }
 
-                    let badgeContent = sudah ? '✓ COMPLETED' : (isExpired ? 'LOCKED' : '▶ START MATCH');
-                    let badgeColor = sudah ? '#A0AEC0' : (isExpired ? 'var(--ef-magenta)' : 'var(--ef-neon-lime)');
+                    let badgeContent = sudah ? 'DETAIL JAWABAN' : (isExpired ? 'WAKTU HABIS' : 'MULAI');
+                    let badgeColor = sudah ? 'var(--ef-cyan)' : (isExpired ? 'var(--ef-magenta)' : 'var(--ef-gold)');
+                    let badgeTextColor = sudah || isExpired ? 'white' : 'var(--ef-obsidian)';
+
+                    let detailHtml = "";
+                    if (sudah) {
+                        detailHtml = `
+                            <div style="margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; flex-grow: 1;">
+                                <div style="color: var(--ef-gold); font-weight: 1000; font-size: 0.7rem; font-style: italic; letter-spacing: 1px;">HASIL SKOR:</div>
+                                <div style="color: white; font-size: 1.4rem; font-weight: 1000; margin: 2px 0;">${itemRekap.nilai || 0}</div>
+                                <div style="color: rgba(255,255,255,0.4); font-size: 0.6rem; font-weight: 800; margin-top: 4px; text-transform: uppercase;">DIKIRIM: ${new Date().toLocaleDateString('id-ID')}</div>
+                            </div>
+                        `;
+                    } else {
+                        detailHtml = `
+                            <div style="margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; flex-grow: 1;">
+                                <div style="color: var(--ef-magenta); font-weight: 1000; font-size: 0.72rem; font-style: italic;">BATAS WAKTU:</div>
+                                <div style="color: white; font-size: 0.85rem; font-weight: 800;">${expStr}</div>
+                            </div>
+                        `;
+                    }
 
                     btn.innerHTML = `
-                        <div style="font-size: 0.7rem; font-weight: 1000; color: var(--ef-cyan); letter-spacing: 2px; text-transform: uppercase; font-style: italic; margin-bottom: 5px;">TUGAS KE-${slot.replace('tugas', '')}</div>
-                        <h3 style="color: white; font-size: 1.6rem; font-weight: 900; margin: 5px 0 15px; font-style: italic; text-transform: uppercase;">${t.judul}</h3>
-                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px; font-size: 0.75rem; color: #E2E8F0; font-weight: 700;">
-                            <span style="display: flex; align-items: center; gap: 5px;"><svg viewBox="0 0 24 24" width="14" height="14" fill="var(--ef-cyan)"><path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,2M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" /></svg> ${t.durasi} MIN</span>
-                            ${t.expiredAt ? `<span style="display: flex; align-items: center; gap: 5px; color: ${isExpired ? 'var(--ef-magenta)' : 'var(--ef-neon-lime)'};"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2A10 10 0 1 0 22 12A10 10 0 0 0 12 2M12 4A8 8 0 1 1 4 12A8 8 0 0 1 12 4M11 14V16H13V14ZM11 7V12H13V7Z" /></svg> ${isExpired ? 'EXPIRED' : 'ACTIVE'}</span>` : ''}
+                        <div style="font-size: 0.65rem; font-weight: 1000; color: var(--ef-cyan); letter-spacing: 2px; text-transform: uppercase; font-style: italic; margin-bottom: 5px;">TUGAS KE-${slot.replace('tugas', '')}</div>
+                        
+                        <div style="height: 4.8rem; display: flex; align-items: flex-start; overflow: hidden; margin-bottom: 10px;">
+                            <h3 style="color: white; font-size: 1.5rem; font-weight: 950; font-style: italic; text-transform: uppercase; line-height: 1.1; overflow-wrap: break-word; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">${t.judul}</h3>
                         </div>
-                        <div style="background: ${badgeColor}; color: var(--ef-obsidian); padding: 12px; font-weight: 950; text-align: center; transform: skewX(-15deg); font-size: 0.8rem; letter-spacing: 1px;">
+
+                        ${detailHtml}
+
+                        <div style="background: ${badgeColor}; color: ${badgeTextColor}; padding: 14px; font-weight: 1000; text-align: center; transform: skewX(-15deg); font-size: 0.85rem; letter-spacing: 2px; margin: 15px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.3); flex-shrink: 0;">
                             <span style="transform: skewX(15deg); display: inline-block;">${badgeContent}</span>
                         </div>
-                    `;
 
-                    if (sudah) {
-                        const rekap = rekapGlobal.find(r => r.nama === curUser && (r.materi || "").trim().toLowerCase() === (t.judul || "").trim().toLowerCase());
-                        if (rekap) {
-                            btn.onclick = () => viewPDF(rekap.file, t.judul);
-                        }
-                    } else if (isExpired) {
-                        btn.onclick = () => showAlert("Terkunci", "Match ini sudah berakhir dan tidak bisa diakses.", "🔒");
-                    } else {
-                        btn.onclick = () => mulaiKerja(slot);
-                    }
-                    menu.appendChild(btn);
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 0.72rem; color: #E2E8F0; font-weight: 800; opacity: 0.9; flex-shrink: 0; padding-top: 10px;">
+                            <span style="display: flex; align-items: center; gap: 6px;"><svg viewBox="0 0 24 24" width="14" height="14" fill="var(--ef-cyan)"><path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 12,2M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" /></svg> ${t.durasi} MENIT</span>
+                            <span style="display: flex; align-items: center; gap: 6px; color: ${isExpired ? 'var(--ef-magenta)' : 'var(--ef-neon-lime)'}; font-weight: 1000;"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2A10 10 0 1 0 22 12A10 10 0 0 0 12 2M12 4A8 8 0 1 1 4 12A8 8 0 0 1 12 4M11 14V16H13V14ZM11 7V12H13V7Z" /></svg> ${isExpired ? 'BERAKHIR' : 'AKTIF'}</span>
+                        </div>
+                    `;
+                    if (menu) menu.appendChild(btn);
                 }
             });
             openView('panelPilihTugas');
@@ -3484,6 +3767,7 @@
             dbRef('rekap_v2').push({ nama: curUser, materi: t.judul, nilai: skor, file: pdfB64 }).then(() => {
                 // Update ke memori lokal secara langsung untuk responsivitas instan
                 rekapGlobal.push({ nama: curUser, materi: t.judul, nilai: skor, file: pdfB64 });
+                updateBadgeSiswa();
                 hideLoader();
                 showAlert("Tugas Berhasil Terkirim!", "Jawaban kamu telah masuk ke sistem. Hubungi guru jika ada kendala.", "🚀", skor);
                 closeView('panelSiswa');
@@ -3540,6 +3824,12 @@
             panel.style.display = id.includes('modal') ? 'flex' : 'block';
             panel.classList.remove('exiting');
             panel.classList.add('entering');
+            
+            // Perbaikan Point 1: Pastikan dashboard tugas guru terupdate saat dibuka
+            if (id === 'panelMenuTugas') {
+                updateDashboardTugas();
+                setTimeout(updateDashboardTugas, 500); // Sinkronisasi ulang untuk jaga-jaga lag
+            }
 
             // Save state to localStorage only for main panels
             if (id !== 'modalLogin' && id !== 'panelSiswa') {
