@@ -1,41 +1,38 @@
-const CACHE_NAME = 'ruang-belajar-v1';
-const ASSETS_TO_CACHE = [
+const CACHE_NAME = 'ruang-belajar-cache-v1';
+const ASSETS = [
+  '/',
   './FIX%20TERBARU.html',
   './logo.png',
   './manifest.json'
 ];
 
-// Install Event
+// Install
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('Caching essential assets');
-      return cache.addAll(ASSETS_TO_CACHE);
+      return cache.addAll(ASSETS);
     })
   );
 });
 
-// Activate Event
+// Activate
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then((keys) => {
       return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            console.log('Clearing old cache');
-            return caches.delete(cache);
-          }
-        })
+        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
       );
     })
   );
+  return self.clients.claim();
 });
 
-// Fetch Event
+// Fetch (Network First Strategy)
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request);
+    fetch(event.request).catch(() => {
+      return caches.match(event.request);
     })
   );
 });
