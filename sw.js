@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ruang-belajar-v5';
+const CACHE_NAME = 'ruang-belajar-v10-final'; // Versi dinaikkan untuk mereset cache
 const ASSETS = [
   './',
   './index.html',
