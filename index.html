@@ -14,22 +14,13 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,800;0,900;1,800;1,900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#090e1b">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="RUANG BELAJAR">
-    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png?v=2">
+    <link rel="icon" type="image/png" href="logo.png?v=2">
 
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Service Worker registered:', reg))
-                    .catch(err => console.log('Service Worker registration failed:', err));
-            });
-        }
-    </script>
     <style>
         :root {
             /* eFootball 2026 Pro Theme Palette */
@@ -1981,6 +1972,9 @@
     <div id="panelUtama" class="panel" style="display: block;">
         <header
             style="width: 100%; max-width: 1000px; margin: 0 auto; background: linear-gradient(160deg, #121b30 0%, var(--ef-obsidian) 100%); border-bottom: 4px solid var(--ef-neon-lime); box-shadow: 0 15px 50px rgba(0,0,0,0.8); padding: 45px 25px; border-radius: 0 0 0 60px; text-align: center; box-sizing: border-box; overflow: hidden; position: relative;">
+            <div style="margin-bottom: 20px; position: relative; display: inline-block;">
+                <img src="logo.png" alt="Logo" style="width: 80px; height: 80px; filter: drop-shadow(0 0 15px var(--ef-neon-lime)); border-radius: 12px;">
+            </div>
             <!-- eFootball Decorative Accents -->
             <div
                 style="position:absolute; top:0; right:0; width:150px; height:100%; background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.05)); transform: skewX(-20deg); pointer-events: none;">
