@@ -1,8 +1,8 @@
-const CACHE_NAME = 'ruang-belajar-v4';
+const CACHE_NAME = 'ruang-belajar-v5';
 const ASSETS = [
   './',
   './index.html',
-  './logo-putih.png',
+  './logo.png',
   './manifest.json'
 ];
 
