@@ -1,6 +1,6 @@
 const CACHE_NAME = 'ruang-belajar-v1';
 const ASSETS_TO_CACHE = [
-  './BACK%20UP%20RB%20VOL%203.html',
+  './FIX%20TERBARU.html',
   './logo.png',
   './manifest.json'
 ];
