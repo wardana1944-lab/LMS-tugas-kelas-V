@@ -1,21 +1,26 @@
 {
+  "id": "ruang-belajar-v1",
   "name": "RUANG BELAJAR - SD N PENGKOL",
   "short_name": "RUANG BELAJAR",
   "description": "LMS Ruang Belajar SD N PENGKOL untuk kelas 5",
-  "start_url": "./FIX%20TERBARU.html",
+  "start_url": "/FIX%20TERBARU.html",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#090D14",
   "theme_color": "#090e1b",
   "icons": [
     {
       "src": "logo.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "logo.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
