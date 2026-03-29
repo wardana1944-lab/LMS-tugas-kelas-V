@@ -8,12 +8,12 @@
   "theme_color": "#090e1b",
   "icons": [
     {
-      "src": "logo-putih.png",
+      "src": "logo.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "logo-putih.png",
+      "src": "logo.png",
       "sizes": "512x512",
       "type": "image/png"
     }
