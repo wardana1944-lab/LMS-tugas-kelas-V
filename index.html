@@ -27,25 +27,32 @@
 
     <style>
         :root {
-            /* eFootball 2026 Pro Theme Palette */
-            --ef-navy: #090e1b;
-            --ef-obsidian: #050811;
-            --ef-neon-lime: #d2ff00;
+            /* Futuristic eFootball & Esports Gaming Palette */
+            --ef-deep-blue: #050811;
+            --ef-obsidian: #0a1428;
+            --ef-navy: #152038;
+            --ef-electric-blue: #0a1428;
             --ef-cyan: #00f0ff;
+            --ef-neon-yellow: #d2ff00;
+            --ef-neon-lime: #d2ff00;
+            --ef-silver: #e0e0e0;
             --ef-magenta: #ff007a;
-            --ef-white: #ffffff;
-            --ef-text-ghost: #8ca1b9;
-
-            /* Mapping to original variable names for compatibility */
-            --primary-gradient: linear-gradient(135deg, var(--ef-neon-lime) 0%, #b8e000 100%);
-            --primary: var(--ef-neon-lime);
-            --bg: var(--ef-obsidian);
-            --white: var(--ef-white);
-            --text-charcoal: var(--ef-white);
-            --text-light: var(--ef-text-ghost);
-            --border: rgba(0, 240, 255, 0.2);
+            --ef-glass: rgba(10, 20, 40, 0.7);
+            --ef-glass-border: rgba(0, 240, 255, 0.3);
+            
+            /* Mapping for compatibility */
+            --primary: var(--ef-neon-yellow);
+            --bg: var(--ef-deep-blue);
+            --white: #ffffff;
+            --text-charcoal: #ffffff;
+            --text-light: #8ca1b9;
+            --border: var(--ef-glass-border);
             --danger: var(--ef-magenta);
             --accent-emerald: var(--ef-cyan);
+            
+            --neon-glow: 0 0 25px rgba(0, 240, 255, 0.5);
+            --yellow-glow: 0 0 25px rgba(210, 255, 0, 0.5);
+            --aggressive-cyan: 0 0 35px rgba(0, 240, 255, 0.7);
         }
 
         * {
@@ -53,25 +60,63 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Exo 2', sans-serif;
-            /* Sporty eFootball font */
+            -webkit-tap-highlight-color: transparent;
         }
 
         html {
-            scroll-behavior: auto;
-            background: #090D14;
+            scroll-behavior: smooth;
+            background: var(--ef-deep-blue);
         }
 
         body {
-            background: #090D14 radial-gradient(at 50% 50%, #1C2536 0%, #090D14 100%);
-            background-size: cover;
+            background: var(--ef-deep-blue);
             color: #FFFFFF;
             line-height: 1.6;
             overflow: hidden;
-            /* Main window lock, scrolling handled by panels */
             min-height: 100vh;
-            touch-action: manipulation;
+            perspective: 1000px;
         }
 
+        /* Futuristic Stadium Background with Energy Lines */
+        .stadium-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 50% 50%, var(--ef-electric-blue) 0%, var(--ef-deep-blue) 100%);
+            overflow: hidden;
+        }
+
+        .stadium-bg::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: perspective(500px) rotateX(60deg) translateY(-100px);
+            mask-image: linear-gradient(to bottom, transparent, black);
+        }
+
+        .energy-line {
+            position: absolute;
+            background: linear-gradient(to right, transparent, var(--ef-cyan), transparent);
+            height: 2px;
+            width: 100%;
+            opacity: 0.3;
+            animation: moveLine 8s linear infinite;
+        }
+
+        @keyframes moveLine {
+            0% { transform: translateY(-100vh) rotate(45deg); }
+            100% { transform: translateY(100vh) rotate(45deg); }
+        }
+
+        /* Glassmorphism Panel */
         .panel {
             position: fixed;
             top: 0;
@@ -79,651 +124,436 @@
             width: 100%;
             height: 100%;
             overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
-            contain: content;
-            transition: opacity 0.4s cubic-bezier(0.2, 0, 0, 1), transform 0.4s cubic-bezier(0.2, 0, 0, 1);
-            transform: translateZ(0);
-            will-change: opacity, transform;
+            background: transparent !important;
+            padding-top: 160px;
+            padding-bottom: 100px;
+            z-index: 10;
         }
 
-        header {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: linear-gradient(160deg, #121b30 0%, var(--ef-obsidian) 100%);
-            border-bottom: 4px solid var(--ef-neon-lime);
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
-            padding: 45px 25px;
-            border-radius: 0 0 0 60px;
-            /* Sharp sporty cut */
-            text-align: center;
+        .panel.entering {
+            /* Transisi ringan: hanya opacity */
+            animation: panelEnter 0.2s ease-out forwards;
+        }
+
+        .panel.exiting {
+            animation: panelExit 0.15s ease-in forwards;
+        }
+
+        @keyframes panelEnter {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes panelExit {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .glass-container {
+            background: rgba(10, 20, 40, 0.7);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 32px;
+            margin: 0 auto 30px;
+            padding: 35px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
             position: relative;
-            z-index: 5;
             overflow: hidden;
+            max-width: 1100px;
+            width: 95%;
         }
 
-        header::before {
+        .glass-container::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background:
-                radial-gradient(circle at 10% 10%, rgba(0, 240, 255, 0.1) 0%, transparent 40%),
-                linear-gradient(45deg, transparent 45%, rgba(210, 255, 0, 0.05) 50%, transparent 55%);
-            background-size: 100% 100%, 20px 20px;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%);
             pointer-events: none;
         }
 
-        ::placeholder {
-            color: rgba(255, 255, 255, 0.7) !important;
-            opacity: 1;
-        }
-
-        /* Override untuk input di editor soal agar placeholder terbaca */
-        .soal-box ::placeholder {
-            color: rgba(80, 80, 80, 0.6) !important;
-        }
-
-        .premium-input-box label {
-            color: var(--ef-neon-lime) !important;
-            text-shadow: 0 0 15px rgba(210, 255, 0, 0.4);
-            font-weight: 800;
-            font-style: italic;
-        }
-
-        .premium-input-box input,
-        .premium-input-box select,
-        .premium-input-box textarea {
-            color: #FFFFFF !important;
-            font-weight: 700 !important;
-        }
-
-        /* Tabel Contrast Fix - Selalu pastikan terbaca di latar terang/gelap */
-        table thead th {
-            color: var(--ef-neon-lime) !important;
-            background: rgba(210, 255, 0, 0.05);
-            font-weight: 900 !important;
-            text-transform: uppercase;
-            font-style: italic;
-            border-bottom: 2px solid var(--ef-cyan);
-        }
-
-        table tbody td {
-            color: #0b0320 !important;
-            /* Putih agar terbaca pada latar gelap MLBB */
-            font-weight: 700;
-        }
-
-        .guru-profile {
-            background: var(--white);
-            padding: 20px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-            margin-bottom: 25px;
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
-        }
-
-        .guru-profile:hover {
-            box-shadow: 0 15px 35px rgba(147, 0, 255, 0.15);
-            border-color: rgba(147, 0, 255, 0.3);
-        }
-
-        .guru-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .guru-avatar {
-            width: 55px;
-            height: 55px;
-            background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary);
-            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.5), 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .guru-avatar svg {
-            width: 28px;
-            height: 28px;
-        }
-
-        .status-banner {
-            background: transparent;
-            padding: 0;
-            box-shadow: none;
-            border: none;
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .tugas-item {
-            background: linear-gradient(135deg, #161D2B 0%, #111827 100%);
-            padding: 12px 20px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-left: 5px solid var(--danger);
-            border-top: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            text-align: left;
-            gap: 0;
-            margin-bottom: 12px;
-            transition: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tugas-item::after {
-            display: none;
-        }
-
-        .tugas-item:hover {
-            transform: translateY(-4px);
-            border-top-color: var(--accent-emerald);
-            background: linear-gradient(135deg, #1C2536 0%, #161D2B 100%);
-            box-shadow: 0 10px 20px rgba(28, 37, 54, 0.35);
-        }
-
-        .tugas-item:hover::after {
-            transform: translateX(100%);
-        }
-
-        .tugas-item span.label {
-            font-weight: 900;
-            color: var(--ef-neon-lime);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-style: italic;
-            display: block;
-        }
-
-        .tugas-item p.judul {
-            font-weight: 800;
-            color: white;
-            font-size: 1rem;
-            line-height: 1.3;
-            margin-top: 2px;
-        }
-
-        .tugas-item .info-meta {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            color: #A0AEC0;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            justify-content: center;
-        }
-
-        #menuTugasSiswa {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+        header {
             width: 100%;
-            max-width: 520px;
-            margin: 0 auto;
-        }
-
-        #menuTugasSiswa .kartu-soal {
-            flex: 1 1 100%;
-            width: 100%;
-            max-width: 100%;
-            height: 160px;
-            background: linear-gradient(145deg, #161D2B 0%, #1C2536 60%, #111827 100%);
-            border-radius: 18px;
-            border-top: 4px solid var(--accent-emerald);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid var(--accent-emerald);
-            box-shadow: 0 10px 30px rgba(22, 29, 43, 0.5);
-            padding: 16px 22px;
-            cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            /* Performance */
-            contain: layout style;
-            transform: translateZ(0);
-        }
-
-        #menuTugasSiswa .kartu-soal::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, transparent 30%, rgba(255, 215, 0, 0.08) 50%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-
-        #menuTugasSiswa .kartu-soal:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 28px rgba(255, 215, 0, 0.2);
-            border-top-color: var(--ef-neon-lime);
-        }
-
-        #menuTugasSiswa .kartu-soal:hover::before {
-            opacity: 1;
-        }
-
-        #menuTugasSiswa .kartu-soal.sudah {
-            cursor: pointer;
-            opacity: 1;
-            background: linear-gradient(145deg, #0D1320 0%, #0F172A 100%);
-            border-top: 5px solid var(--primary);
-            border: 1px solid rgba(28, 37, 54, 0.3);
-        }
-
-        #menuTugasSiswa .kartu-soal.sudah .ks-label {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        #menuTugasSiswa .kartu-soal.sudah .ks-judul {
-            color: #FFFFFF;
-            opacity: 0.9;
-        }
-
-        #menuTugasSiswa .kartu-soal.sudah .ks-badge.selesai {
-            background: var(--primary-gradient) !important;
-            color: #0F172A !important;
-            text-shadow: none !important;
-            box-shadow: 0 5px 15px rgba(28, 37, 54, 0.3);
-        }
-
-        #menuTugasSiswa .kartu-soal.sudah:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 28px rgba(28, 37, 54, 0.2);
-            border-color: var(--primary);
-        }
-
-        #menuTugasSiswa .kartu-soal .ks-icon {
-            width: 52px;
-            height: 52px;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.6rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            flex-shrink: 0;
-        }
-
-        #menuTugasSiswa .kartu-soal .ks-label {
-            font-size: 0.65rem;
-            font-weight: 900;
-            color: var(--ef-cyan);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-style: italic;
-        }
-
-        #menuTugasSiswa .kartu-soal .ks-judul {
-            font-size: 0.88rem;
-            font-weight: 900;
-            color: #FFFFFF;
-            line-height: 1.4;
-            word-break: break-word;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        #menuTugasSiswa .kartu-soal .ks-meta {
-            font-size: 0.7rem;
-            color: var(--ef-neon-lime);
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            justify-content: center;
-        }
-
-        #menuTugasSiswa .kartu-soal .ks-badge {
-            width: 100%;
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 0.72rem;
-            font-weight: 900;
+            padding: 30px 20px 70px;
             text-align: center;
-            letter-spacing: 0.5px;
-            margin-top: auto;
-            text-transform: uppercase;
-        }
-
-        #menuTugasSiswa .kartu-soal .ks-badge.aktif {
-            background: var(--accent-emerald);
-            color: #111827;
-        }
-
-        #menuTugasSiswa .kartu-soal .ks-badge.selesai {
-            background: rgba(255, 255, 255, 0.1);
-            color: #A0AEC0;
-        }
-
-        .grid-siswa {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        @media (max-width: 768px) {
-            .grid-siswa {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 15px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .grid-siswa {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-
-            .card-siswa {
-                padding: 15px 10px;
-            }
-        }
-
-        .card-siswa {
-            background: var(--ef-navy);
-            padding: 35px 20px 25px;
-            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), border-color 0.25s;
-            border: 2px solid rgba(0, 240, 255, 0.1);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            contain: content;
-        }
-
-        .card-siswa .nama {
-            font-size: 1rem;
-            margin-top: 10px;
-            margin-bottom: 5px;
-        }
-
-        @media (max-width: 480px) {
-            .card-siswa .nama {
-                font-size: 0.8rem;
-            }
-        }
-
-        .card-siswa:hover {
-            transform: scale(1.05) translateY(-5px);
-            background: var(--ef-obsidian);
-            z-index: 10;
-            will-change: transform, border-color, background;
-            border-color: var(--ef-neon-lime);
-        }
-
-        .card-siswa .avatar-frame {
-            width: 110px;
-            height: 110px;
-            background: transparent;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
-            position: relative;
-            transition: transform 0.4s, border-color 0.4s;
-            /* Explicitly define transitions */
-            will-change: transform, border-color;
-            /* Added for performance */
-        }
-
-        .card-siswa:hover .avatar-frame {
-            border-color: var(--ef-neon-lime);
-            transform: scale(1.1) rotate(-5deg);
-        }
-
-        .card-siswa .avatar-frame svg {
-            width: 80%;
-            height: 80%;
-            filter: drop-shadow(0 0 5px var(--ef-cyan));
-        }
-
-        .card-siswa:hover .avatar-frame svg {
-            filter: drop-shadow(0 0 10px var(--ef-neon-lime));
-        }
-
-        .card-siswa .absen {
-            position: absolute;
-            top: 15px;
-            right: 0;
-            background: var(--ef-neon-lime);
-            color: var(--ef-obsidian);
-            padding: 5px 15px;
-            font-weight: 950;
-            font-size: 0.7rem;
-            transform: skewX(-15deg);
-            box-shadow: -5px 5px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .card-siswa .nama {
-            color: #fff;
-            font-weight: 900;
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            font-style: italic;
-            margin-top: 5px;
-            letter-spacing: -0.5px;
-        }
-
-        .card-siswa .kelas {
-            color: var(--ef-cyan);
-            font-size: 0.65rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-top: 4px;
-            opacity: 0.8;
-        }
-
-        .card-siswa .absen {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            font-size: 0.72rem;
-            font-weight: 900;
-            color: #64B5F6;
-            background: rgba(10, 20, 50, 0.9);
-            border: 1.5px solid rgba(100, 181, 246, 0.5);
-            padding: 4px 9px;
-            border-radius: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            text-shadow: 0 0 8px rgba(100, 181, 246, 0.8);
-            box-shadow: 0 0 8px rgba(30, 136, 229, 0.3);
-            /* Backdrop-filter dihapus untuk performa */
-        }
-
-        .card-siswa .nama {
-            font-weight: 800;
-            font-size: 0.95rem;
-            color: #FFFFFF;
-            line-height: 1.2;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            padding-top: 10px;
-            width: 80%;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .card-siswa .kelas {
-            font-size: 0.70rem;
-            color: #0F172A;
-            font-weight: 900;
-            background: var(--ef-neon-lime);
-            padding: 4px 14px;
-            border-radius: 4px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-style: italic;
-            margin-top: auto;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .badge-selesai-semua {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: var(--accent-emerald);
-            color: #0F2010;
-            font-size: 0.58rem;
-            font-weight: 900;
-            padding: 3px 8px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            box-shadow: 0 2px 8px rgba(60, 172, 59, 0.5);
-            z-index: 10;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            white-space: nowrap;
-        }
-
-        .panel {
-            display: none;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--ef-obsidian) radial-gradient(at 50% 50%, #1C2536 0%, #050811 100%) !important;
-            z-index: 9999;
-            overflow-y: auto;
-            will-change: transform;
-            -webkit-overflow-scrolling: touch;
-            contain: content;
+            z-index: 1000;
+            background: linear-gradient(to bottom, rgba(5, 8, 17, 1) 0%, rgba(5, 8, 17, 0.8) 60%, transparent 100%);
+            pointer-events: none;
+            border-bottom: none;
         }
 
-        .panel-content {
+        header * { pointer-events: auto; }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 950;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: -3px;
+            color: #ffffff;
+            text-shadow: 0 0 30px rgba(0,240,255,0.6);
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-block;
+        }
+
+        header h1:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 45px rgba(0,240,255,0.8);
+        }
+
+        header h1 span {
+            color: var(--ef-neon-yellow);
+            text-shadow: 0 0 30px rgba(210, 255, 0, 0.6);
+        }
+
+        /* Student Grid & Card eSports Style */
+        .grid-siswa {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            padding: 15px 0;
+        }
+
+        .card-siswa {
+            background: rgba(15, 25, 45, 0.85);
+            border: 2px solid rgba(0, 240, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px 10px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            overflow: visible;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+        }
+
+        .card-siswa:hover {
+            border-color: var(--ef-cyan);
+            background: rgba(15, 25, 45, 0.98);
+            z-index: 10;
+        }
+
+        /* Avatar with Glowing Halo */
+        .avatar-frame {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 10px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .halo {
+            position: absolute;
             width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px 15px;
+            height: 100%;
+            border: 1.5px solid var(--ef-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--ef-cyan);
+            animation: haloPulse 2s infinite alternate;
+        }
+
+        @keyframes haloPulse {
+            from { transform: scale(0.95); opacity: 0.4; }
+            to { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        .avatar-3d {
+            width: 55px;
+            height: 55px;
+            object-fit: contain;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+            z-index: 3;
+            transition: 0.3s;
+        }
+
+        .fallback-emoji {
+            font-size: 2.8rem;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-siswa:hover .avatar-3d {
+            transform: scale(1.1);
+        }
+
+        /* eSports Kit Look */
+        .kit-label {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--ef-neon-yellow);
+            color: var(--ef-deep-blue);
+            font-weight: 900;
+            font-size: 0.55rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-style: italic;
+            white-space: nowrap;
+            box-shadow: 0 3px 6px rgba(210, 255, 0, 0.3);
+            letter-spacing: 0.5px;
+            max-width: 90%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-siswa .nama {
+            font-size: 0.85rem;
+            font-weight: 900;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+            font-style: italic;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            display: block;
+        }
+
+        .card-siswa .absen {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.7rem;
+            font-weight: 1000;
+            color: var(--ef-cyan);
+            font-style: italic;
+            opacity: 0.6;
+            z-index: 5;
+        }
+
+        .card-siswa .kelas {
+            font-size: 0.55rem;
+            color: var(--ef-neon-yellow);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 2px;
+            opacity: 0.6;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Floating Task Cards */
+        .kartu-soal {
+            background: rgba(15, 25, 45, 0.9);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+            min-height: 100px;
+        }
+
+        .kartu-soal:hover {
+            border-color: var(--ef-cyan);
+        }
+
+        .ks-info h3 {
+            font-size: 1.25rem;
+            font-weight: 950;
+            font-style: italic;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        /* Wave Progress Bar */
+        .wave-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+
+        .wave-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--ef-cyan), var(--ef-neon-yellow), var(--ef-cyan));
+            background-size: 200% 100%;
+            width: 0%;
+            transition: width 1.2s cubic-bezier(0.1, 0, 0.1, 1);
+            box-shadow: 0 0 15px var(--ef-cyan);
+            animation: waveFlow 3s linear infinite;
             position: relative;
         }
 
+        .wave-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 200%; height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5,73.84-4.36,147.54,16.88,218.2,35.26,69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113,14.29,1200,52.47V0Z" opacity=".25" fill="%23FFFFFF"></path></svg>') repeat-x;
+            background-size: 50% 100%;
+            animation: moveWave 2s linear infinite;
+            opacity: 0.4;
+        }
+
+        @keyframes moveWave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @keyframes waveFlow {
+            0% { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
+        }
+
+        /* Mission Control Grid */
+        .mission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .mission-slot {
+            flex-direction: column;
+            align-items: stretch;
+            height: auto;
+            gap: 20px;
+            padding: 30px;
+        }
+
+        /* Rekap Page Table Styles */
+        #isiRekap tr {
+            border-bottom: 1px solid rgba(0, 240, 255, 0.05);
+            transition: 0.2s;
+        }
+
+        #isiRekap tr:hover {
+            background: rgba(0, 240, 255, 0.03);
+        }
+
+        #isiRekap td {
+            padding: 15px 10px;
+            font-size: 0.85rem;
+            color: #E2E8F0;
+            font-weight: 600;
+        }
+
+        #isiRekap .rank-cell {
+            font-weight: 900;
+            color: var(--ef-neon-yellow);
+            font-style: italic;
+        }
+
+        #isiRekap .score-cell {
+            font-weight: 900;
+            color: var(--ef-cyan);
+            font-size: 1rem;
+        }
+
+        /* Buttons & Inputs */
         .btn {
-            padding: 12px 20px;
-            border-radius: 10px;
-            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--ef-glass-border);
+            color: var(--ef-white);
+            padding: 12px 24px;
+            border-radius: 12px;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-style: italic;
+            transition: all 0.2s;
             cursor: pointer;
-            transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 0.85rem;
         }
 
         .btn-blue {
-            background: var(--primary-gradient);
-            color: #0F172A;
-            font-weight: 900;
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            background: var(--ef-neon-yellow);
+            color: var(--ef-deep-blue);
+            border: none;
+            box-shadow: 0 5px 15px rgba(210, 255, 0, 0.3);
         }
 
-        .btn-dark {
-            background: var(--text-charcoal);
-            color: white;
-            box-shadow: 0 4px 15px rgba(17, 24, 39, 0.2);
+        .btn-blue:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(210, 255, 0, 0.5);
         }
 
-        .btn-outline {
-            background: transparent;
-            border: 1.5px solid var(--border);
-            color: var(--text-charcoal);
-        }
-
-        .btn-danger {
-            background: var(--danger);
+        .btn-red {
+            background: var(--ef-magenta);
             color: white;
             border: none;
-            box-shadow: 0 4px 15px rgba(230, 29, 37, 0.3);
         }
 
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-top: 15px;
-            background: var(--white);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-
-        th {
-            background: #F8FAFC;
-            padding: 15px;
-            text-align: left;
-            font-size: 0.8rem;
-            color: var(--text-light);
-            text-transform: uppercase;
-        }
-
-        td {
-            padding: 15px;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.9rem;
-        }
-
-        .badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
+        input, select, textarea {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--ef-glass-border);
+            color: white !important;
+            padding: 12px;
+            border-radius: 10px;
             font-weight: 700;
         }
 
-        .bg-green {
-            background: #F0FDFA;
-            color: var(--accent-emerald);
+        input:focus {
+            border-color: var(--ef-cyan);
+            outline: none;
+            box-shadow: 0 0 10px var(--ef-cyan);
         }
 
-        .bg-red {
-            background: #FFF1F2;
-            color: var(--danger);
+        /* Custom Alert / Modal */
+        .portal-modal {
+            background: rgba(5, 8, 17, 0.9) !important;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .modal-glass {
+            background: var(--ef-electric-blue);
+            border: 2px solid var(--ef-cyan);
+            border-radius: 30px;
+            padding: 40px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.3);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--ef-glass);
+            border: 1px solid var(--ef-glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-card .val {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--ef-neon-yellow);
+            display: block;
+        }
+
+        .stat-card .label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--ef-cyan);
         }
 
         /* RESPONSIVE MOBILE STYLES */
@@ -788,55 +618,64 @@
 
             /* STUDENT GRID - MOBILE OPTIMIZED */
             .grid-siswa {
-                grid-template-columns: repeat(3, 1fr) !important;
-                /* For tablets */
-                gap: 10px !important;
-                padding: 0 10px;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 15px !important;
+                padding: 10px;
             }
 
             .card-siswa {
-                padding: 15px 10px !important;
-                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-            }
-
-            .card-siswa .avatar-frame {
-                width: 65px !important;
-                height: 65px !important;
-                margin-bottom: 8px !important;
+                padding: 20px 10px !important;
+                min-height: 180px;
             }
 
             .card-siswa .nama {
-                font-size: 0.85rem !important;
-                padding-top: 8px !important;
-                width: 95% !important;
+                font-size: 0.75rem !important;
+                margin-top: 10px !important;
             }
 
-            .card-siswa .kelas {
-                font-size: 0.62rem;
-                padding: 3px 10px;
+            .card-siswa .avatar-frame {
+                width: 75px !important;
+                height: 75px !important;
             }
 
-            .card-siswa .absen {
-                font-size: 0.78rem;
-                top: 8px;
-                right: 8px;
-                padding: 3px 6px;
-            }
-
-            .badge-selesai-semua {
-                font-size: 0.52rem;
-                padding: 2px 6px;
-                top: 8px;
-                left: 8px;
+            .card-siswa .avatar-3d {
+                width: 75px !important;
+                height: 75px !important;
             }
 
             /* === PANELS GENERAL === */
             .panel {
-                padding: 16px 0 30px;
+                padding-top: 130px;
+                padding-bottom: 60px;
             }
 
-            .panel-content {
-                padding: 0 12px !important;
+            .glass-container {
+                padding: 25px 15px !important;
+                border-radius: 28px !important;
+                width: 94% !important;
+                margin-bottom: 25px !important;
+            }
+
+            /* Fix Task Cards on Mobile */
+            .kartu-soal {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 15px !important;
+                padding: 20px !important;
+                text-align: left;
+            }
+
+            .kartu-soal .ks-info {
+                width: 100%;
+            }
+
+            .kartu-soal .btn-blue, .kartu-soal .btn-red {
+                width: 100%;
+            }
+
+            #menuTugasSiswa .kartu-soal {
+                height: auto !important;
+                min-height: 140px;
             }
 
             /* Fix Panel Guru Mobile */
@@ -896,9 +735,13 @@
             }
 
             /* Fix Manage Tasks Slots on Mobile */
-            #panelMenuTugas div[style*="grid-template-columns: 1fr 1fr"] {
+            .mission-grid {
                 grid-template-columns: 1fr !important;
                 gap: 15px !important;
+            }
+
+            .mission-slot {
+                padding: 20px !important;
             }
 
             /* Prevent table overflow */
@@ -1385,32 +1228,128 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-        #loader {
+        /* === LAYOUT FIXES: FIXED HEADER & PANEL SCROLLING === */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: linear-gradient(to bottom, var(--ef-obsidian) 80%, transparent);
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            pointer-events: auto;
+        }
+
+        /* Show header only when body has .show-header */
+        body.show-header header {
+            display: flex;
+        }
+
+        .panel {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            z-index: 10000;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-top: 30px; /* Default small padding */
+            padding-bottom: 40px;
+            z-index: 10;
             display: none;
+            -webkit-overflow-scrolling: touch;
+            transition: padding-top 0.3s ease;
+        }
+
+        /* Adjust padding when header is visible */
+        body.show-header .panel {
+            padding-top: 100px;
+        }
+
+        @media (max-width: 768px) {
+            body.show-header .panel {
+                padding-top: 110px;
+            }
+        }
+
+        .panel-content {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        /* Loading only for opening */
+        #loader {
+            display: none !important;
+        }
+
+        /* Modal fixes */
+        .portal-modal {
+            z-index: 2000 !important;
+            padding-top: 0 !important;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.9) !important;
+        }
+
+        /* Splash Logo Fix */
+        .ef-logo-box {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 30px;
+            background: var(--ef-neon-yellow);
+            clip-path: polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 40px rgba(210, 255, 0, 0.5);
+        }
+
+        .ef-logo-box .logo-text {
+            display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            transform: skewX(15deg);
+            color: var(--ef-obsidian);
+            font-weight: 950;
+            line-height: 1;
+            font-style: italic;
         }
 
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #F1F5F9;
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .ef-logo-box .logo-text span:first-child {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
         }
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
+        .ef-logo-box .logo-text span:last-child {
+            font-size: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        /* Fix overlapping items in grid */
+        .grid-siswa {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .grid-siswa {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 15px !important;
+            }
+            .panel {
+                padding-top: 130px;
             }
         }
 
@@ -1430,18 +1369,123 @@
         }
 
         .soal-box {
-            background: #FFFFFF;
+            background: rgba(10, 20, 40, 0.95);
             padding: 30px;
             border-radius: 20px;
             margin-bottom: 25px;
-            border: 2px solid var(--border);
+            border: 2px solid rgba(0, 240, 255, 0.3);
             position: relative;
-            box-shadow: 0 10px 25px rgba(22, 29, 43, 0.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .soal-box:hover {
+            border-color: var(--ef-cyan);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .label-nomor {
+            font-size: 0.9rem;
+            font-weight: 900;
+            color: var(--ef-neon-yellow);
+            text-transform: uppercase;
+            font-style: italic;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .toolbar {
+            background: rgba(21, 32, 56, 1);
+            padding: 8px;
+            border-radius: 12px 12px 0 0;
+            border: 1.5px solid rgba(0, 240, 255, 0.4);
+            border-bottom: none;
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-tool {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 900;
+            color: white;
+            transition: 0.2s;
+        }
+
+        .btn-tool:hover {
+            background: var(--ef-cyan);
+            color: var(--ef-deep-blue);
+        }
+
+        .editor {
+            min-height: 120px;
+            padding: 15px;
+            border: 1.5px solid rgba(0, 240, 255, 0.4);
+            border-radius: 0 0 12px 12px;
+            background: rgba(5, 8, 17, 0.8);
+            outline: none;
+            margin-bottom: 15px;
+            color: #FFFFFF !important;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .editor:focus {
+            border-color: var(--ef-cyan);
+            box-shadow: inset 0 0 10px rgba(0, 240, 255, 0.2);
+        }
+
+        .soal-box input,
+        .soal-box select {
+            color: #FFFFFF !important;
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1.5px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 10px !important;
+            padding: 12px 15px !important;
+            width: 100%;
+            font-size: 0.95rem;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .soal-box input:focus,
+        .soal-box select:focus {
+            border-color: var(--ef-neon-yellow) !important;
+            background: rgba(255, 255, 255, 0.1) !important;
+            outline: none;
+        }
+
+        .btn-hapus-soal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--ef-magenta);
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 0, 122, 0.3);
+            transition: 0.2s;
+        }
+
+        .btn-hapus-soal:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(255, 0, 122, 0.5);
         }
 
         .opt-box {
-            background: #F8FAFC;
-            border: 2px solid var(--border);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1.5px solid rgba(0, 240, 255, 0.2);
             padding: 16px 20px;
             border-radius: 14px;
             margin-bottom: 12px;
@@ -1450,79 +1494,23 @@
             align-items: center;
             gap: 15px;
             transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 600;
-            color: #161D2B;
+            font-weight: 700;
+            color: #FFFFFF;
         }
 
         .opt-box:hover {
-            border-color: var(--primary);
-            background: rgba(28, 37, 54, 0.05);
+            border-color: var(--ef-cyan);
+            background: rgba(0, 240, 255, 0.1);
             transform: translateX(5px);
         }
 
         .opt-box.selected {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
-            font-weight: 800;
-            box-shadow: 0 8px 15px rgba(28, 37, 54, 0.2);
+            background: var(--ef-cyan);
+            border-color: var(--ef-cyan);
+            color: var(--ef-deep-blue);
+            font-weight: 900;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
             transform: translateX(8px);
-        }
-
-        .toolbar {
-            background: #F8FAFC;
-            padding: 8px;
-            border-radius: 10px 10px 0 0;
-            border: 1px solid var(--border);
-            border-bottom: none;
-            display: flex;
-            gap: 6px;
-        }
-
-        .btn-tool {
-            width: 32px;
-            height: 32px;
-            background: var(--white);
-            border: 1px solid #CBD5E1;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .editor {
-            min-height: 100px;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 0 0 10px 10px;
-            background: var(--white);
-            outline: none;
-            margin-bottom: 10px;
-            color: #111 !important;
-        }
-
-        .soal-box input,
-        .soal-box select {
-            color: #111111 !important;
-            background: #ffffff !important;
-            border: 1.5px solid #CBD5E1 !important;
-            border-radius: 8px !important;
-            padding: 8px 12px !important;
-            width: 100%;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .btn-hapus-soal {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #FFF1F2;
-            color: var(--danger);
-            border: 1px solid #FECDD3;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.65rem;
-            font-weight: 800;
         }
 
         #displayTimer {
@@ -1620,157 +1608,150 @@
             }
         }
 
-        /* ── Layer 3: Neon Rays ── */
-        .ef-rays {
-            position: absolute;
+        /* eFootball Game-Style Opening Splash */
+        #welcomeSplash {
+            position: fixed;
             inset: 0;
-            background: radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.1) 0%, transparent 60%);
-            animation: efPulse 4s infinite ease-in-out;
-        }
-
-        @keyframes efPulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 0.5;
-            }
-
-            50% {
-                transform: scale(1.2);
-                opacity: 1;
-            }
-        }
-
-        /* ── Layer 4: Modern Scan Lines ── */
-        .ef-scanline {
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, transparent, rgba(0, 240, 255, 0.05) 50%, transparent);
-            top: -100%;
-            animation: efScanMove 3s linear infinite;
-            z-index: 4;
-        }
-
-        @keyframes efScanMove {
-            to {
-                top: 100%;
-            }
-        }
-
-        /* ── Layer 5: Logo & Typography ── */
-        .ef-core {
-            text-align: center;
-            z-index: 15;
-            position: relative;
-            transform: scale(0.9);
-            opacity: 0;
-            animation: efCoreIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1s forwards;
-        }
-
-        @keyframes efCoreIn {
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .ef-logo-box {
-            position: relative;
-            width: 140px;
-            height: 140px;
-            margin: 0 auto 30px;
-            background: var(--ef-neon-lime);
-            clip-path: polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%);
-            /* eFootball sporty slant */
+            background: radial-gradient(circle at center, #0a1428 0%, #050811 100%);
+            z-index: 10000;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 40px rgba(210, 255, 0, 0.4);
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .ef-logo-box span {
-            font-size: 5rem;
-            font-weight: 900;
-            color: var(--ef-obsidian);
-            font-style: italic;
-            transform: skewX(-15deg);
-        }
-
-        .ef-title-main {
-            font-size: clamp(3rem, 10vw, 5.5rem);
-            font-weight: 900;
-            font-style: italic;
-            line-height: 0.85;
-            text-transform: uppercase;
-            color: #fff;
-            letter-spacing: -2px;
-            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
-            margin-bottom: 10px;
-        }
-
-        .ef-title-main span {
-            color: var(--ef-neon-lime);
-            display: block;
-            font-size: 0.8em;
-            letter-spacing: 4px;
-        }
-
-        .ef-sub {
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 6px;
-            color: var(--ef-cyan);
-            opacity: 0.8;
-            font-style: italic;
-        }
-
-        /* ── Loading Bar ── */
-        .ef-loader-wrap {
+        .ef-stadium-overlay {
             position: absolute;
-            bottom: 60px;
+            inset: 0;
+            background: 
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+        .ef-stadium-glow {
+            position: absolute;
+            bottom: -20%;
             left: 50%;
             transform: translateX(-50%);
-            width: 250px;
-            z-index: 20;
+            width: 150%;
+            height: 100%;
+            background: radial-gradient(ellipse at bottom, rgba(0, 240, 255, 0.15) 0%, transparent 70%);
+            z-index: 2;
+        }
+
+        .ef-title-box {
+            position: relative;
+            z-index: 10;
             text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: efTitleIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
         }
 
-        .ef-loader-bar {
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 0;
-            overflow: hidden;
+        @keyframes efTitleIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ef-game-title {
+            font-size: clamp(4rem, 15vw, 8rem);
+            font-weight: 950;
+            font-style: italic;
+            line-height: 0.75;
+            letter-spacing: -4px;
+            text-transform: uppercase;
+            color: #fff;
+            margin-bottom: 25px;
+            filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.4));
+        }
+
+        .ef-game-title span {
+            display: block;
+            font-size: 0.85em;
+            letter-spacing: 4px;
+            background: linear-gradient(to right, var(--ef-cyan), var(--ef-neon-lime));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin-top: 10px;
-            transform: skewX(-15deg);
         }
 
-        .ef-loader-fill {
+        .ef-game-sub {
+            font-size: 0.9rem;
+            font-weight: 900;
+            letter-spacing: 12px;
+            color: var(--ef-neon-lime);
+            text-transform: uppercase;
+            opacity: 0.8;
+            margin-bottom: 60px;
+        }
+
+        .ef-game-loader {
+            position: absolute;
+            bottom: 15%;
+            width: 80%;
+            max-width: 400px;
+            z-index: 10;
+        }
+
+        .ef-loader-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 0.7rem;
+            font-weight: 950;
+            letter-spacing: 4px;
+            color: var(--ef-cyan);
+            text-transform: uppercase;
+            font-style: italic;
+        }
+
+        .ef-loader-bar-pro {
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ef-loader-progress-pro {
+            position: absolute;
+            top: 0;
+            left: 0;
             height: 100%;
             width: 100%;
-            background: linear-gradient(90deg, var(--ef-cyan), var(--ef-neon-lime));
+            background: linear-gradient(to right, var(--ef-cyan), var(--ef-neon-lime));
             transform: scaleX(0);
             transform-origin: left;
-            animation: efLoad 1.2s ease-out 1.4s forwards;
+            animation: efProLoad 2s cubic-bezier(0.65, 0, 0.35, 1) 0.8s forwards;
+            box-shadow: 0 0 15px var(--ef-cyan);
+        }
+
+        @keyframes efProLoad {
+            0% { transform: scaleX(0); }
+            40% { transform: scaleX(0.4); }
+            70% { transform: scaleX(0.85); }
+            100% { transform: scaleX(1); }
         }
 
         @keyframes efLoad {
-            to {
-                transform: scaleX(1);
-            }
+            0% { transform: scaleX(0.2); opacity: 0.5; }
+            100% { transform: scaleX(1); opacity: 1; }
         }
 
-        .ef-loader-text {
-            font-size: 0.7rem;
-            color: var(--ef-neon-lime);
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            font-weight: 900;
-            font-style: italic;
+        .ef-scanline-v2 {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.2) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0.3;
         }
+
+        /* Update original welcomeSplash HTML to use new classes */
 
         /* ── Exit Fade ── */
         #welcomeSplash.fade-out {
@@ -1806,123 +1787,42 @@
 
 <body>
 
-    <!-- SHARED SVG ASSETS (Optimasi Performa) -->
-    <svg style="display: none;">
-        <defs>
-            <linearGradient id="jerseyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#1e293b;stop-opacity:1" />
-                <stop offset="50%" style="stop-color:#0f172a;stop-opacity:1" />
-                <stop offset="100%" style="stop-color:#020617;stop-opacity:1" />
-            </linearGradient>
-            <filter id="jerseyShadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
-                <feOffset dx="0" dy="4" />
-                <feComponentTransfer>
-                    <feFuncA type="linear" slope="0.5" />
-                </feComponentTransfer>
-                <feMerge>
-                    <feMergeNode />
-                    <feMergeNode in="SourceGraphic" />
-                </feMerge>
-            </filter>
-        </defs>
-    </svg>
+    <!-- Futuristic Stadium Background -->
+    <div class="stadium-bg">
+        <div class="energy-line" style="top: 20%; animation-delay: 0s;"></div>
+        <div class="energy-line" style="top: 50%; animation-delay: 2s;"></div>
+        <div class="energy-line" style="top: 80%; animation-delay: 4s;"></div>
+        <!-- Particle Effect (Simplified with CSS) -->
+        <div style="position: absolute; inset: 0; background: radial-gradient(circle, transparent 20%, var(--ef-deep-blue) 100%); pointer-events: none;"></div>
+    </div>
 
-    <!-- CINEMATIC eFOOTBALL 2026 STARTUP -->
+    <!-- PRO STYLE OPENING SPLASH (eFootball Game Style) -->
     <div id="welcomeSplash">
-        <div class="ef-bg">
-            <div class="ef-bg-pattern"></div>
-            <!-- High Velocity Neon Streaks -->
-            <div
-                style="position:absolute; top:30%; left:-100%; width:200%; height:2px; background:var(--ef-neon-lime); filter:blur(2px); animation: streakRun 2s infinite linear; opacity:0.3;">
-            </div>
-            <div
-                style="position:absolute; top:70%; left:-100%; width:200%; height:2px; background:var(--ef-cyan); filter:blur(2px); animation: streakRun 3s infinite linear; opacity:0.3; animation-delay:1s;">
-            </div>
-        </div>
-        <div class="ef-rays"></div>
-        <div class="ef-scanline"></div>
-
-        <div class="ef-core" style="animation: efZoomIn 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;">
-            <!-- eFootball-style Diamond Box Logo with Toga -->
-            <div class="ef-logo-box"
-                style="transform: perspective(500px) rotateY(10deg); box-shadow: -15px 15px 40px rgba(0,0,0,0.8), 0 0 30px rgba(0, 240, 255, 0.3);">
-                <svg viewBox="0 0 24 24" style="width: 75%; height: 75%; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));"
-                    fill="var(--ef-obsidian)">
-                    <path
-                        d="M12 3L1 9L12 15L21 10.09V17H23V9M12 3L12 3M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z" />
-                </svg>
-            </div>
-
-            <div class="ef-title-box">
-                <h1 class="ef-title-main" style="letter-spacing:-3px; text-shadow: 0 0 30px rgba(255,255,255,0.3);">
-                    RUANG<span style="color: var(--ef-neon-lime);">BELAJAR</span></h1>
-                <div class="ef-sub"
-                    style="font-weight:900; background:rgba(0,0,0,0.5); padding:5px 20px; transform:skewX(-15deg); color:var(--ef-cyan);">
-                    SD NEGERI PENGKOL • KELAS V</div>
-            </div>
+        <div class="ef-stadium-overlay"></div>
+        <div class="ef-stadium-glow"></div>
+        <div class="ef-scanline-v2"></div>
+        
+        <div class="ef-title-box">
+            <h1 class="ef-game-title">RUANG<span>BELAJAR</span></h1>
+            <p class="ef-game-sub">SD NEGERI PENGKOL • KELAS V</p>
         </div>
 
-        <div class="ef-loader-wrap">
-            <div class="ef-loader-text" style="animation: efPulse 1.5s infinite alternate;">Initializing Ruang Guru
-                System...</div>
-            <div class="ef-loader-bar" style="height:6px; background:rgba(255,255,255,0.05);">
-                <div class="ef-loader-fill" style="box-shadow: 0 0 20px var(--ef-cyan);"></div>
+        <div class="ef-game-loader">
+            <div class="ef-loader-label">
+                <span>LOADING DATA...</span>
+                <span>v2.6.0</span>
+            </div>
+            <div class="ef-loader-bar-pro">
+                <div class="ef-loader-progress-pro"></div>
             </div>
         </div>
     </div>
 
-    <style>
-        @keyframes streakRun {
-            0% {
-                left: -100%;
-            }
-
-            100% {
-                left: 100%;
-            }
-        }
-
-        @keyframes efZoomIn {
-            from {
-                opacity: 0;
-                transform: scale(3) blur(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1) blur(0);
-            }
-        }
-
-        @keyframes efPulse {
-            from {
-                opacity: 0.4;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-    </style>
-
-
-
-    <style>
-        @keyframes dotBounce {
-            from {
-                transform: translateY(0);
-            }
-
-            to {
-                transform: translateY(-10px);
-            }
-        }
-    </style>
-
-    <div id="loader">
-        <div class="spinner"></div>
-        <p id="loaderText" style="margin-top:10px; font-weight:700; color: #090D14;">Memproses...</p>
+    <div id="loader" style="display: none !important; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; flex-direction: column; align-items: center; justify-content: center;">
+        <div class="ef-loader-bar" style="width: 200px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;">
+            <div class="ef-loader-fill" style="height: 100%; width: 100%; background: var(--ef-cyan); animation: efLoad 1.5s infinite alternate;"></div>
+        </div>
+        <p id="loaderText" style="color: var(--ef-cyan); margin-top: 15px; font-size: 0.8rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;">PROSES...</p>
     </div>
 
     <!-- Achievement-style Modal Notification -->
@@ -1950,117 +1850,85 @@
         </div>
     </div>
 
-    <!-- Modern Student PIN Verification Modal -->
-    <div id="modalPinSiswa" class="panel portal-modal">
+    <!-- PIN VERIFICATION MODAL -->
+    <div id="modalPinSiswa" class="panel portal-modal" style="padding-top:0;">
         <div class="modal-glass">
-            <div class="modal-icon-header">
-                <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
-                </svg>
-            </div>
-            <h3 id="labelPinSiswa">VERIFIKASI AKSES</h3>
-            <p>Silakan masukkan PIN Anda untuk melanjutkan.</p>
+            <h3 id="labelPinSiswa" style="color: var(--ef-neon-yellow); font-style: italic;">VERIFY ACCESS</h3>
+            <p style="margin: 10px 0 20px; color: var(--ef-text-light);">Enter player security PIN to continue.</p>
             <div class="pin-input-wrapper">
-                <input type="password" id="pinSiswaInp" placeholder="Password PIN">
+                <input type="password" id="pinSiswaInp" placeholder="••••" maxlength="10" style="width: 100%; text-align: center; font-size: 2.5rem; letter-spacing: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--ef-cyan); color: var(--ef-cyan) !important;">
             </div>
-            <div class="modal-actions">
-                <button class="modal-btn-primary" onclick="verifikasiPinSiswa()">MASUK</button>
-                <button class="modal-btn-ghost" onclick="openView('panelUtama')">KEMBALI</button>
+            <div class="modal-actions" style="display: flex; flex-direction: column; gap: 12px; margin-top: 30px;">
+                <button class="btn btn-blue" onclick="verifikasiPinSiswa()">MASUK</button>
+                <button class="btn" onclick="closeView('modalPinSiswa'); openView('panelUtama');">KEMBALI</button>
             </div>
         </div>
     </div>
 
+    <!-- ── NAVIGATION HEADER ── -->
+    <header id="mainHeader">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+            <div style="width: 40px; height: 4px; background: var(--ef-cyan); border-radius: 2px;"></div>
+            <h1 onclick="location.reload()" style="cursor:pointer;">RUANG<span>BELAJAR</span></h1>
+            <div style="width: 40px; height: 4px; background: var(--ef-neon-yellow); border-radius: 2px;"></div>
+        </div>
+    </header>
+
     <!-- ── MAIN DASHBOARD PANEL ── -->
-    <div id="panelUtama" class="panel" style="display: block;">
-        <header
-            style="width: 100%; max-width: 1000px; margin: 0 auto; background: linear-gradient(160deg, #121b30 0%, var(--ef-obsidian) 100%); border-bottom: 4px solid var(--ef-neon-lime); box-shadow: 0 15px 50px rgba(0,0,0,0.8); padding: 45px 25px; border-radius: 0 0 0 60px; text-align: center; box-sizing: border-box; overflow: hidden; position: relative;">
-            <!-- eFootball Decorative Accents -->
-            <div
-                style="position:absolute; top:0; right:0; width:150px; height:100%; background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.05)); transform: skewX(-20deg); pointer-events: none;">
-            </div>
-
-            <div
-                style="display:flex; align-items:center; justify-content:center; gap:25px; margin-bottom:20px; flex-wrap:wrap; position:relative; z-index:2;">
-                <!-- New Sporty RB Icon -->
-                <div
-                    style="flex-shrink:0; background: var(--ef-neon-lime); padding: 12px; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); width: 75px; height: 75px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(210, 255, 0, 0.4);">
-                    <svg viewBox="0 0 24 24" width="45" height="45" fill="var(--ef-obsidian)">
-                        <path
-                            d="M12 3L1 9L12 15L21 10.09V17H23V9M12 3L12 3M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z" />
-                    </svg>
-                </div>
-
-                <div style="text-align:left;">
-                    <h1 style="
-                        font-family: 'Exo 2', sans-serif;
-                        font-style: italic;
-                        font-weight: 900;
-                        font-size: clamp(2rem, 6vw, 3.5rem);
-                        line-height: 0.9;
-                        text-transform: uppercase;
-                        color: #fff;
-                        letter-spacing: -1px;
-                        margin:0;
-                        filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));
-                    ">RUANG<br><span style="color: var(--ef-neon-lime);">BELAJAR</span></h1>
-                    <div style="
-                        font-family: 'Exo 2', sans-serif;
-                        font-size: 0.75rem;
-                        font-weight: 800;
-                        color: var(--ef-cyan);
-                        letter-spacing: 4px;
-                        text-transform: uppercase;
-                        margin-top: 8px;
-                        font-style: italic;
-                    ">SD NEGERI PENGKOL</div>
-                </div>
-            </div>
-            <div id="header_year"
-                style="background: rgba(0, 240, 255, 0.1); border: 1.5px solid var(--ef-cyan); padding: 8px 35px; font-weight: 900; color: #fff; display: inline-block; transform: skewX(-15deg); font-size: 0.85rem; letter-spacing: 2px;">
-                TAHUN PELAJARAN 2025/2026</div>
-        </header>
-
-        <div class="container"
-            style="max-width: 1000px; margin: -25px auto 30px; padding: 0 15px; position: relative; z-index: 10;">
-            <div class="guru-profile"
-                style="background: var(--ef-navy); border: 2px solid var(--ef-cyan); border-radius: 0 0 20px 0; box-shadow: 0 20px 40px rgba(0,0,0,0.4); padding: 15px 25px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; position: relative;">
-                <div class="guru-info" style="display: flex; align-items: center; gap: 15px;">
-                    <div class="avatar-frame"
-                        style="width: 55px; height: 55px; background: var(--ef-neon-lime); border-radius: 0; clip-path: polygon(15% 0, 100% 0, 85% 100%, 0 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(210, 255, 0, 0.3);">
-                        <svg viewBox="0 0 24 24" width="30" height="30" fill="var(--ef-obsidian)">
-                            <path
-                                d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+    <div id="panelUtama" class="panel" style="display: none;">
+        <div class="panel-content">
+            <div class="glass-container" style="padding: 25px;">
+                <!-- GURU PROFILE COMPACT -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; border-bottom: 1px solid rgba(0, 240, 255, 0.1); padding-bottom: 15px; position: relative;">
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <div class="avatar-frame" style="width: 70px; height: 70px; margin: 0;">
+                            <div class="halo"></div>
+                            <img src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Man/3D/man_3d.png" class="avatar-3d" 
+                                 onerror="this.src='https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Man/3D/3d.png'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='block';}"
+                                 style="width: 100%; height: 100%; object-fit: contain; position: relative; z-index: 3;">
+                            <div class="fallback-emoji" style="display:none; font-size: 2.5rem; z-index: 3;">👨‍🏫</div>
+                        </div>
+                        <div class="guru-info">
+                            <h3 id="display_nama_guru" style="font-size: 1.3rem; font-style: italic; letter-spacing: -0.5px; color: var(--ef-white); margin: 0;">Aditya W. Wardana, S.Pd</h3>
+                            <p id="display_nip_guru" style="font-size: 0.75rem; color: var(--ef-neon-yellow); font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin-top: 5px;">GURU KELAS • NIP: 19940319 202321 1 005</p>
+                        </div>
+                    </div>
+                    
+                    <button onclick="aksesDashboardGuru()" style="background: var(--ef-neon-yellow); color: var(--ef-obsidian); border: none; padding: 12px 25px; border-radius: 12px; font-size: 0.85rem; font-weight: 950; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; gap: 10px; transition: 0.3s; box-shadow: 0 0 20px rgba(210, 255, 0, 0.3); font-style: italic;" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 30px rgba(210, 255, 0, 0.5)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 0 20px rgba(210, 255, 0, 0.3)';">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
                         </svg>
+                        MASUK SISTEM KONTROL
+                    </button>
+
+                    <div style="position: absolute; right: 0; top: -10px; font-size: 0.55rem; color: var(--ef-cyan); opacity: 0.5; font-weight: 900; letter-spacing: 1px;">SISTEM ONLINE v2.6</div>
+                </div>
+
+                <!-- LIVE TASK LIST -->
+                <div style="margin-bottom: 25px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;">
+                        <div style="border-left: 4px solid var(--ef-cyan); padding-left: 12px;">
+                            <h2 style="font-size: 0.95rem; font-style: italic; color: var(--ef-white); text-transform: uppercase; letter-spacing: 1px;">Tugas Aktif</h2>
+                        </div>
+                        <span id="liveIndicator" style="color: var(--ef-magenta); font-weight: 950; font-size: 0.55rem; letter-spacing: 2px; background: rgba(255, 0, 122, 0.1); padding: 3px 10px; border-radius: 4px; animation: efPulse 2s infinite;">LIVE DATA</span>
                     </div>
-                    <div>
-                        <h3
-                            style="color: #FFFFFF; font-weight: 900; font-size: 1.1rem; margin-bottom: 2px; font-style: italic;">
-                            Aditya W. Wardana, S.Pd</h3>
-                        <p id="sub_nip_guru"
-                            style="color: var(--ef-neon-lime); font-weight: 900; font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase; font-style: italic;">
-                            NIP: 19940319 202321 1 005</p>
+                    <div id="globalTaskStatus" style="display: flex; flex-direction: column; gap: 10px;">
+                        <!-- Dinamis via updateBadgeSiswa -->
                     </div>
                 </div>
-                <button class="btn btn-blue" onclick="aksesDashboardGuru()"
-                    style="border-radius: 0; transform: skewX(-15deg); padding: 12px 25px; font-weight: 900; border: 2px solid var(--ef-white); background: var(--ef-neon-lime); color: var(--ef-obsidian); box-shadow: 0 5px 15px rgba(210, 255, 0, 0.3); transition: 0.2s; pointer-events: auto;">
-                    <span style="transform: skewX(15deg); display: inline-block;">🔐 RUANG GURU</span>
-                </button>
-            </div>
 
-            <!-- Dashboard Global Status Bar (Tugas Aktif) -->
-            <div id="globalTaskStatus"
-                style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; min-height: 45px;">
-                <!-- Dinamis via updateBadgeSiswa -->
+                <div style="margin-bottom: 0;">
+                    <div style="border-left: 4px solid var(--ef-neon-yellow); padding-left: 12px; margin-bottom: 15px;">
+                        <h2 style="font-size: 0.95rem; font-style: italic; color: var(--ef-white); text-transform: uppercase; letter-spacing: 1px;">Daftar Siswa</h2>
+                    </div>
+                    <div class="grid-siswa" id="gridSiswa"></div>
+                </div>
             </div>
-
-            <div class="grid-siswa" id="gridSiswa"></div>
         </div>
     </div>
 
     <!-- Modern Guru/Teacher Login Modal -->
-    <div id="modalLogin" class="panel portal-modal">
+    <div id="modalLogin" class="panel portal-modal" style="display: none; padding-top: 0;">
         <div class="modal-glass">
             <div class="modal-icon-header">
                 <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="none" viewBox="0 0 24 24"
@@ -2081,7 +1949,7 @@
         </div>
     </div>
 
-    <div id="panelGuru" class="panel" style="background: var(--ef-obsidian); overflow-y: auto;">
+    <div id="panelGuru" class="panel" style="display: none; background: var(--ef-obsidian); overflow-y: auto;">
         <div
             style="position: absolute; top:0; right:0; width:50%; height:50%; background: radial-gradient(circle at top right, rgba(0, 240, 255, 0.05) 0%, transparent 70%); pointer-events:none;">
         </div>
@@ -2225,425 +2093,253 @@
     </div>
 
     <!-- PDF PREVIEW REMOVED AS PER USER REQUEST -->
-    <div id="panelMenuTugas" class="panel"
-        style="background: radial-gradient(at 0% 0%, #1C2536 0%, #0D1320 100%); overflow-y: auto;">
-        <div class="panel-content" style="max-width: 1000px; padding: 40px 20px; position: relative; z-index: 1;">
-            <div style="text-align: center; margin-bottom: 40px;">
-                <h2
-                    style="font-size: 2.5rem; font-weight: 1000; color: white; text-transform: uppercase; letter-spacing: -1px;">
-                    Kelola Naskah Tugas</h2>
-                <p
-                    style="color: var(--ef-neon-lime); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;">
-                    Pilih Slot untuk Konfigurasi Soal</p>
-            </div>
+    <div id="panelMenuTugas" class="panel" style="display: none;">
+        <div class="panel-content">
+            <div class="glass-container">
+                <div style="text-align: center; margin-bottom: 40px; border-bottom: 1px solid var(--ef-glass-border); padding-bottom: 30px;">
+                    <h2 style="font-size: 2.2rem; font-weight: 900; color: var(--ef-white); text-transform: uppercase; font-style: italic; letter-spacing: -1px;">KELOLA <span style="color: var(--ef-neon-yellow);">TUGAS</span></h2>
+                    <p style="color: var(--ef-cyan); font-weight: 800; text-transform: uppercase; letter-spacing: 3px; font-size: 0.75rem; margin-top: 5px;">Konfigurasi tugas dan naskah soal</p>
+                </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
-                <!-- Slot 1 -->
-                <div class="glass-card"
-                    style="background: var(--ef-navy); border-radius: 0; padding: 25px; border: 2px solid var(--ef-cyan); box-shadow: 0 10px 30px rgba(0,240,255,0.1);">
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
-                        <div>
-                            <span
-                                style="background: var(--ef-neon-lime); color: var(--ef-obsidian); padding: 4px 12px; border-radius: 0; font-size: 0.7rem; font-weight: 900; letter-spacing: 1px; transform: skewX(-15deg); display: inline-block;"><span
-                                    style="transform: skewX(15deg); display: inline-block;">TUGAS #01</span></span>
-                            <h3 id="labelJudulSlot1"
-                                style="color: var(--ef-text-ghost); font-size: 1.1rem; font-weight: 900; margin-top: 15px; font-style: italic;">
-                                ...</h3>
+                <div id="wadahSlotTugas" class="mission-grid">
+                    <!-- Slot 1 -->
+                    <div class="kartu-soal mission-slot">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                            <div>
+                                <span style="background: var(--ef-neon-yellow); color: var(--ef-deep-blue); padding: 4px 12px; font-size: 0.7rem; font-weight: 900; font-style: italic;">SLOT 01</span>
+                                <h3 id="labelJudulSlot1" style="font-size: 1.3rem; margin-top: 15px;">KOSONG</h3>
+                            </div>
+                            <div style="text-align: right;">
+                                <p id="labelWaktuSlot1" style="color: var(--ef-cyan); font-size: 0.8rem; font-weight: 800;">DURASI: --</p>
+                                <p id="labelLimitSlot1" style="color: var(--ef-magenta); font-size: 0.7rem; font-weight: 800; margin-top: 5px;">--</p>
+                            </div>
                         </div>
-                        <div style="text-align: right;">
-                            <p id="labelWaktuSlot1"
-                                style="color: var(--ef-text-ghost); font-size: 0.72rem; font-weight: 900;">DURASI: --
-                            </p>
-                            <p id="labelLimitSlot1"
-                                style="color: var(--ef-magenta); font-size: 0.65rem; font-weight: 800; margin-top: 5px;">
-                                --</p>
+                        <div style="display: flex; gap: 12px; width: 100%;">
+                            <button class="btn btn-blue" style="flex: 2;" onclick="bukaBuatTugas('tugas1')">ATUR TUGAS</button>
+                            <button class="btn btn-red" style="flex: 1;" onclick="nonaktifkanTugas('tugas1')">HAPUS</button>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn btn-blue"
-                            style="flex: 1.5; border-radius: 0; background: var(--ef-neon-lime); color: var(--ef-obsidian);"
-                            onclick="bukaBuatTugas('tugas1')">BUAT / UBAH</button>
-                        <button class="btn btn-danger" style="flex: 1; border-radius: 0;"
-                            onclick="nonaktifkanTugas('tugas1')">HAPUS</button>
+
+                    <!-- Slot 2 -->
+                    <div class="kartu-soal mission-slot">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                            <div>
+                                <span style="background: var(--ef-neon-yellow); color: var(--ef-deep-blue); padding: 4px 12px; font-size: 0.7rem; font-weight: 900; font-style: italic;">SLOT 02</span>
+                                <h3 id="labelJudulSlot2" style="font-size: 1.3rem; margin-top: 15px;">KOSONG</h3>
+                            </div>
+                            <div style="text-align: right;">
+                                <p id="labelWaktuSlot2" style="color: var(--ef-cyan); font-size: 0.8rem; font-weight: 800;">DURASI: --</p>
+                                <p id="labelLimitSlot2" style="color: var(--ef-magenta); font-size: 0.7rem; font-weight: 800; margin-top: 5px;">--</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 12px; width: 100%;">
+                            <button class="btn btn-blue" style="flex: 2;" onclick="bukaBuatTugas('tugas2')">ATUR TUGAS</button>
+                            <button class="btn btn-red" style="flex: 1;" onclick="nonaktifkanTugas('tugas2')">HAPUS</button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Slot 2 -->
-                <div class="glass-card"
-                    style="background: var(--ef-navy); border-radius: 0; padding: 25px; border: 2px solid var(--ef-cyan); box-shadow: 0 10px 30px rgba(0,240,255,0.1);">
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
-                        <div>
-                            <span
-                                style="background: var(--ef-neon-lime); color: var(--ef-obsidian); padding: 4px 12px; border-radius: 0; font-size: 0.7rem; font-weight: 900; letter-spacing: 1px; transform: skewX(-15deg); display: inline-block;"><span
-                                    style="transform: skewX(15deg); display: inline-block;">TUGAS #02</span></span>
-                            <h3 id="labelJudulSlot2"
-                                style="color: var(--ef-text-ghost); font-size: 1.1rem; font-weight: 900; margin-top: 15px; font-style: italic;">
-                                ...</h3>
-                        </div>
-                        <div style="text-align: right;">
-                            <p id="labelWaktuSlot2"
-                                style="color: var(--ef-text-ghost); font-size: 0.72rem; font-weight: 900;">DURASI: --
-                            </p>
-                            <p id="labelLimitSlot2"
-                                style="color: var(--ef-magenta); font-size: 0.65rem; font-weight: 800; margin-top: 5px;">
-                                --</p>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn btn-blue"
-                            style="flex: 1.5; border-radius: 0; background: var(--ef-neon-lime); color: var(--ef-obsidian);"
-                            onclick="bukaBuatTugas('tugas2')">BUAT / UBAH</button>
-                        <button class="btn btn-danger" style="flex: 1; border-radius: 0;"
-                            onclick="nonaktifkanTugas('tugas2')">HAPUS</button>
-                    </div>
-                </div>
-            </div>
-
-            <div style="text-align: center; margin-top: 50px;">
-                <button class="btn btn-outline" style="border-radius: 12px; padding: 12px 30px;"
-                    onclick="openView('panelGuru')">KEMBALI KE PANEL GURU</button>
+                <button class="btn" style="width: 100%; margin-top: 40px; padding: 18px; border-color: var(--ef-cyan); color: var(--ef-cyan);" onclick="openView('panelGuru')">KEMBALI KE PANEL GURU</button>
             </div>
         </div>
     </div>
 
-    <div id="panelBuat" class="panel" style="background: var(--ef-obsidian); overflow-y: auto;">
-        <div
-            style="position: fixed; top: 0; right: 0; width: 600px; height: 600px; background: radial-gradient(circle, rgba(0, 240, 255, 0.03) 0%, transparent 70%); pointer-events: none;">
-        </div>
-        <div class="panel-content" style="max-width: 1000px; padding: 40px 20px; position: relative; z-index: 1;">
-            <div class="glass-card"
-                style="background: var(--ef-navy); border-radius: 0; border: 2px solid var(--ef-cyan); padding: 40px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); margin-bottom: 30px;">
-                <div style="text-align: center; margin-bottom: 40px;">
-                    <h2 id="labelTugas"
-                        style="color: white; font-size: 2rem; font-weight: 1000; text-transform: uppercase;">Konfigurasi
-                        Naskah</h2>
-                    <p style="color: #FFFFFF; opacity: 1; font-weight: 800; letter-spacing: 2px;">Atur Materi, Durasi,
-                        dan Butir Soal</p>
+    <div id="panelBuat" class="panel" style="display: none;">
+        <div class="panel-content">
+            <div class="glass-container">
+                <div style="text-align: center; margin-bottom: 40px; border-bottom: 1px solid var(--ef-glass-border); padding-bottom: 30px;">
+                    <h2 id="labelTugas" style="font-size: 2.2rem; font-weight: 900; color: var(--ef-white); text-transform: uppercase; font-style: italic; letter-spacing: -1px;">BUAT <span style="color: var(--ef-cyan);">TUGAS</span></h2>
+                    <p style="color: var(--ef-neon-yellow); font-weight: 800; text-transform: uppercase; letter-spacing: 3px; font-size: 0.75rem; margin-top: 5px;">Atur parameter dan butir soal</p>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 20px; margin-bottom: 30px;">
-                    <div class="premium-input-box">
-                        <label
-                            style="color: var(--ef-neon-lime); font-size: 0.75rem; font-weight: 900; letter-spacing: 1px;">JUDUL
-                            TUGAS / MATERI</label>
-                        <input type="text" id="jdlMateri" placeholder="Contoh: Matematika - Akar Kuadrat"
-                            style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 12px; padding: 15px; width: 100%; margin-top: 5px; font-weight: 700;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <label style="color: var(--ef-cyan); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">Judul Materi</label>
+                        <input type="text" id="jdlMateri" placeholder="Contoh: MATEMATIKA BAB 1">
                     </div>
-                    <div class="premium-input-box">
-                        <label
-                            style="color: var(--ef-neon-lime); font-size: 0.75rem; font-weight: 900; letter-spacing: 1px;">DURASI
-                            (MENIT)</label>
-                        <input type="number" id="waktuTugas" value="60"
-                            style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 12px; padding: 15px; width: 100%; margin-top: 5px; font-weight: 700;">
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <label style="color: var(--ef-cyan); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">Durasi (Menit)</label>
+                        <input type="number" id="waktuTugas" value="60">
                     </div>
-                    <div class="premium-input-box">
-                        <label
-                            style="color: var(--ef-neon-lime); font-size: 0.75rem; font-weight: 900; letter-spacing: 1px;">BATAS
-                            WAKTU</label>
-                        <input type="datetime-local" id="expiredAt"
-                            style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 12px; padding: 15px; width: 100%; margin-top: 5px; font-weight: 700;">
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <label style="color: var(--ef-cyan); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">Batas Waktu</label>
+                        <input type="datetime-local" id="expiredAt">
                     </div>
                 </div>
 
                 <div id="wadahInput" style="margin-bottom: 40px;"></div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
-                    <button class="btn btn-outline"
-                        style="border: 2px dashed rgba(255,255,255,0.2); background: transparent; color: white; padding: 20px;"
-                        onclick="tambahSoal('PG')">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                        TAMBAH PILIHAN GANDA
-                    </button>
-                    <button class="btn btn-outline"
-                        style="border: 2px dashed rgba(255,255,255,0.2); background: transparent; color: white; padding: 20px;"
-                        onclick="tambahSoal('URAIAN')">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                        TAMBAH SOAL URAIAN
-                    </button>
+                    <button class="btn" style="border-style: dashed; padding: 20px; border-color: var(--ef-cyan); color: var(--ef-cyan);" onclick="tambahSoal('PG')">➕ TAMBAH PILIHAN GANDA</button>
+                    <button class="btn" style="border-style: dashed; padding: 20px; border-color: var(--ef-neon-yellow); color: var(--ef-neon-yellow);" onclick="tambahSoal('URAIAN')">➕ TAMBAH SOAL URAIAN</button>
                 </div>
-            </div>
-
-            <div style="display: flex; gap: 15px;">
-                <button class="btn btn-outline" style="flex: 1; border-radius: 20px; padding: 18px;"
-                    onclick="openView('panelMenuTugas')">BATAL & KEMBALI</button>
-                <button class="btn btn-blue"
-                    style="flex: 2; border-radius: 20px; padding: 18px; box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);"
-                    onclick="simpanKeFirebase()">TERBITKAN SEKARANG</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="panelPilihTugas" class="panel" style="background: var(--ef-obsidian);">
-        <div
-            style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(210, 255, 0, 0.02) 0%, transparent 100%); pointer-events: none;">
-        </div>
-        <div class="panel-content"
-            style="max-width: 650px; padding: 80px 20px; text-align: center; position: relative; z-index: 1;">
-            <div
-                style="background: var(--ef-neon-lime); width: 100px; height: 100px; margin: 0 auto 30px; clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(210, 255, 0, 0.3);">
-                <svg viewBox="0 0 24 24" width="55" height="55" fill="var(--ef-obsidian)">
-                    <path
-                        d="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5Z" />
-                </svg>
-            </div>
-            <h2 id="salamSiswa"
-                style="color: white; font-size: 3rem; font-weight: 900; letter-spacing: -1px; margin-bottom: 5px; font-style: italic;">
-                GAME READY!</h2>
-            <p
-                style="color: var(--ef-neon-lime); font-weight: 800; text-transform: uppercase; letter-spacing: 4px; font-size: 0.85rem; margin-bottom: 50px;">
-                PILIH TUGAS UNTUK DIMULAI</p>
-
-            <div id="menuTugasSiswa"
-                style="display: flex; flex-direction: column; gap: 20px; align-items: center; width: 100%;"></div>
-
-            <button class="btn btn-outline"
-                style="width: 100%; max-width: 320px; margin-top: 60px; border-radius: 0; transform: skewX(-15deg); padding: 18px; border: 2px solid rgba(255,255,255,0.2); color: white; font-weight: 900;"
-                onclick="openView('panelUtama')">
-                <span style="transform: skewX(15deg); display: inline-block;">KEMBALI KE BERANDA</span>
-            </button>
-        </div>
-    </div>
-
-    <div id="panelSiswa" class="panel" style="background: var(--ef-obsidian);">
-        <div
-            style="position: fixed; top: 0; left: 0; width: 100%; height: 6px; background: var(--ef-neon-lime); z-index: 10000; box-shadow: 0 0 15px var(--ef-neon-lime);">
-        </div>
-        <div class="panel-content" style="max-width: 950px; padding: 40px 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px;">
-                <button class="btn btn-outline"
-                    style="background: rgba(255,255,255,0.05); color: white; border-radius: 0; transform: skewX(-15deg); padding: 8px 25px;"
-                    onclick="kembaliKeDaftarTugas()">
-                    <span style="transform: skewX(15deg); display: inline-block;">DAFTAR TUGAS</span>
-                </button>
-                <div id="displayTimer"
-                    style="background: var(--ef-navy); color: var(--ef-neon-lime); font-family: 'Exo 2', sans-serif; font-size: 2.2rem; font-weight: 900; padding: 5px 30px; border: 2px solid var(--ef-neon-lime); transform: skewX(-15deg); text-shadow: 0 0 10px rgba(210, 255, 0, 0.5);">
-                    <span style="transform: skewX(15deg); display: inline-block;">00:00</span>
-                </div>
-            </div>
-
-            <div id="gridNomorCBT"
-                style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 40px; background: var(--ef-navy); padding: 25px; border: 1px solid rgba(255,255,255,0.1);">
-            </div>
-
-            <div class="glass-card"
-                style="background: var(--ef-navy); border-radius: 0; border: 2px solid var(--ef-cyan); padding: 45px; margin-bottom: 30px; min-height: 250px; position: relative;">
-                <div
-                    style="position: absolute; top: 0; left: 0; background: var(--ef-cyan); color: var(--ef-obsidian); padding: 5px 15px; font-weight: 900; font-size: 0.75rem; text-transform: uppercase;">
-                    SOAL AKTIF</div>
-                <div id="imgSoalSiswa" style="margin-bottom: 25px;"></div>
-                <div id="teksSoal"
-                    style="color: white; font-size: 1.4rem; font-weight: 700; line-height: 1.6; margin-bottom: 35px; font-family: 'Exo 2', sans-serif;">
-                </div>
-                <div id="areaJawaban"></div>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <button class="btn btn-outline"
-                    style="border-radius: 0; transform: skewX(-15deg); padding: 18px; font-weight: 900;"
-                    onclick="pindahSoal(-1)">
-                    <span style="transform: skewX(15deg); display: inline-block;">SEBELUMNYA</span>
-                </button>
-                <button class="btn btn-blue"
-                    style="border-radius: 0; transform: skewX(-15deg); padding: 18px; font-weight: 900; background: var(--ef-neon-lime); color: var(--ef-obsidian);"
-                    onclick="pindahSoal(1)">
-                    <span style="transform: skewX(15deg); display: inline-block;">SELANJUTNYA</span>
-                </button>
-            </div>
-
-            <div id="divKirim" style="display: none; margin-top: 35px;">
-                <button class="btn btn-dark"
-                    style="width: 100%; border-radius: 0; padding: 25px; background: var(--ef-white); color: var(--ef-obsidian); font-weight: 900; font-size: 1.2rem; transform: skewX(-5deg); box-shadow: 0 10px 30px rgba(255,255,255,0.2);"
-                    onclick="submitJawaban()">SELESAI & KIRIM JAWABAN</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- RESTORED REKAP PANEL -->
-    <div id="panelRekap" class="panel" style="background: var(--ef-obsidian); overflow-y: auto;">
-        <div class="panel-content" style="max-width: 1150px; padding: 40px 20px; position: relative; z-index: 1;">
-            <div class="glass-card"
-                style="background: var(--ef-navy); border-radius: 0; border: 2px solid var(--ef-cyan); overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.6);">
-                <div
-                    style="background: linear-gradient(160deg, var(--ef-obsidian) 0%, var(--ef-navy) 100%); padding: 45px; text-align: center; border-bottom: 3px solid var(--ef-neon-lime);">
-                    <div
-                        style="width: 80px; height: 80px; background: var(--ef-neon-lime); clip-path: polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%); display: flex; align-items: center; justify-content: center; color: var(--ef-obsidian); margin: 0 auto 25px; box-shadow: 0 0 25px rgba(210, 255, 0, 0.4);">
-                        <svg viewBox="0 0 24 24" width="45" height="45" fill="currentColor">
-                            <path
-                                d="M19,3H5C3.89,3 3,3.9 3,5V19C3,20.1 3.89,21 5,21H19C20.11,21 21,20.1 21,19V5C21,3.9 20.11,3 19,3M9,17H7V10H9V17M13,17H11V7H13V17M17,17H15V13H17V17Z" />
-                        </svg>
-                    </div>
-                    <h2
-                        style="color: white; font-size: 2.5rem; font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -1px;">
-                        REKAPITULASI TUGAS</h2>
-                    <p
-                        style="color: var(--ef-cyan); font-weight: 800; letter-spacing: 5px; font-size: 0.85rem; text-transform: uppercase;">
-                        Daftar Nilai Tugas</p>
-                </div>
-                <div style="padding: 30px;">
-                    <div style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px;">
-                        <div class="premium-input-box">
-                            <label
-                                style="color: var(--ef-neon-lime); font-size: 0.7rem; font-weight: 900; letter-spacing: 2px;">FILTER
-                                BERDASARKAN TUGAS</label>
-                            <select id="filterTugas" onchange="filterRekap()"
-                                style="width: 100%; height: 55px; background: white !important; color: #161D2B !important; border: 2px solid #161D2B; border-radius: 12px; padding: 0 20px; font-weight: 800; font-size: 1rem;">
-                                <option value="">-- Pilih Judul Tugas --</option>
-                            </select>
-                        </div>
-                        <div id="actionButtonsPusat"
-                            style="display: none; grid-template-columns: repeat(3, 1fr); gap: 15px;">
-                            <button class="btn btn-blue" onclick="exportRekapPDF()"
-                                style="border-radius: 0; transform: skewX(-10deg); background: var(--ef-neon-lime); color: var(--ef-obsidian); font-weight: 900;">EXPORT
-                                DATA</button>
-                            <button class="btn btn-outline"
-                                style="color: white; border-radius: 0; transform: skewX(-10deg); font-weight: 900;"
-                                onclick="cetakSoalPDF()">CETAK NASKAH</button>
-                            <button class="btn btn-danger" onclick="hapusSeluruhTugas()"
-                                style="border-radius: 0; transform: skewX(-10deg); font-weight: 900; background: var(--ef-magenta);">HAPUS
-                                DATA</button>
-                        </div>
-                    </div>
-                    <div
-                        style="overflow-x: auto; background: var(--ef-obsidian); border: 1px solid rgba(0, 240, 255, 0.2); padding: 5px;">
-                        <table style="width: 100%; border-collapse: separate; border-spacing: 0 8px; color: white;">
-                            <thead>
-                                <tr style="background: var(--ef-navy); text-transform: uppercase;">
-                                    <th
-                                        style="padding: 18px 15px; text-align: left; color: var(--ef-cyan); font-size: 0.85rem; border-left: 5px solid var(--ef-cyan); transform: skewX(-5deg);">
-                                        NO</th>
-                                    <th
-                                        style="padding: 18px 15px; text-align: left; color: var(--ef-cyan); font-size: 0.85rem; transform: skewX(-5deg);">
-                                        PESERTA</th>
-                                    <th
-                                        style="padding: 18px 15px; text-align: center; color: var(--ef-cyan); font-size: 0.85rem; transform: skewX(-5deg);">
-                                        HASIL AKHIR</th>
-                                    <th
-                                        style="padding: 18px 15px; text-align: center; color: var(--ef-cyan); font-size: 0.85rem; transform: skewX(-5deg);">
-                                        TOTAL SKOR</th>
-                                    <th
-                                        style="padding: 18px 15px; text-align: center; color: var(--ef-cyan); font-size: 0.85rem; transform: skewX(-5deg);">
-                                        AKSI</th>
-                                </tr>
-                            </thead>
-                            <tbody id="isiRekap"></tbody>
-                        </table>
-                    </div>
-                    <button class="btn btn-outline" style="width: 100%; margin-top: 30px; border-radius: 15px;"
-                        onclick="openView('panelGuru')">KEMBALI KE PANEL GURU</button>
+                
+                <div style="display: flex; gap: 15px; margin-top: 40px;">
+                    <button class="btn btn-blue" style="flex: 2; padding: 20px; font-size: 1rem;" onclick="simpanKeFirebase()">TERBITKAN TUGAS</button>
+                    <button class="btn" style="flex: 1; padding: 20px;" onclick="openView('panelMenuTugas')">BATAL</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODERNIZED SETTINGS PANEL -->
-    <div id="panelPengaturan" class="panel" style="background: var(--ef-obsidian); overflow-y: auto;">
-        <div
-            style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(0, 240, 255, 0.02) 0%, transparent 100%); pointer-events: none;">
-        </div>
-        <div class="panel-content" style="max-width: 1200px; padding: 40px 20px; position: relative; z-index: 1;">
-            <div style="text-align: center; margin-bottom: 50px;">
-                <h2
-                    style="font-size: 3rem; font-weight: 900; color: white; text-transform: uppercase; font-style: italic;">
-                    PENGATURAN</h2>
-                <p style="color: var(--ef-neon-lime); font-weight: 800; letter-spacing: 5px; font-size: 0.85rem;">
-                    ADMINISTRATION & DATABASE SYSTEM</p>
-            </div>
+    <div id="panelPilihTugas" class="panel" style="display: none;">
+        <div class="panel-content">
+            <div class="glass-container" style="max-width: 600px; text-align: center;">
+                <div style="width: 80px; height: 80px; background: var(--ef-neon-yellow); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; box-shadow: 0 0 30px rgba(210, 255, 0, 0.4);">
+                    <svg viewBox="0 0 24 24" width="45" height="45" fill="var(--ef-deep-blue)"><path d="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5Z"/></svg>
+                </div>
+                <h2 id="salamSiswa" style="font-size: 2.5rem; font-weight: 900; font-style: italic; color: var(--ef-white); letter-spacing: -1px;">SIAP MENGERJAKAN!</h2>
+                <p style="color: var(--ef-cyan); font-weight: 800; text-transform: uppercase; letter-spacing: 4px; font-size: 0.8rem; margin-bottom: 40px;">PILIH TUGAS UNTUK MEMULAI</p>
 
-            <div style="display: grid; grid-template-columns: 400px 1fr; gap: 30px;">
-                <!-- Identitas -->
-                <div class="glass-card"
-                    style="background: rgba(255,255,255,0.05); border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); padding: 30px; background: rgba(28, 37, 54, 0.95);">
-                    <h3
-                        style="color: var(--ef-neon-lime); font-weight: 900; margin-bottom: 25px; text-transform: uppercase; font-size: 1rem;">
-                        ⚙️ Identitas Aplikasi</h3>
-                    <div style="display: flex; flex-direction: column; gap: 15px;">
-                        <div class="premium-input-box">
-                            <label style="color: rgba(255,255,255,0.5); font-size: 0.65rem; font-weight: 800;">NAMA GURU
-                                & GELAR</label>
-                            <input type="text" id="set_nama_guru"
-                                style="background: white !important; color: #161D2B !important; font-weight: 800; border: 1.5px solid #161D2B; border-radius: 10px; padding: 12px; width: 100%; font-weight: 700;">
-                        </div>
-                        <div class="premium-input-box">
-                            <label
-                                style="color: rgba(255,255,255,0.5); font-size: 0.65rem; font-weight: 800;">NIP</label>
-                            <input type="text" id="set_nip_guru"
-                                style="background: white !important; color: #161D2B !important; font-weight: 800; border: 1.5px solid #161D2B; border-radius: 10px; padding: 12px; width: 100%; font-weight: 700;">
-                        </div>
-                        <div class="premium-input-box">
-                            <label
-                                style="color: rgba(255,255,255,0.5); font-size: 0.65rem; font-weight: 800;">SEKOLAH</label>
-                            <input type="text" id="set_sekolah"
-                                style="background: white !important; color: #161D2B !important; font-weight: 800; border: 1.5px solid #161D2B; border-radius: 10px; padding: 12px; width: 100%; font-weight: 700;">
-                        </div>
-                        <div class="premium-input-box">
-                            <label
-                                style="color: var(--ef-neon-lime); font-size: 0.75rem; font-weight: 900; letter-spacing: 1px;">TAHUN
-                                PELAJARAN</label>
-                            <input type="text" id="set_tahun"
-                                style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255, 215, 0, 0.4); color: white; border-radius: 10px; padding: 12px; width: 100%; font-weight: 800;">
-                        </div>
-                        <button class="btn btn-blue" onclick="simpanPengaturanGuru()"
-                            style="margin-top: 10px; border-radius: 15px; padding: 15px;">SIMPAN PERUBAHAN</button>
-                        <button class="btn btn-outline" onclick="location.reload()"
-                            style="color: white; border-style: dashed; border-radius: 15px;">SEGARKAN SISTEM</button>
-                        <button class="btn btn-outline" style="margin-top: 10px; border-radius: 15px;"
-                            onclick="openView('panelGuru')">KEMBALI</button>
-                    </div>
+                <div id="menuTugasSiswa" style="display: flex; flex-direction: column; gap: 15px;"></div>
+
+                <button class="btn btn-red" style="width: 100%; margin-top: 40px; padding: 18px; letter-spacing: 2px;" onclick="openView('panelUtama')">BATAL</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="panelSiswa" class="panel" style="display: none;">
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 4px; background: var(--ef-cyan); z-index: 10001; box-shadow: 0 0 15px var(--ef-cyan);"></div>
+        <div class="panel-content">
+            <div class="glass-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--ef-glass-border); padding-bottom: 20px;">
+                    <button class="btn" style="padding: 10px 20px; font-size: 0.7rem; border-color: var(--ef-magenta); color: var(--ef-magenta);" onclick="kembaliKeDaftarTugas()">KELUAR</button>
+                    <div id="displayTimer" style="background: var(--ef-deep-blue); color: var(--ef-neon-yellow); border: 2px solid var(--ef-neon-yellow); padding: 10px 25px; border-radius: 12px; font-weight: 900; font-size: 1.5rem; font-style: italic; text-shadow: 0 0 10px rgba(210, 255, 0, 0.4); box-shadow: 0 0 20px rgba(210, 255, 0, 0.2);">00:00</div>
                 </div>
 
-                <!-- Database Siswa -->
-                <div class="glass-card"
-                    style="background: rgba(255,255,255,0.05); border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); padding: 30px; background: rgba(28, 37, 54, 0.95);">
-                    <h3
-                        style="color: var(--ef-neon-lime); font-weight: 900; margin-bottom: 25px; text-transform: uppercase; font-size: 1rem;">
-                        👥 Database Siswa</h3>
+                <div id="gridNomorCBT" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 40px; padding: 20px; background: rgba(0,0,0,0.2); border-radius: 20px; border: 1px solid var(--ef-glass-border);"></div>
 
-                    <div
-                        style="display: grid; grid-template-columns: 70px 1fr 120px 80px 60px; gap: 10px; margin-bottom: 20px;">
-                        <input type="number" id="inpAbsenBaru" placeholder="Abs"
-                            style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255, 215, 0, 0.3); color: white; border-radius: 10px; padding: 10px; text-align: center; font-weight: 700;">
-                        <input type="text" id="inpSiswaBaru" placeholder="Nama Lengkap Siswa"
-                            style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255, 215, 0, 0.3); color: white; border-radius: 10px; padding: 10px; font-weight: 700;">
-                        <input type="text" id="inpPinBaru" placeholder="PIN/Sandi"
-                            style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255, 215, 0, 0.3); color: white; border-radius: 10px; padding: 10px; font-weight: 700;">
-                        <select id="inpJkBaru"
-                            style="background: #1e293b; color: white; border-radius: 10px; border: 1px solid rgba(255, 215, 0, 0.3); font-weight: 700;">
-                            <option value="👦">L</option>
-                            <option value="👧">P</option>
+                <div class="kartu-soal" style="flex-direction: column; align-items: stretch; height: auto; min-height: 300px; padding: 40px; cursor: default;">
+                    <div id="imgSoalSiswa" style="text-align: center;"></div>
+                    <div id="teksSoal" style="font-size: 1.4rem; font-weight: 700; line-height: 1.5; color: var(--ef-white); margin-bottom: 40px;"></div>
+                    <div id="areaJawaban" style="width: 100%;"></div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px;">
+                    <button class="btn btn-outline" style="padding: 20px; border-color: var(--ef-cyan); color: var(--ef-cyan);" onclick="pindahSoal(-1)">SEBELUMNYA</button>
+                    <button class="btn btn-blue" style="padding: 20px;" onclick="pindahSoal(1)">BERIKUTNYA</button>
+                </div>
+
+                <div id="divKirim" style="display: none; margin-top: 30px;">
+                    <button class="btn btn-red" style="width: 100%; padding: 25px; font-size: 1.2rem; letter-spacing: 4px; box-shadow: 0 0 30px rgba(255, 0, 122, 0.4);" onclick="submitJawaban()">KIRIM JAWABAN</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="panelRekap" class="panel" style="display: none;">
+        <div class="panel-content">
+            <div class="glass-container">
+                <div style="text-align: center; margin-bottom: 40px; border-bottom: 1px solid var(--ef-glass-border); padding-bottom: 30px;">
+                    <h2 style="font-size: 2.2rem; font-weight: 900; color: var(--ef-white); text-transform: uppercase; font-style: italic; letter-spacing: -1px;">REKAP <span style="color: var(--ef-cyan);">NILAI</span></h2>
+                    <p style="color: var(--ef-neon-yellow); font-weight: 800; text-transform: uppercase; letter-spacing: 3px; font-size: 0.75rem; margin-top: 5px;">Data hasil pengerjaan siswa</p>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px;">
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <label style="color: var(--ef-cyan); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">Pilih Tugas</label>
+                        <select id="filterTugas" onchange="filterRekap()" style="width: 100%; height: 55px; background: rgba(0,0,0,0.3); border: 1px solid var(--ef-cyan); border-radius: 12px; padding: 0 20px; font-weight: 800; color: white;">
+                            <option value="">-- PILIH TUGAS --</option>
                         </select>
-                        <button class="btn btn-blue" onclick="tambahSiswa()"
-                            style="border-radius: 10px; font-weight: 1000; font-size: 1.5rem; display: flex; align-items: center; justify-content: center;">+</button>
                     </div>
-
-                    <div
-                        style="max-height: 450px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">
-                        <table style="width: 100%; border-collapse: collapse; color: white; font-size: 0.9rem;">
-                            <thead
-                                style="position: sticky; top: 0; background: #0f172a; z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
-                                <tr>
-                                    <th
-                                        style="padding: 15px; text-align: center; color: #161D2B; font-weight: 900; background: #1e293b;">
-                                        ABS</th>
-                                    <th
-                                        style="padding: 15px; text-align: left; color: #161D2B; font-weight: 900; background: #1e293b;">
-                                        IDENTITAS SISWA</th>
-                                    <th
-                                        style="padding: 15px; text-align: center; color: #161D2B; font-weight: 900; background: #1e293b;">
-                                        AKSI</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tBodySiswaSetting" style="font-weight: 600;"></tbody>
-                        </table>
+                    <div id="actionButtonsPusat" style="display: none; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                        <button class="btn btn-blue" onclick="exportRekapPDF()">CETAK PDF</button>
+                        <button class="btn btn-blue" onclick="cetakSoalPDF()" style="background: var(--ef-cyan); color: var(--ef-obsidian); border: none;">CETAK SOAL</button>
+                        <button class="btn btn-red" onclick="hapusSeluruhTugas()">HAPUS SEMUA</button>
                     </div>
                 </div>
+
+                <div style="overflow-x: auto; border-radius: 20px; border: 1px solid var(--ef-glass-border); background: rgba(0,0,0,0.2);">
+                    <table style="width: 100%; border-collapse: collapse; background: transparent; border: none; margin-top: 0;">
+                        <thead>
+                            <tr style="background: rgba(0, 240, 255, 0.1);">
+                                <th style="color: var(--ef-cyan); border-bottom: 1px solid var(--ef-glass-border); text-align: center; padding: 15px;">NO</th>
+                                <th style="color: var(--ef-cyan); border-bottom: 1px solid var(--ef-glass-border); text-align: left; padding: 15px;">NAMA SISWA</th>
+                                <th style="color: var(--ef-cyan); border-bottom: 1px solid var(--ef-glass-border); text-align: center; padding: 15px;">STATUS</th>
+                                <th style="color: var(--ef-cyan); border-bottom: 1px solid var(--ef-glass-border); text-align: center; padding: 15px;">NILAI</th>
+                                <th style="color: var(--ef-cyan); border-bottom: 1px solid var(--ef-glass-border); text-align: center; padding: 15px;">AKSI</th>
+                            </tr>
+                        </thead>
+                        <tbody id="isiRekap"></tbody>
+                    </table>
+                </div>
+                
+                <button class="btn" style="width: 100%; margin-top: 40px; padding: 18px; border-color: var(--ef-cyan); color: var(--ef-cyan);" onclick="openView('panelGuru')">KEMBALI KE PANEL GURU</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="panelPengaturan" class="panel" style="display: none;">
+        <div class="panel-content">
+            <div class="glass-container">
+                <div style="text-align: center; margin-bottom: 40px; border-bottom: 1px solid var(--ef-glass-border); padding-bottom: 30px;">
+                    <h2 style="font-size: 2.2rem; font-weight: 900; color: var(--ef-white); text-transform: uppercase; font-style: italic; letter-spacing: -1px;">PENGATURAN <span style="color: var(--ef-neon-yellow);">SISTEM</span></h2>
+                    <p style="color: var(--ef-cyan); font-weight: 800; text-transform: uppercase; letter-spacing: 3px; font-size: 0.75rem; margin-top: 5px;">Identitas sekolah dan database siswa</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+                    <!-- Identitas -->
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <h3 style="font-size: 0.9rem; color: var(--ef-neon-yellow); text-transform: uppercase; letter-spacing: 2px; font-style: italic;">Identitas Guru</h3>
+                        <input type="text" id="set_nama_guru" placeholder="Nama Guru">
+                        <input type="text" id="set_nip_guru" placeholder="NIP">
+                        <input type="text" id="set_sekolah" placeholder="Nama Sekolah">
+                        <input type="text" id="set_tahun" placeholder="Tahun Pelajaran">
+                        <button class="btn btn-blue" onclick="simpanPengaturanGuru()">SIMPAN PERUBAHAN</button>
+                    </div>
+
+                    <!-- Database Siswa -->
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <h3 style="font-size: 0.9rem; color: var(--ef-cyan); text-transform: uppercase; letter-spacing: 2px; font-style: italic;">Daftar Roster Siswa</h3>
+                        <div style="display: grid; grid-template-columns: 60px 2fr 1.2fr 80px 80px 50px 50px; gap: 10px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; border: 1px solid var(--ef-glass-border);">
+                            <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <label style="font-size: 0.6rem; color: var(--ef-cyan); font-weight: 800;">NO</label>
+                                <input type="number" id="inpAbsenBaru" placeholder="00" style="padding: 10px 5px; text-align: center; width: 100%;">
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <label style="font-size: 0.6rem; color: var(--ef-cyan); font-weight: 800;">NAMA LENGKAP</label>
+                                <input type="text" id="inpSiswaBaru" placeholder="Nama Lengkap..." style="padding: 10px; width: 100%;">
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <label style="font-size: 0.6rem; color: var(--ef-cyan); font-weight: 800;">PANGGILAN</label>
+                                <input type="text" id="inpPanggilanBaru" placeholder="Panggilan..." style="padding: 10px; width: 100%;">
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <label style="font-size: 0.6rem; color: var(--ef-cyan); font-weight: 800;">JK</label>
+                                <select id="inpJkBaru" style="padding: 10px 5px; width: 100%; background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--ef-glass-border); border-radius: 10px;">
+                                    <option value="" style="background: var(--ef-obsidian);">--</option>
+                                    <option value="L" style="background: var(--ef-obsidian);">L</option>
+                                    <option value="P" style="background: var(--ef-obsidian);">P</option>
+                                </select>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <label style="font-size: 0.6rem; color: var(--ef-cyan); font-weight: 800;">PIN</label>
+                                <input type="text" id="inpPinBaru" placeholder="PIN" style="padding: 10px; text-align: center; width: 100%;">
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 5px; justify-content: flex-end;">
+                                <button id="btnTambahSiswa" class="btn btn-blue" style="height: 42px; width: 100%; padding: 0; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; border-radius: 10px;" onclick="tambahSiswa()">+</button>
+                            </div>
+                            <div id="divBatalEdit" style="display: none; flex-direction: column; gap: 5px; justify-content: flex-end;">
+                                <button class="btn btn-red" style="height: 42px; width: 100%; padding: 0; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; border-radius: 10px;" onclick="resetFormSiswa()">✕</button>
+                            </div>
+                        </div>
+
+                        <div style="max-height: 400px; overflow-y: auto; border: 1px solid var(--ef-glass-border); border-radius: 15px; background: rgba(0,0,0,0.2);">
+                            <table style="width: 100%; border-collapse: collapse; background: transparent; margin-top: 0; border: none;">
+                                <thead style="background: rgba(0, 240, 255, 0.1); position: sticky; top: 0; z-index: 5;">
+                                    <tr>
+                                        <th style="padding: 12px; font-size: 0.7rem; color: var(--ef-cyan); text-align: center; width: 50px;">NO</th>
+                                        <th style="padding: 12px; font-size: 0.7rem; color: var(--ef-cyan); text-align: left;">IDENTITAS SISWA</th>
+                                        <th style="padding: 12px; font-size: 0.7rem; color: var(--ef-cyan); text-align: center; width: 120px;">AKSI</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tBodySiswaSetting"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn" style="width: 100%; margin-top: 40px; padding: 18px; border-color: var(--ef-cyan); color: var(--ef-cyan);" onclick="openView('panelGuru')">KEMBALI KE PANEL GURU</button>
             </div>
         </div>
     </div>
@@ -2686,42 +2382,44 @@
         }
 
         let dataTugas = {}, curSlot = "", curUser = "", curIdx = 0, curAns = [], timerInterval, sisaWaktu, rekapGlobal = [], currentSoalAcak = [];
+        let editIndexSiswa = -1;
 
         function renderGridSiswa() {
             const g = document.getElementById('gridSiswa');
             if (!g) return;
             g.innerHTML = "";
 
-            // function to generate Realistic Football Jersey SVG (Shared Assets Optimized)
-            const getJerseySVG = (number) => {
-                return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Body Base -->
-                    <path d="M22 28 L38 18 Q50 28 62 18 L78 28 L88 48 L78 55 L72 45 L72 88 L28 88 L28 45 L22 55 L12 48 Z" fill="url(#jerseyGrad)" stroke="var(--ef-cyan)" stroke-width="2" filter="url(#jerseyShadow)"/>
-                    <!-- Collar Highlight -->
-                    <path d="M38 18 Q50 28 62 18" fill="none" stroke="var(--ef-neon-lime)" stroke-width="4" stroke-linecap="round"/>
-                    <!-- Fabric Texture Lines -->
-                    <path d="M28 60 L72 60" fill="none" stroke="rgba(0, 240, 255, 0.05)"/>
-                    <path d="M28 75 L72 75" fill="none" stroke="rgba(0, 240, 255, 0.05)"/>
-                    <!-- Back Number -->
-                    <text x="50" y="70" font-family="'Exo 2', sans-serif" font-weight="950" font-size="34" fill="var(--ef-neon-lime)" text-anchor="middle" style="font-style: italic; filter: drop-shadow(0 0 5px rgba(210, 255, 0, 0.5));">${number}</text>
-                    <!-- Small Club Detail -->
-                    <circle cx="50" cy="38" r="4" fill="rgba(255,255,255,0.1)"/>
-                </svg>`;
-            };
-
             SISWA.forEach((s, i) => {
                 const noAbsen = s.a || (i + 1).toString().padStart(2, '0');
-                const jerseyIcon = getJerseySVG(noAbsen);
+                
+                // Realistic 3D Avatar Selection (Microsoft Fluent Style)
+                let avatarUrl = "";
+                // Priority: s.jk (manual), s.i (default emoji), then fallback by absen number
+                const isGirl = (s.jk === 'P' || s.i === '👧' || (!s.jk && !s.i && parseInt(noAbsen) % 2 === 0));
+                
+                if (isGirl) {
+                    // Try JSDelivr with correct filename pattern
+                    avatarUrl = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Girl/3D/girl_3d.png";
+                } else {
+                    avatarUrl = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Boy/3D/boy_3d.png";
+                }
 
                 const d = document.createElement('div');
                 d.className = 'card-siswa';
                 d.id = `card-siswa-${i}`;
                 d.innerHTML = `
-            <div class="absen">#${noAbsen}</div>
-            <div class="avatar-frame" style="background:transparent; border:none; box-shadow:none;">${jerseyIcon}</div>
-            <p class="nama" style="margin-top:0;">${s.n}</p>
-            <div class="kelas"> KELAS V</div>
-        `;
+                    <div class="absen">#${noAbsen}</div>
+                    <div class="avatar-frame">
+                        <div class="halo"></div>
+                        <img src="${avatarUrl}" class="avatar-3d" 
+                             onerror="this.src='https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/${isGirl?'Girl':'Boy'}/3D/3d.png'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='block';}"
+                             style="width: 100%; height: 100%; object-fit: contain; position: relative; z-index: 3;">
+                        <div class="fallback-emoji" style="display:none; font-size: 2.5rem; z-index: 3;">${isGirl ? '👧' : '👦'}</div>
+                        <div class="kit-label">${s.pg || "SISWA"}</div>
+                    </div>
+                    <p class="nama">${s.n}</p>
+                    <div class="kelas">SISWA • KELAS V</div>
+                `;
                 d.onclick = () => loginSiswa(s);
                 g.appendChild(d);
             });
@@ -2859,25 +2557,18 @@
         }
 
         window.onload = () => {
-            // PRO-UI ANIMATION SEQUENCE
+            // PRO STYLE OPENING DURATION: 2 SECONDS
             const splash = document.getElementById('welcomeSplash');
             if (splash) {
-                // Add click-to-skip fail-safe
-                splash.onclick = () => {
-                    requestAnimationFrame(() => {
-                        splash.classList.add('fade-out');
-                        setTimeout(() => splash.remove(), 600);
-                    });
-                };
-
                 setTimeout(() => {
-                    if (splash.parentNode) { // Check if splash is still in DOM
-                        requestAnimationFrame(() => {
-                            splash.classList.add('fade-out');
-                            setTimeout(() => { if (splash.parentNode) splash.remove(); }, 600);
-                        });
-                    }
-                }, 2800); // 2.8s: Faster sequence for mobile feel
+                    splash.classList.add('fade-out');
+                    setTimeout(() => {
+                        splash.remove();
+                        openView('panelUtama');
+                    }, 600);
+                }, 2000); // 2 seconds delay
+            } else {
+                openView('panelUtama');
             }
 
             initListeners();
@@ -2919,41 +2610,40 @@
                 globalBar.innerHTML = "";
 
                 if (tugasAktifSistem.length === 0) {
-                    globalBar.style.justifyContent = 'center';
                     const noTask = document.createElement('div');
-                    noTask.style = "background: rgba(28, 37, 54, 0.4); border: 1.5px solid rgba(255, 255, 255, 0.2); padding: 10px 20px; border-radius: 15px; color: #E2E8F0; font-weight: 800; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,0,0,0.2);";
-                    noTask.innerText = "TIDAK ADA TUGAS AKTIF";
+                    noTask.className = 'kartu-soal';
+                    noTask.style.justifyContent = 'center';
+                    noTask.innerHTML = `<span style="color: var(--ef-text-light); font-weight: 800; font-style: italic; font-size: 0.8rem; letter-spacing: 2px;">TIDAK ADA TUGAS AKTIF</span>`;
                     globalBar.appendChild(noTask);
                 } else {
-                    globalBar.style.justifyContent = tugasAktifSistem.length === 1 ? 'center' : 'space-between';
-
                     tugasAktifSistem.forEach((t, idx) => {
-                        const pill = document.createElement('div');
-                        const widthStyle = tugasAktifSistem.length === 1 ? "auto" : "calc(50% - 7.5px)";
-                        // Modern eFootball Skewed Pill
-                        pill.style = `flex: 1; max-width: ${widthStyle}; background: var(--ef-navy); border: 2.2px solid var(--ef-cyan); padding: 8px 20px; border-radius: 0; color: white; display: flex; align-items: center; justify-content: space-between; gap: 10px; transform: skewX(-15deg); box-shadow: 0 10px 20px rgba(0,0,0,0.4);`;
-
+                        const card = document.createElement('div');
+                        card.className = 'kartu-soal';
+                        
                         let wktExp = "--:--";
                         if (t.expiredAt) {
                             const d = new Date(t.expiredAt);
                             wktExp = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
                         }
 
-                        pill.innerHTML = `
-                            <div style="display: flex; align-items: center; gap: 12px; transform: skewX(15deg);">
-                                <span style="background: var(--ef-neon-lime); color: var(--ef-obsidian); font-size: 0.65rem; font-weight: 1000; padding: 4px 12px; text-transform: uppercase;">AKTIF ${idx + 1}</span>
-                                <span style="font-weight: 950; font-size: 0.85rem; letter-spacing: -0.5px; font-style: italic;">${t.judul.toUpperCase()}</span>
+                        card.innerHTML = `
+                            <div class="ks-info">
+                                <span style="background: var(--ef-neon-yellow); color: var(--ef-deep-blue); font-size: 0.6rem; font-weight: 900; padding: 2px 8px; border-radius: 4px; font-style: italic; margin-bottom: 5px; display: inline-block;">TUGAS ${idx + 1}</span>
+                                <h3>${t.judul.toUpperCase()}</h3>
+                                <p style="font-size: 0.7rem; color: var(--ef-cyan); font-weight: 800; margin-top: 5px;">DURASI: ${t.durasi} MENIT • BERAKHIR: ${wktExp}</p>
                             </div>
-                            <span style="color: var(--ef-cyan); font-size: 0.72rem; font-weight: 900; border-left: 2px solid rgba(255,255,255,0.1); padding-left: 12px; transform: skewX(15deg);">⏱️ ${wktExp}</span>`;
-                        globalBar.appendChild(pill);
+                            <div style="font-size: 1.5rem; filter: drop-shadow(0 0 10px var(--ef-cyan));">⚡</div>
+                            <div class="wave-progress">
+                                <div class="wave-fill" style="width: 100%;"></div>
+                            </div>
+                        `;
+                        globalBar.appendChild(card);
                     });
                 }
             }
             SISWA.forEach((s, i) => {
                 const card = document.getElementById(`card-siswa-${i}`);
                 if (!card) return;
-
-                // Reset Status Selesai jika masih ada sisa
                 const existing = card.querySelector('.badge-selesai-semua');
                 if (existing) existing.remove();
             });
@@ -3079,10 +2769,10 @@
             scoreVal.innerText = currentAlertScore;
 
             if (currentAlertScore < 70) {
-                scoreMotive.innerText = "SQUAD PERFORMANCE: NEEDS IMPROVEMENT! ⚽";
+                scoreMotive.innerText = "BELAJAR LAGI YA! ⚽";
                 scoreVal.style.color = "var(--ef-magenta)";
             } else {
-                scoreMotive.innerText = "LEGENDARY PERFORMANCE! GRADE: A+ 🏆";
+                scoreMotive.innerText = "LUAR BIASA! PERTAHANKAN 🏆";
                 scoreVal.style.color = "var(--ef-neon-lime)";
             }
 
@@ -3161,12 +2851,34 @@
             div.className = "soal-box"; div.dataset.jenis = jenis;
             let html = `<button class="btn-hapus-soal" onclick="hapusSoal(this)">HAPUS</button><b class="label-nomor">Soal No ${no}</b>
     <div class="toolbar"><button class="btn-tool" onclick="formatDoc('bold')">B</button><button class="btn-tool" onclick="formatDoc('italic')">I</button><label class="btn-tool" style="font-size:0.7rem; display:flex; align-items:center; justify-content:center;">🖼️<input type="file" hidden onchange="insertImage(this, 'prev-${no}')" accept="image/*"></label></div>
-    <div class="editor" id="ed-${no}" contenteditable="true" style="color: black;">${data.tanya || ''}</div>
+    <div class="editor" id="ed-${no}" contenteditable="true">${data.tanya || ''}</div>
     <img id="prev-${no}" src="${data.img || ''}" class="img-preview" style="display:${data.img ? 'block' : 'none'}; max-width:100%; border-radius:8px; margin-bottom:10px;">`;
             if (jenis === 'PG') {
                 const o = data.opsi || ["", "", "", ""];
-                html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;"><input class="oa" placeholder="A" value="${o[0]}" style="color: black;"> <input class="ob" placeholder="B" value="${o[1]}" style="color: black;"><input class="oc" placeholder="C" value="${o[2]}" style="color: black;"> <input class="od" placeholder="D" value="${o[3]}" style="color: black;"></div>
-        <select class="q-kunci" style="color: black; font-weight:700;"><option value="A" ${data.kunci === 'A' ? 'selected' : ''}>Kunci: A</option><option value="B" ${data.kunci === 'B' ? 'selected' : ''}>Kunci: B</option><option value="C" ${data.kunci === 'C' ? 'selected' : ''}>Kunci: C</option><option value="D" ${data.kunci === 'D' ? 'selected' : ''}>Kunci: D</option></select>`;
+                html += `<div style="display:flex; flex-direction:column; gap:12px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-weight:900; color:var(--ef-cyan); width:20px;">A</span>
+                        <input class="oa" placeholder="Opsi A" value="${o[0]}">
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-weight:900; color:var(--ef-cyan); width:20px;">B</span>
+                        <input class="ob" placeholder="Opsi B" value="${o[1]}">
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-weight:900; color:var(--ef-cyan); width:20px;">C</span>
+                        <input class="oc" placeholder="Opsi C" value="${o[2]}">
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-weight:900; color:var(--ef-cyan); width:20px;">D</span>
+                        <input class="od" placeholder="Opsi D" value="${o[3]}">
+                    </div>
+                </div>
+        <select class="q-kunci" style="margin-top:15px;">
+            <option value="A" ${data.kunci === 'A' ? 'selected' : ''}>Kunci: A</option>
+            <option value="B" ${data.kunci === 'B' ? 'selected' : ''}>Kunci: B</option>
+            <option value="C" ${data.kunci === 'C' ? 'selected' : ''}>Kunci: C</option>
+            <option value="D" ${data.kunci === 'D' ? 'selected' : ''}>Kunci: D</option>
+        </select>`;
             }
             div.innerHTML = html; wadah.appendChild(div);
         }
@@ -3211,85 +2923,92 @@
             const tb = document.getElementById('isiRekap'); tb.innerHTML = "";
 
             const actionBtns = document.getElementById('actionButtonsPusat');
-            if (actionBtns) actionBtns.style.display = filter ? 'flex' : 'none';
+            if (actionBtns) actionBtns.style.display = filter ? 'grid' : 'none';
 
             if (!filter) return;
             SISWA.forEach((s, idx) => {
                 const d = rekapGlobal.find(r => r.nama === s.n && (r.materi || "").trim().toLowerCase() === filter.trim().toLowerCase());
+                const isSelesai = !!d;
                 const aksiButtons = d ? `
-            <div style="display:flex; gap:6px; justify-content:center;">
-                <button onclick="viewPDF('${d.file}')" class="btn btn-blue" style="width: 32px; height: 32px; padding: 0; box-shadow: 0 4px 6px rgba(28, 37, 54, 0.15); display: flex; align-items: center; justify-content: center; border-radius: 8px;" title="Lihat PDF Jawaban Siswa">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <button onclick="viewPDF('${d.file}')" class="btn" style="padding: 6px 12px; font-size: 0.65rem; border-color: var(--ef-cyan); color: var(--ef-cyan);">
+                    LIHAT
                 </button>
-                <button onclick="hapusRekapSiswa('${d.key}')" class="btn btn-danger" style="width: 32px; height: 32px; padding: 0; box-shadow: 0 4px 6px rgba(230, 29, 37, 0.15); display: flex; align-items: center; justify-content: center; border-radius: 8px;" title="Hapus Jawaban Siswa">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
+                <button onclick="hapusRekapSiswa('${d.key}')" class="btn" style="padding: 6px 12px; font-size: 0.65rem; border-color: var(--ef-magenta); color: var(--ef-magenta);">
+                    HAPUS
                 </button>
             </div>
-        ` : `<span style="color: #161D2B;">—</span>`;
+        ` : `<span style="opacity:0.3;">—</span>`;
+                
                 tb.innerHTML += `<tr>
-            <td style="color: #161D2B;">${idx + 1}</td>
-            <td><b style="color: #161D2B;">${s.n}</b></td>
-            <td style="text-align: center;"><span class="badge ${d ? 'bg-green' : 'bg-red'}">${d ? 'Selesai' : 'Belum'}</span></td>
-            <td style="text-align: center; font-weight: 800; font-size: 1rem; color: ${d ? 'var(--primary)' : '#161D2B'};">${d ? d.nilai : "-"}</td>
-            <td style="text-align: center;">${aksiButtons}</td>
+            <td style="text-align:center; padding: 15px;" class="rank-cell">${idx + 1}</td>
+            <td style="font-weight:700; color:white; padding: 15px;">${s.n.toUpperCase()}</td>
+            <td style="text-align: center; padding: 15px;">
+                <span style="background:${isSelesai ? 'rgba(210,255,0,0.1)' : 'rgba(255,0,122,0.1)'}; color:${isSelesai ? 'var(--ef-neon-lime)' : 'var(--ef-magenta)'}; padding:4px 10px; border-radius:4px; font-size:0.7rem; font-weight:900;">
+                    ${isSelesai ? 'SELESAI' : 'BELUM'}
+                </span>
+            </td>
+            <td style="text-align: center; padding: 15px;" class="score-cell">${d ? d.nilai : "-"}</td>
+            <td style="text-align: center; padding: 15px;">${aksiButtons}</td>
         </tr>`;
             });
         }
 
         function masukHalamanPilihTugas(nama, saveToStorage = true) {
             curUser = nama;
-            document.getElementById('salamSiswa').innerText = `Halo, ${nama}!`;
+            const salamSiswa = document.getElementById('salamSiswa');
+            if (salamSiswa) salamSiswa.innerText = `HALO, ${nama.split(' ')[0].toUpperCase()}!`;
             openView('panelPilihTugas');
             if (saveToStorage) {
-                showAlert("Berhasil", `Selamat datang, ${nama}!`, "👋", null, 2000);
-            }
-
-            if (saveToStorage) {
+                showAlert("Berhasil", `Selamat datang, ${nama}.`, "✅", null, 2000);
                 sessionStorage.setItem('lmsState', JSON.stringify({ view: 'panelPilihTugas', user: nama }));
             }
-            const menu = document.getElementById('menuTugasSiswa'); menu.innerHTML = "";
-            Object.keys(dataTugas).forEach(slot => {
-                const t = dataTugas[slot];
-                if (t && t.aktif) {
-                    const sudah = rekapGlobal.some(r => r.nama === curUser && (r.materi || "").trim().toLowerCase() === (t.judul || "").trim().toLowerCase());
-
-                    // Cek Expired
-                    let isExpired = false;
-                    if (t.expiredAt) { const now = new Date(); const expDate = new Date(t.expiredAt); if (now > expDate) isExpired = true; }
-                    const btn = document.createElement('div');
-                    btn.className = `kartu-soal${sudah || isExpired ? ' sudah' : ''}`;
-                    if (sudah) btn.style.borderColor = 'rgba(255,255,255,0.1)';
-                    if (isExpired) btn.style.borderColor = 'var(--ef-magenta)';
-
-                    const badgeText = sudah ? '✓ SELESAI' : (isExpired ? '🔒 TERKUNCI' : '▶ MULAI');
-                    const badgeBg = sudah ? 'var(--ef-neon-lime)' : (isExpired ? 'var(--ef-magenta)' : 'var(--ef-cyan)');
-                    const badgeTxtColor = sudah ? 'var(--ef-obsidian)' : (isExpired ? 'white' : 'var(--ef-obsidian)');
-
-                    btn.innerHTML = `
-                        <div style="display:flex; flex-direction:column; justify-content:center; flex:1; overflow:hidden; gap:4px;">
-                            <div style="font-size: 0.6rem; font-weight: 1000; color: var(--ef-cyan); letter-spacing: 2px; text-transform: uppercase; font-style: italic;">TUGAS KE-${slot.replace('tugas', '')}</div>
-                            <h3 style="color: white; font-size: 0.85rem; font-weight: 900; margin: 2px 0; font-style: italic; text-transform: uppercase; word-break: break-word; overflow-wrap: break-word; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${t.judul}</h3>
-                            <div style="font-size: 0.68rem; color: #E2E8F0; font-weight: 700; display:flex; align-items:center; gap:5px; margin-top:2px;"><svg viewBox="0 0 24 24" width="12" height="12" fill="var(--ef-cyan)"><path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,2M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/></svg>${t.durasi} MIN</div>
-                        </div>
-                        <div style="flex-shrink:0; background: ${badgeBg}; color: ${badgeTxtColor}; padding: 10px 16px; font-weight: 950; text-align: center; transform: skewX(-12deg); font-size: 0.75rem; letter-spacing: 1.5px; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); white-space:nowrap;">
-                            <span style="transform: skewX(12deg); display: inline-block;">${badgeText}</span>
-                        </div>
-                    `;
-
-                    if (sudah) {
-                        const rekap = rekapGlobal.find(r => r.nama === curUser && (r.materi || "").trim().toLowerCase() === (t.judul || "").trim().toLowerCase());
-                        if (rekap) {
-                            btn.onclick = () => viewPDF(rekap.file, t.judul);
+            const menu = document.getElementById('menuTugasSiswa'); 
+            if (menu) {
+                menu.innerHTML = "";
+                Object.keys(dataTugas).forEach(slot => {
+                    const t = dataTugas[slot];
+                    if (t && t.aktif) {
+                        const sudah = rekapGlobal.some(r => r.nama === curUser && (r.materi || "").trim().toLowerCase() === (t.judul || "").trim().toLowerCase());
+                        let isExpired = false;
+                        if (t.expiredAt) { 
+                            const now = new Date(); 
+                            const expDate = new Date(t.expiredAt); 
+                            if (now > expDate) isExpired = true; 
                         }
-                    } else if (isExpired) {
-                        btn.onclick = () => showAlert("Terkunci", "Match ini sudah berakhir dan tidak bisa diakses.", "🔒");
-                    } else {
-                        btn.onclick = () => mulaiKerja(slot);
+
+                        const card = document.createElement('div');
+                        card.className = `kartu-soal${sudah || isExpired ? ' sudah' : ''}`;
+                        
+                        let badgeText = 'MULAI KERJAKAN';
+                        let badgeColor = 'var(--ef-cyan)';
+                        if (sudah) { badgeText = 'SELESAI'; badgeColor = 'var(--ef-neon-yellow)'; }
+                        else if (isExpired) { badgeText = 'TERKUNCI'; badgeColor = 'var(--ef-magenta)'; }
+
+                        card.innerHTML = `
+                            <div class="ks-info">
+                                <span style="background: ${badgeColor}; color: var(--ef-deep-blue); font-size: 0.6rem; font-weight: 900; padding: 2px 8px; border-radius: 4px; font-style: italic; margin-bottom: 5px; display: inline-block;">TUGAS ${slot.replace('tugas', '')}</span>
+                                <h3 style="font-size: 1rem;">${t.judul.toUpperCase()}</h3>
+                                <p style="font-size: 0.7rem; color: var(--ef-text-light); font-weight: 800; margin-top: 5px;">DURASI: ${t.durasi} MENIT</p>
+                            </div>
+                            <div style="background: ${badgeColor}; color: var(--ef-deep-blue); font-weight: 900; padding: 8px 15px; border-radius: 4px; font-size: 0.7rem; font-style: italic; box-shadow: 0 0 15px ${badgeColor}44;">${badgeText}</div>
+                            <div class="wave-progress">
+                                <div class="wave-fill" style="width: ${sudah ? '100%' : '0%'}; background: ${badgeColor}; box-shadow: 0 0 10px ${badgeColor};"></div>
+                            </div>
+                        `;
+
+                        if (sudah) {
+                            const rekap = rekapGlobal.find(r => r.nama === curUser && (r.materi || "").trim().toLowerCase() === (t.judul || "").trim().toLowerCase());
+                            if (rekap) card.onclick = () => viewPDF(rekap.file, t.judul);
+                        } else if (isExpired) {
+                            card.onclick = () => showAlert("Terkunci", "Tugas ini sudah berakhir.", "🔒");
+                        } else {
+                            card.onclick = () => mulaiKerja(slot);
+                        }
+                        menu.appendChild(card);
                     }
-                    menu.appendChild(btn);
-                }
-            });
-            openView('panelPilihTugas');
+                });
+            }
         }
 
         function mulaiKerja(slot) {
@@ -3315,45 +3034,71 @@
 
         function renderSoal() {
             const s = currentSoalAcak[curIdx];
-            document.getElementById('teksSoal').innerHTML = `${curIdx + 1}. ${s.tanya}`;
-            document.getElementById('imgSoalSiswa').innerHTML = s.img ? `<img src="${s.img}" style="max-width:100%; border-radius:10px; margin-bottom:15px;">` : "";
-            const g = document.getElementById('gridNomorCBT'); g.innerHTML = "";
-            curAns.forEach((a, i) => {
-                const d = document.createElement('div');
-                const isAktif = curIdx === i;
-                const isIsi = a !== "";
+            const teksSoal = document.getElementById('teksSoal');
+            const imgSoalSiswa = document.getElementById('imgSoalSiswa');
+            if (teksSoal) teksSoal.innerHTML = `<span style="color: var(--ef-neon-yellow); font-weight: 950; font-style: italic; margin-right: 15px; text-shadow: 0 0 10px rgba(210, 255, 0, 0.3);">[${(curIdx + 1).toString().padStart(2, '0')}]</span> ${s.tanya}`;
+            if (imgSoalSiswa) imgSoalSiswa.innerHTML = s.img ? `<img src="${s.img}" style="max-width:100%; border-radius:20px; border: 2px solid var(--ef-cyan); margin-bottom:25px; box-shadow: 0 15px 40px rgba(0,0,0,0.6);">` : "";
+            
+            const g = document.getElementById('gridNomorCBT'); 
+            if (g) {
+                g.innerHTML = "";
+                curAns.forEach((a, i) => {
+                    const d = document.createElement('div');
+                    const isAktif = curIdx === i;
+                    const isIsi = a !== "";
 
-                let borderColor = isAktif ? 'var(--ef-neon-lime)' : (isIsi ? 'var(--ef-cyan)' : 'rgba(255,255,255,0.1)');
-                let bgColor = isAktif ? 'var(--ef-neon-lime)' : (isIsi ? 'rgba(0, 240, 255, 0.1)' : 'rgba(255,255,255,0.02)');
-                let textColor = isAktif ? 'var(--ef-obsidian)' : 'white';
+                    let borderColor = isAktif ? 'var(--ef-neon-yellow)' : (isIsi ? 'var(--ef-cyan)' : 'rgba(255,255,255,0.1)');
+                    let bgColor = isAktif ? 'var(--ef-neon-yellow)' : (isIsi ? 'rgba(0, 240, 255, 0.1)' : 'rgba(255,255,255,0.02)');
+                    let textColor = isAktif ? 'var(--ef-deep-blue)' : 'white';
 
-                d.style = `width:45px; height:45px; border-radius:0; transform: skewX(-10deg); display:flex; align-items:center; justify-content:center; font-size:1rem; cursor:pointer; font-weight:950; border: 2px solid ${borderColor}; background:${bgColor}; color:${textColor}; transition: 0.2s; box-shadow: ${isAktif ? '0 0 15px var(--ef-neon-lime)' : 'none'};`;
-                d.innerHTML = `<span style="transform: skewX(10deg);">${i + 1}</span>`;
-                d.onclick = () => { curIdx = i; renderSoal(); }; g.appendChild(d);
-            });
-            const area = document.getElementById('areaJawaban'); area.innerHTML = "";
-            if (s.jenis === 'PG') {
-                s.opsi.forEach((o, i) => {
-                    const char = String.fromCharCode(65 + i);
-                    const b = document.createElement('div');
-                    const isSelected = curAns[curIdx] === char;
-                    b.className = `opt-box ${isSelected ? 'selected' : ''}`;
-                    b.style = `background: ${isSelected ? 'var(--ef-cyan)' : 'var(--ef-navy)'}; color: ${isSelected ? 'var(--ef-obsidian)' : 'white'}; border: 2px solid ${isSelected ? 'var(--ef-neon-lime)' : 'rgba(255,255,255,0.1)'}; padding: 18px 25px; transform: skewX(-5deg); margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: 800; transition: 0.2s;`;
-                    if (!isSelected) b.onmouseover = () => b.style.borderColor = 'var(--ef-cyan)';
-                    if (!isSelected) b.onmouseout = () => b.style.borderColor = 'rgba(255,255,255,0.1)';
-
-                    b.innerHTML = `<div style="width:32px; height:32px; border:2px solid currentColor; display:flex; align-items:center; justify-content:center; font-weight: 950; transform: skewX(5deg); font-style: italic;">${char}</div> <span style="transform: skewX(5deg);">${o}</span>`;
-                    b.onclick = () => { curAns[curIdx] = char; renderSoal(); }; area.appendChild(b);
+                    d.style = `width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:0.9rem; cursor:pointer; font-weight:950; border: 2px solid ${borderColor}; background:${bgColor}; color:${textColor}; transition: 0.2s; box-shadow: ${isAktif ? '0 0 15px var(--ef-neon-yellow)' : 'none'};`;
+                    d.innerHTML = `<span>${i + 1}</span>`;
+                    d.onclick = () => { curIdx = i; renderSoal(); }; 
+                    g.appendChild(d);
                 });
-            } else {
-                const tx = document.createElement('textarea'); tx.placeholder = "Jawaban kamu...";
-                tx.style = "width:100%; height:150px; padding:20px; border-radius:0; border:2px solid var(--ef-cyan); background: var(--ef-navy); color: white; transform: skewX(-2deg); font-weight: 700; font-family: 'Exo 2', sans-serif;";
-                tx.onfocus = () => tx.style.borderColor = 'var(--ef-neon-lime)';
-                tx.onblur = () => tx.style.borderColor = 'var(--ef-cyan)';
-                tx.value = curAns[curIdx];
-                tx.oninput = (e) => curAns[curIdx] = e.target.value; area.appendChild(tx);
             }
-            document.getElementById('divKirim').style.display = (curIdx === currentSoalAcak.length - 1) ? 'block' : 'none';
+
+            const area = document.getElementById('areaJawaban'); 
+            if (area) {
+                area.innerHTML = "";
+                if (s.jenis === 'PG') {
+                    s.opsi.forEach((o, i) => {
+                        const char = String.fromCharCode(65 + i);
+                        const b = document.createElement('div');
+                        const isSelected = curAns[curIdx] === char;
+                        
+                        b.style = `
+                            background: ${isSelected ? 'var(--ef-cyan)' : 'rgba(255,255,255,0.05)'};
+                            border: 2px solid ${isSelected ? 'var(--ef-neon-yellow)' : 'rgba(255,255,255,0.1)'};
+                            color: ${isSelected ? 'var(--ef-deep-blue)' : 'white'};
+                            padding: 18px 25px;
+                            border-radius: 15px;
+                            margin-bottom: 12px;
+                            cursor: pointer;
+                            font-weight: 800;
+                            display: flex;
+                            align-items: center;
+                            gap: 15px;
+                            transition: 0.2s;
+                            box-shadow: ${isSelected ? '0 0 25px rgba(0, 240, 255, 0.3)' : 'none'};
+                        `;
+                        b.innerHTML = `<div style="width:35px; height:32px; background: ${isSelected ? 'var(--ef-deep-blue)' : 'var(--ef-cyan)'}; color: ${isSelected ? 'var(--ef-cyan)' : 'var(--ef-deep-blue)'}; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 1000; font-style: italic;">${char}</div> <span>${o}</span>`;
+                        b.onclick = () => { curAns[curIdx] = char; renderSoal(); };
+                        area.appendChild(b);
+                    });
+                } else {
+                    const tx = document.createElement('textarea'); 
+                    tx.placeholder = "ENTER MISSION REPORT / ANSWER HERE...";
+                    tx.style = "width:100%; height:180px; padding:25px; border-radius:20px; border:2px solid var(--ef-cyan); background: rgba(0,0,0,0.3); color: white; font-weight: 700; font-family: 'Exo 2', sans-serif; font-size: 1.1rem; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);";
+                    tx.onfocus = () => tx.style.borderColor = 'var(--ef-neon-yellow)';
+                    tx.onblur = () => tx.style.borderColor = 'var(--ef-cyan)';
+                    tx.value = curAns[curIdx];
+                    tx.oninput = (e) => { curAns[curIdx] = e.target.value; updateGridColor(); }; 
+                    area.appendChild(tx);
+                }
+            }
+            const divKirim = document.getElementById('divKirim');
+            if (divKirim) divKirim.style.display = (curIdx === currentSoalAcak.length - 1) ? 'block' : 'none';
         }
 
         function submitJawaban() {
@@ -3543,8 +3288,18 @@
             }
         }
 
-        function showLoader(t) { document.getElementById('loaderText').innerText = t; document.getElementById('loader').style.display = 'flex'; }
-        function hideLoader() { document.getElementById('loader').style.display = 'none'; }
+        function showLoader(t) { 
+            const loader = document.getElementById('loader');
+            const loaderText = document.getElementById('loaderText');
+            if (loader) {
+                if (loaderText) loaderText.innerText = t; 
+                loader.style.setProperty('display', 'flex', 'important'); 
+            }
+        }
+        function hideLoader() { 
+            const loader = document.getElementById('loader');
+            if (loader) loader.style.setProperty('display', 'none', 'important'); 
+        }
         function openView(id) {
             // Proteksi: Panel Guru hanya bisa dibuka jika sudah Log In
             const guruPanels = ['panelGuru', 'panelBuat', 'panelRekap', 'panelPengaturan', 'panelMenuTugas'];
@@ -3553,19 +3308,36 @@
                 return;
             }
 
-            // Smooth exit all existing panels if they are entering
-            document.querySelectorAll('.panel.entering').forEach(p => {
-                p.classList.remove('entering');
+            // HEADER VISIBILITY: Only show header on panelUtama
+            if (id === 'panelUtama') {
+                document.body.classList.add('show-header');
+            } else {
+                document.body.classList.remove('show-header');
+            }
+
+            // HIDE ALL PANELS AND MODALS (Strict reset to prevent clashing)
+            document.querySelectorAll('.panel').forEach(p => {
                 p.style.display = 'none';
+                p.classList.remove('entering', 'exiting');
             });
 
             const panel = document.getElementById(id);
-            panel.style.display = id.includes('modal') ? 'flex' : 'block';
-            panel.classList.remove('exiting');
-            panel.classList.add('entering');
+            if (!panel) return;
+
+            // Handle display type based on element
+            if (id.includes('modal') || panel.classList.contains('portal-modal')) {
+                panel.style.display = 'flex';
+            } else {
+                panel.style.display = 'block';
+            }
+            
+            // Trigger entry animation
+            requestAnimationFrame(() => {
+                panel.classList.add('entering');
+            });
 
             // Save state to localStorage only for main panels
-            if (id !== 'modalLogin' && id !== 'panelSiswa') {
+            if (!id.includes('modal') && id !== 'panelSiswa') {
                 const stateData = { view: id };
                 if (id === 'panelPilihTugas') stateData.user = curUser;
                 if (id === 'panelBuat') stateData.slot = curSlot;
@@ -3575,6 +3347,7 @@
 
             if (id === 'panelPengaturan') {
                 bukaPengaturan();
+                renderTableSiswaSetting();
             }
 
             // Reset Rekap selection when opening the panel
@@ -3582,19 +3355,28 @@
                 const filterEl = document.getElementById('filterTugas');
                 if (filterEl) {
                     filterEl.value = "";
-                    filterRekap(); // Clear the table
+                    if (typeof filterRekap === "function") filterRekap();
                 }
             }
+            
+            // Scroll to top when switching views
+            panel.scrollTop = 0;
         }
 
         function closeView(id) {
             const panel = document.getElementById(id);
+            if (!panel) return;
+
             panel.classList.remove('entering');
             panel.classList.add('exiting');
-            const timeout = (id.includes('modal') || panel.classList.contains('portal-modal')) ? 400 : 110;
+            
+            const timeout = (id.includes('modal') || panel.classList.contains('portal-modal')) ? 300 : 150;
+            
             setTimeout(() => {
                 panel.style.display = 'none';
                 panel.classList.remove('exiting');
+                
+                // Cleanup session state if necessary
                 if (id === 'panelPilihTugas') {
                     curUser = "";
                     sessionStorage.removeItem('lmsState');
@@ -3606,6 +3388,51 @@
         function pindahSoal(n) { const max = currentSoalAcak.length; if (curIdx + n >= 0 && curIdx + n < max) { curIdx += n; renderSoal(); } }
         function startTimer() { timerInterval = setInterval(() => { sisaWaktu--; let m = Math.floor(sisaWaktu / 60), s = sisaWaktu % 60; document.getElementById('displayTimer').innerText = `${m}:${s < 10 ? '0' + s : s}`; if (sisaWaktu <= 0) submitJawaban(); }, 1000); }
         function kembaliKeDaftarTugas() { if (confirm("Kembali ke daftar?")) { clearInterval(timerInterval); closeView('panelSiswa'); openView('panelPilihTugas'); } }
+
+        function cetakSoalPDF() {
+            const filter = document.getElementById('filterTugas').value;
+            if (!filter) return;
+
+            const t = Object.values(dataTugas).find(x => (x.judul || "").trim().toLowerCase() === filter.trim().toLowerCase());
+            if (!t || !t.soal) return showAlert("Gagal", "Data soal tidak ditemukan.", "❌");
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const nmS = localStorage.getItem('lmsNamaSekolah') || "SD NEGERI PENGKOL";
+
+            // Header
+            doc.setFontSize(14); doc.setFont("helvetica", "bold");
+            doc.text(nmS.toUpperCase(), 105, 15, { align: "center" });
+            doc.setFontSize(11);
+            doc.text("TUGAS: " + t.judul.toUpperCase(), 105, 22, { align: "center" });
+            doc.line(20, 26, 190, 26);
+
+            let y = 35;
+            t.soal.forEach((s, i) => {
+                if (y > 270) { doc.addPage(); y = 20; }
+                doc.setFont("helvetica", "bold");
+                doc.text(`${i + 1}.`, 20, y);
+                
+                const tanyaText = s.tanya.replace(/<[^>]*>/g, ' ').trim();
+                const splitTanya = doc.splitTextToSize(tanyaText, 160);
+                doc.setFont("helvetica", "normal");
+                doc.text(splitTanya, 28, y);
+                y += (splitTanya.length * 7);
+
+                if (s.jenis === 'PG' && s.opsi) {
+                    const abcd = ['A', 'B', 'C', 'D'];
+                    s.opsi.forEach((opt, idx) => {
+                        if (y > 280) { doc.addPage(); y = 20; }
+                        doc.text(`${abcd[idx]}. ${opt}`, 35, y);
+                        y += 7;
+                    });
+                }
+                y += 5;
+            });
+
+            doc.save(`Soal_${t.judul.replace(/\s+/g, '_')}.pdf`);
+            showAlert("Berhasil", "Soal berhasil dicetak ke PDF.", "✅");
+        }
 
         function exportRekapPDF() {
             const filter = document.getElementById('filterTugas').value;
@@ -3899,61 +3726,166 @@
             SISWA.forEach((s, i) => {
                 const absenDisplay = s.a || (i + 1);
                 tBody.innerHTML += `
-            <tr>
-                <td style="font-weight:900; color: #161D2B;">${absenDisplay}</td>
-                <td>
-                    <div style="font-weight:900; color: #111827;">${s.n}</div>
-                    <div style="font-size:0.75rem; color: #374151; display: flex; align-items: center; gap: 5px; font-weight: 700;">
-                        PIN: <span style="font-family: monospace; font-weight: 900; color:#161D2B;">${s.p || '---'}</span>
-                        <button onclick="ubahPinSiswa(${i})" style="background:none; border:none; color:#1C2536; cursor:pointer; font-size: 0.7rem; padding:0; text-decoration: underline; font-weight: 900;">Ubah</button>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 15px; font-weight: 900; color: white; text-align: center; font-family: monospace; background: rgba(0,0,0,0.1);">${absenDisplay}</td>
+                <td style="padding: 15px;">
+                    <div style="font-weight: 800; color: white; font-size: 0.95rem; text-transform: uppercase;">${s.n}</div>
+                    <div style="display: flex; gap: 15px; margin-top: 5px;">
+                        <div style="font-size: 0.7rem; color: var(--ef-cyan); font-weight: 700; background: rgba(0, 240, 255, 0.05); padding: 2px 8px; border-radius: 4px;">
+                            PANGGILAN: <span style="color: white;">${s.pg || '-'}</span>
+                        </div>
+                        <div style="font-size: 0.7rem; color: var(--ef-silver); font-weight: 700; background: rgba(255, 255, 255, 0.05); padding: 2px 8px; border-radius: 4px;">
+                            JK: <span style="color: white;">${s.jk || '-'}</span>
+                        </div>
+                        <div style="font-size: 0.7rem; color: var(--ef-neon-yellow); font-weight: 700; background: rgba(210, 255, 0, 0.05); padding: 2px 8px; border-radius: 4px;">
+                            PIN: <span style="font-family: monospace; color: white;">${s.p || '---'}</span>
+                        </div>
                     </div>
                 </td>
-                <td style="text-align:center;">
-                    <button class="btn btn-danger" style="padding: 6px 15px; font-size:0.75rem; font-weight: 900; border-radius: 10px;" onclick="hapusSiswa(${i})">HAPUS</button>
+                <td style="padding: 15px; text-align: center;">
+                    <div style="display: flex; gap: 8px; justify-content: center;">
+                        <button class="btn" style="padding: 8px 15px; font-size: 0.65rem; font-weight: 900; border-radius: 8px; background: var(--ef-cyan); color: var(--ef-obsidian); border: none; cursor: pointer; transition: 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'" onclick="isiFormEditSiswa(${i})">EDIT</button>
+                        <button class="btn" style="padding: 8px 15px; font-size: 0.65rem; font-weight: 900; border-radius: 8px; background: var(--ef-magenta); color: white; border: none; cursor: pointer; transition: 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'" onclick="hapusSiswa(${i})">HAPUS</button>
+                    </div>
                 </td>
             </tr>
         `;
             });
         }
 
-        function ubahPinSiswa(index) {
-            const s = SISWA[index];
-            const newPin = prompt(`Masukkan Pasword/PIN baru untuk ${s.n}:`, s.p || "");
-            if (newPin !== null && newPin.trim() !== "") {
-                s.p = newPin.trim();
-                const siswaObj = {};
-                SISWA.forEach((sub, idx) => { siswaObj["s_" + idx] = sub; });
-                showLoader("Memperbarui PIN...");
-                dbRef('siswa').set(siswaObj).then(() => {
-                    hideLoader();
-                    showAlert("Berhasil", "Pasword siswa telah diperbarui.");
-                    renderTableSiswaSetting();
-                });
+        function resetFormSiswa() {
+            editIndexSiswa = -1;
+            document.getElementById('inpAbsenBaru').value = "";
+            document.getElementById('inpSiswaBaru').value = "";
+            document.getElementById('inpPanggilanBaru').value = "";
+            document.getElementById('inpJkBaru').value = "";
+            document.getElementById('inpPinBaru').value = "";
+            
+            const btn = document.getElementById('btnTambahSiswa');
+            if (btn) {
+                btn.innerHTML = "+";
+                btn.className = "btn btn-blue";
+                btn.style.background = '';
+                btn.style.color = '';
             }
+            const divBatal = document.getElementById('divBatalEdit');
+            if (divBatal) divBatal.style.display = 'none';
+        }
+
+        function isiFormEditSiswa(index) {
+            const s = SISWA[index];
+            if (!s) return;
+            
+            editIndexSiswa = index;
+            document.getElementById('inpAbsenBaru').value = s.a || "";
+            document.getElementById('inpSiswaBaru').value = s.n || "";
+            document.getElementById('inpPanggilanBaru').value = s.pg || "";
+            document.getElementById('inpJkBaru').value = s.jk || "";
+            document.getElementById('inpPinBaru').value = s.p || "";
+            
+            const btn = document.getElementById('btnTambahSiswa');
+            if (btn) {
+                btn.innerHTML = "💾";
+                btn.className = "btn";
+                btn.style.background = 'var(--ef-neon-yellow)';
+                btn.style.color = 'var(--ef-obsidian)';
+            }
+            const divBatal = document.getElementById('divBatalEdit');
+            if (divBatal) divBatal.style.display = 'flex';
+
+            document.getElementById('inpAbsenBaru').focus();
+            
+            // Scroll ke form input agar guru tahu sedang edit
+            const formArea = document.getElementById('inpAbsenBaru').closest('.glass-container');
+            if (formArea) formArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function tambahSiswa() {
-            const absen = document.getElementById('inpAbsenBaru').value.trim();
-            const nama = document.getElementById('inpSiswaBaru').value.trim();
-            const pin = document.getElementById('inpPinBaru').value.trim();
-            const jk = document.getElementById('inpJkBaru').value;
+            try {
+                // Ambil elemen input
+                const elAbsen = document.getElementById('inpAbsenBaru');
+                const elNama = document.getElementById('inpSiswaBaru');
+                const elPg = document.getElementById('inpPanggilanBaru');
+                const elJk = document.getElementById('inpJkBaru');
+                const elPin = document.getElementById('inpPinBaru');
 
-            if (!nama || !absen) return showAlert("Gagal", "Nomor Absen dan Nama wajib diisi!", "❌");
+                if (!elAbsen || !elNama) {
+                    return showAlert("Error", "Elemen input utama tidak ditemukan!", "❌");
+                }
 
-            SISWA.push({ n: nama, i: jk, a: absen.padStart(2, '0'), p: pin });
-            SISWA.sort((a, b) => parseInt(a.a) - parseInt(b.a));
+                const absen = elAbsen.value.trim();
+                const nama = elNama.value.trim();
+                const pg = elPg ? elPg.value.trim() : "";
+                const jk = elJk ? elJk.value : "";
+                const pin = elPin ? elPin.value.trim() : "";
 
-            const siswaObj = {};
-            SISWA.forEach((s, idx) => { siswaObj["s_" + idx] = s; });
+                if (!nama || !absen) {
+                    return showAlert("Gagal", "Nomor Absen dan Nama wajib diisi!", "❌");
+                }
 
-            showLoader("Menyimpan Siswa...");
-            dbRef('siswa').set(siswaObj).then(() => {
+                showLoader("Sedang Menyimpan...");
+                
+                // Siapkan data siswa
+                const dataBaru = { 
+                    n: nama, 
+                    pg: pg, 
+                    jk: jk,
+                    a: absen.padStart(2, '0'), 
+                    p: pin 
+                };
+
+                // Gunakan salinan array yang aman
+                let listSiswa = [];
+                if (Array.isArray(SISWA)) {
+                    listSiswa = [...SISWA];
+                } else if (typeof SISWA === 'object' && SISWA !== null) {
+                    listSiswa = Object.values(SISWA);
+                }
+
+                if (editIndexSiswa > -1) {
+                    // Update index yang sedang diedit
+                    listSiswa[editIndexSiswa] = dataBaru;
+                } else {
+                    // Tambah baru
+                    listSiswa.push(dataBaru);
+                }
+                
+                // Urutkan ulang agar tetap rapi
+                listSiswa.sort((a, b) => parseInt(a.a) - parseInt(b.a));
+
+                // Konversi ke Object untuk Firebase
+                const dataKirim = {};
+                listSiswa.forEach((s, idx) => { 
+                    dataKirim["s_" + idx] = s; 
+                });
+
+                // Kirim ke database
+                dbRef('siswa').set(dataKirim)
+                    .then(() => {
+                        // UPDATE VARIABEL GLOBAL SISWA AGAR TAMPILAN SINKRON
+                        SISWA = listSiswa;
+                        
+                        hideLoader();
+                        showAlert("Berhasil", "Data siswa " + nama + " berhasil disimpan dan disinkronkan.", "✅");
+                        
+                        // Reset form
+                        resetFormSiswa();
+                        
+                        // Render ulang tampilan agar kartu siswa di dashboard ikut berubah
+                        renderTableSiswaSetting();
+                        renderGridSiswa();
+                    })
+                    .catch(err => {
+                        hideLoader();
+                        showAlert("Gagal Simpan", "Kesalahan Database: " + err.message, "❌");
+                        console.error(err);
+                    });
+
+            } catch (err) {
                 hideLoader();
-                showAlert("Berhasil", "Data siswa " + nama + " berhasil ditambahkan.");
-                document.getElementById('inpAbsenBaru').value = "";
-                document.getElementById('inpSiswaBaru').value = "";
-                document.getElementById('inpPinBaru').value = "";
-            });
+                showAlert("System Error", err.message, "⚠️");
+                console.error(err);
+            }
         }
 
         function hapusSiswa(index) {
@@ -3966,6 +3898,8 @@
                 dbRef('siswa').set(siswaObj).then(() => {
                     hideLoader();
                     showAlert("Terhapus", "Data siswa telah dihapus dari kelas.", "🗑️");
+                    renderTableSiswaSetting();
+                    renderGridSiswa();
                 });
             }
         }
