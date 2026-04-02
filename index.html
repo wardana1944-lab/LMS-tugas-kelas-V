@@ -572,6 +572,20 @@
                 gap: 8px;
             }
 
+            header div[style*="width: 40px"] {
+                display: none !important;
+            }
+
+            .ef-game-title {
+                font-size: 2.8rem !important;
+                letter-spacing: -2px !important;
+            }
+
+            .ef-game-sub {
+                font-size: 0.65rem !important;
+                letter-spacing: 2px !important;
+            }
+
             header .school-name {
                 font-size: 0.88rem;
             }
@@ -744,6 +758,41 @@
                 padding: 20px !important;
             }
 
+            /* Fix Panel Buat Tugas Mobile */
+            .grid-tambah-soal {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+
+            .grid-aksi-tugas {
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+
+            .grid-parameter {
+                grid-template-columns: 1fr !important;
+                gap: 15px !important;
+            }
+
+            .grid-form-siswa {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+
+            .grid-form-siswa > div {
+                grid-column: span 1 !important;
+            }
+
+            .grid-form-siswa input, .grid-form-siswa select {
+                font-size: 1rem !important;
+                padding: 12px !important;
+            }
+
+            .grid-aksi-pusat {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+
             /* Prevent table overflow */
             table {
                 min-width: 500px !important;
@@ -758,19 +807,6 @@
             #panelPengaturan .btn-blue,
             #panelPengaturan .btn-outline {
                 padding: 12px !important;
-            }
-
-            #panelPengaturan div[style*="grid-template-columns: 80px 1fr 150px 80px 60px"] {
-                grid-template-columns: 1fr 1fr !important;
-                gap: 10px !important;
-            }
-
-            #panelPengaturan div[style*="grid-template-columns: 80px 1fr 150px 80px 60px"] div:nth-child(2) {
-                grid-column: span 2;
-            }
-
-            #panelPengaturan div[style*="grid-template-columns: 80px 1fr 150px 80px 60px"] div:last-child {
-                grid-column: span 2;
             }
 
 
@@ -859,9 +895,10 @@
             /* === MODAL LOGIN & PIN === */
             #modalLogin .modal-glass,
             #modalPinSiswa .modal-glass {
-                padding: 15px 10px !important;
-                max-width: 240px !important;
-                border-radius: 18px !important;
+                padding: 25px 20px !important;
+                width: 85% !important;
+                max-width: 320px !important;
+                border-radius: 24px !important;
             }
 
             .modal-icon-header {
@@ -2152,7 +2189,7 @@
                     <p style="color: var(--ef-neon-yellow); font-weight: 800; text-transform: uppercase; letter-spacing: 3px; font-size: 0.75rem; margin-top: 5px;">Atur parameter dan butir soal</p>
                 </div>
 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div class="grid-parameter" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
                     <div style="display: flex; flex-direction: column; gap: 8px;">
                         <label style="color: var(--ef-cyan); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">Judul Materi</label>
                         <input type="text" id="jdlMateri" placeholder="Contoh: MATEMATIKA BAB 1">
@@ -2169,12 +2206,12 @@
 
                 <div id="wadahInput" style="margin-bottom: 40px;"></div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+                <div class="grid-tambah-soal" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
                     <button class="btn" style="border-style: dashed; padding: 20px; border-color: var(--ef-cyan); color: var(--ef-cyan);" onclick="tambahSoal('PG')">➕ TAMBAH PILIHAN GANDA</button>
                     <button class="btn" style="border-style: dashed; padding: 20px; border-color: var(--ef-neon-yellow); color: var(--ef-neon-yellow);" onclick="tambahSoal('URAIAN')">➕ TAMBAH SOAL URAIAN</button>
                 </div>
                 
-                <div style="display: flex; gap: 15px; margin-top: 40px;">
+                <div class="grid-aksi-tugas" style="display: flex; gap: 15px; margin-top: 40px;">
                     <button class="btn btn-blue" style="flex: 2; padding: 20px; font-size: 1rem;" onclick="simpanKeFirebase()">TERBITKAN TUGAS</button>
                     <button class="btn" style="flex: 1; padding: 20px;" onclick="openView('panelMenuTugas')">BATAL</button>
                 </div>
@@ -2242,7 +2279,7 @@
                             <option value="">-- PILIH TUGAS --</option>
                         </select>
                     </div>
-                    <div id="actionButtonsPusat" style="display: none; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                    <div id="actionButtonsPusat" class="grid-aksi-pusat" style="display: none; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
                         <button class="btn btn-blue" onclick="exportRekapPDF()">CETAK PDF</button>
                         <button class="btn btn-blue" onclick="cetakSoalPDF()" style="background: var(--ef-cyan); color: var(--ef-obsidian); border: none;">CETAK SOAL</button>
                         <button class="btn btn-red" onclick="hapusSeluruhTugas()">HAPUS SEMUA</button>
@@ -2291,7 +2328,7 @@
                     <!-- Database Siswa -->
                     <div style="display: flex; flex-direction: column; gap: 20px;">
                         <h3 style="font-size: 0.9rem; color: var(--ef-cyan); text-transform: uppercase; letter-spacing: 2px; font-style: italic;">Daftar Roster Siswa</h3>
-                        <div style="display: grid; grid-template-columns: 60px 2fr 1.2fr 80px 80px 50px 50px; gap: 10px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; border: 1px solid var(--ef-glass-border);">
+                        <div class="grid-form-siswa" style="display: grid; grid-template-columns: 60px 2fr 1.2fr 80px 80px 50px 50px; gap: 10px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; border: 1px solid var(--ef-glass-border);">
                             <div style="display: flex; flex-direction: column; gap: 5px;">
                                 <label style="font-size: 0.6rem; color: var(--ef-cyan); font-weight: 800;">NO</label>
                                 <input type="number" id="inpAbsenBaru" placeholder="00" style="padding: 10px 5px; text-align: center; width: 100%;">
@@ -2324,7 +2361,7 @@
                             </div>
                         </div>
 
-                        <div style="max-height: 400px; overflow-y: auto; border: 1px solid var(--ef-glass-border); border-radius: 15px; background: rgba(0,0,0,0.2);">
+                        <div style="max-height: 400px; overflow-y: auto; overflow-x: auto; border: 1px solid var(--ef-glass-border); border-radius: 15px; background: rgba(0,0,0,0.2);">
                             <table style="width: 100%; border-collapse: collapse; background: transparent; margin-top: 0; border: none;">
                                 <thead style="background: rgba(0, 240, 255, 0.1); position: sticky; top: 0; z-index: 5;">
                                     <tr>
