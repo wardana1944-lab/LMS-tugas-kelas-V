@@ -557,460 +557,66 @@
             color: var(--ef-cyan);
         }
 
-        /* RESPONSIVE MOBILE STYLES */
+        /* RESPONSIVE MOBILE STYLES - IDENTICAL TO LAPTOP LAYOUT */
         @media (max-width: 600px) {
-
             /* === HEADER === */
-            header {
-                padding: 28px 15px 48px;
-            }
-
             header h1 {
-                font-size: 1.4rem;
-                flex-wrap: wrap;
-                justify-content: center;
-                text-align: center;
-                gap: 8px;
-            }
-
-            header div[style*="width: 40px"] {
-                display: none !important;
+                font-size: 2rem !important;
             }
 
             .ef-game-title {
-                font-size: 2.8rem !important;
-                letter-spacing: -2px !important;
+                font-size: 3.5rem !important;
             }
 
-            .ef-game-sub {
-                font-size: 0.65rem !important;
-                letter-spacing: 2px !important;
-            }
-
-            header .school-name {
-                font-size: 0.88rem;
-            }
-
-            header .year {
-                font-size: 0.75rem;
-                padding: 5px 14px;
-            }
-
-            /* === CONTAINER & PROFILE === */
-            .container {
-                margin-top: -35px;
-                padding: 0 12px;
-            }
-
-            .guru-profile {
-                flex-direction: column;
-                align-items: center;
-                gap: 10px;
-                padding: 15px 10px;
-                border-radius: 20px;
-                margin-bottom: 20px;
-                text-align: center;
-            }
-
-            .guru-profile .avatar-frame {
-                width: 55px !important;
-                height: 55px !important;
-            }
-
-            .guru-profile h3 {
-                font-size: 1rem !important;
-                margin-bottom: 0px !important;
-            }
-
-            .guru-profile p {
-                font-size: 0.7rem !important;
-            }
-
-            .guru-profile span {
-                font-size: 0.6rem !important;
-                padding: 2px 10px !important;
-            }
-
-            /* STUDENT GRID - MOBILE OPTIMIZED */
-            .grid-siswa {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
-                gap: 20px !important;
-                padding: 15px;
-            }
-
-            .card-siswa {
-                padding: 20px 10px !important;
-                min-height: 180px;
-            }
-
-            .card-siswa .nama {
-                font-size: 0.75rem !important;
-                margin-top: 10px !important;
-            }
-
-            .card-siswa .avatar-frame {
-                width: 70px !important;
-                height: 70px !important;
-            }
-
-            .card-siswa .avatar-3d {
-                width: 55px !important;
-                height: 55px !important;
-            }
-
-            /* === PANELS GENERAL === */
-            .panel {
-                padding-top: 100px !important;
-                padding-bottom: 40px !important;
-                width: 100% !important;
-                left: 0 !important;
-                overflow-x: hidden !important;
-            }
-
+            /* === GLOBAL CONTAINER === */
             .glass-container {
-                padding: 20px 12px !important;
-                border-radius: 20px !important;
-                width: 96% !important;
-                margin-left: auto !important;
-                margin-right: auto !important;
-                margin-bottom: 20px !important;
-                overflow-x: hidden !important;
-            }
-
-            .soal-box {
-                padding: 15px 10px !important;
-                margin-bottom: 20px !important;
-                border-width: 1.5px !important;
-            }
-
-            .editor {
-                min-height: 80px !important;
-                padding: 10px !important;
-                font-size: 0.9rem !important;
-                word-break: break-word !important;
-                overflow-wrap: break-word !important;
-            }
-
-            .soal-box input,
-            .soal-box select {
-                padding: 10px !important;
-                font-size: 0.85rem !important;
-            }
-
-            .toolbar {
-                padding: 5px !important;
-                gap: 5px !important;
-            }
-
-            .btn-tool {
-                width: 30px !important;
-                height: 30px !important;
-            }
-
-            /* Fix Task Cards on Mobile */
-            .kartu-soal {
-                flex-direction: column !important;
-                align-items: flex-start !important;
-                gap: 15px !important;
+                width: 98% !important;
                 padding: 20px !important;
-                text-align: left;
+                overflow-x: auto !important; /* Allow horizontal scroll for large desktop-style layouts */
             }
 
-            .kartu-soal .ks-info {
-                width: 100%;
-            }
-
-            .kartu-soal .btn-blue, .kartu-soal .btn-red {
-                width: 100%;
-            }
-
-            #menuTugasSiswa .kartu-soal {
-                height: auto !important;
-                min-height: 140px;
-            }
-
-            /* Fix Panel Guru Mobile */
-            #panelGuru h2 {
-                font-size: 1.4rem !important;
-                letter-spacing: -0.5px !important;
-            }
-
-            #panelMenuTugas h2 {
-                font-size: 1.4rem !important;
-                letter-spacing: -0.5px !important;
-            }
-
-            #panelGuru .panel-content {
-                padding: 15px 10px !important;
-            }
-
-            .guru-menu-grid {
-                grid-template-columns: 1fr !important;
-                gap: 12px !important;
-            }
-
-            .menu-guru-card {
-                padding: 20px !important;
+            /* Ensure elements don't wrap or stack if they don't on laptop */
+            .guru-profile, .kartu-soal, .grid-aksi-tugas {
                 flex-direction: row !important;
-                align-items: center !important;
-                gap: 15px !important;
-                border-radius: 20px !important;
+                flex-wrap: nowrap !important;
             }
 
-            .menu-guru-card>div:first-child {
-                width: 45px !important;
-                height: 45px !important;
-                border-radius: 12px !important;
+            /* Student Grid - Keep desktop columns if possible or use a smaller min-width */
+            .grid-siswa {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
             }
 
-            .menu-guru-card h3 {
-                font-size: 1.1rem !important;
-                margin-bottom: 2px !important;
-            }
-
-            .menu-guru-card p {
-                font-size: 0.75rem !important;
-                display: none;
-                /* Sembunyikan deskripsi panjang di HP agar rapi */
-            }
-
-            .menu-guru-card div:last-child {
-                display: none !important;
-                /* Sembunyikan footer kartu di HP */
-            }
-
-            /* Fix Panel Pengaturan Mobile */
-            #panelPengaturan .panel-content {
-                padding: 10px !important;
-                padding-top: 2vh !important;
-            }
-
-            /* Fix Manage Tasks Slots on Mobile */
-            .mission-grid {
-                grid-template-columns: 1fr !important;
-                gap: 15px !important;
-            }
-
-            .mission-slot {
-                padding: 20px !important;
-            }
-
-            /* Fix Panel Buat Tugas Mobile */
-            .grid-tambah-soal {
-                grid-template-columns: 1fr !important;
-                gap: 10px !important;
-            }
-
-            .grid-aksi-tugas {
-                flex-direction: column !important;
-                gap: 10px !important;
+            /* Form Grids - Keep desktop columns exactly */
+            .grid-form-siswa {
+                display: grid !important;
+                grid-template-columns: 60px 2fr 1.2fr 80px 80px 50px 50px !important;
+                min-width: 800px; /* Force desktop width to prevent squishing */
             }
 
             .grid-parameter {
-                grid-template-columns: 1fr !important;
-                gap: 15px !important;
+                display: grid !important;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
             }
 
-            .grid-form-siswa {
-                grid-template-columns: 1fr !important;
-                gap: 12px !important;
+            .grid-tambah-soal, .grid-aksi-pusat {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
             }
 
-            .grid-form-siswa > div {
-                grid-column: span 1 !important;
-            }
-
-            .grid-form-siswa input, .grid-form-siswa select {
-                font-size: 1rem !important;
-                padding: 12px !important;
-            }
-
-            .grid-aksi-pusat {
-                grid-template-columns: 1fr !important;
-                gap: 10px !important;
-            }
-
-            /* Prevent table overflow */
+            /* Table - No squishing */
             table {
-                min-width: 500px !important;
+                min-width: 800px !important;
             }
 
-            #panelPengaturan>div>div>div:nth-child(2) {
-                grid-template-columns: 1fr !important;
-                gap: 20px !important;
-                padding: 15px !important;
-            }
-
-            #panelPengaturan .btn-blue,
-            #panelPengaturan .btn-outline {
-                padding: 12px !important;
-            }
-
-
-            th,
-            td {
-                padding: 9px 8px;
-                font-size: 0.78rem;
-                white-space: nowrap;
-            }
-
-            /* === PANEL PILIH TUGAS === */
-            #panelPilihTugas .panel-content {
-                max-width: 100% !important;
-            }
-
-            #salamSiswa {
-                font-size: 1.3rem !important;
-            }
-
-            #menuTugasSiswa {
-                gap: 14px;
-            }
-
-            #menuTugasSiswa .kartu-soal {
-                flex: 1 1 100%;
-                max-width: 100%;
-                height: 130px;
-                padding: 14px 16px;
-            }
-
-            #menuTugasSiswa .kartu-soal .ks-icon {
-                width: 42px;
-                height: 42px;
-                font-size: 1.3rem;
-            }
-
-            #menuTugasSiswa .kartu-soal .ks-judul {
-                font-size: 0.78rem;
-            }
-
-            /* === PANEL SISWA (QUIZ) === */
-            #panelSiswa .panel-content {
-                padding: 0 10px !important;
-            }
-
-            #gridNomorCBT {
-                gap: 6px;
-            }
-
-            #gridNomorCBT>div {
-                width: 32px !important;
-                height: 32px !important;
-                font-size: 0.78rem !important;
-            }
-
-            .soal-box {
-                padding: 18px 14px;
-            }
-
-            .opt-box {
-                padding: 12px 14px;
-                font-size: 0.88rem;
-                gap: 10px;
-            }
-
-            .opt-box>div {
-                width: 24px !important;
-                height: 24px !important;
-                font-size: 0.78rem !important;
-            }
-
-            #teksSoal {
-                font-size: 0.95rem !important;
-            }
-
-            /* === BUTTONS === */
+            /* Buttons - Keep desktop size */
             .btn {
-                font-size: 0.78rem;
-                padding: 10px 14px;
-            }
-
-            .soal-box>div:last-child {
-                grid-template-columns: 1fr !important;
-            }
-
-            /* === MODAL LOGIN & PIN === */
-            #modalLogin .modal-glass,
-            #modalPinSiswa .modal-glass {
-                padding: 25px 20px !important;
-                width: 85% !important;
-                max-width: 320px !important;
-                border-radius: 24px !important;
-            }
-
-            .modal-icon-header {
-                width: 40px !important;
-                height: 40px !important;
-                margin-bottom: 8px !important;
-            }
-
-            .modal-icon-header svg {
-                width: 22px !important;
-                height: 22px !important;
-            }
-
-            .modal-glass h2,
-            .modal-glass h3 {
-                font-size: 0.9rem !important;
-                margin-bottom: 3px !important;
-            }
-
-            .modal-glass p {
-                font-size: 0.72rem !important;
-                margin-bottom: 12px !important;
-                line-height: 1.3 !important;
-            }
-
-            .pin-input-wrapper input {
-                font-size: 1.1rem !important;
-                padding: 10px !important;
-                border-radius: 12px !important;
-            }
-
-            .modal-btn-primary {
-                padding: 12px !important;
-                font-size: 0.8rem !important;
-            }
-
-            /* === ALERT BOX === */
-            .alert-box {
-                padding: 30px 20px !important;
-                width: 90% !important;
-                max-width: 320px !important;
-                border-radius: 30px !important;
-            }
-
-            .alert-icon-container {
-                width: 70px !important;
-                height: 70px !important;
-            }
-
-            .alert-icon {
-                font-size: 2.2rem !important;
-            }
-
-            .alert-title {
-                font-size: 1.2rem !important;
-            }
-
-            .alert-msg {
-                font-size: 0.85rem !important;
+                white-space: nowrap !important;
             }
         }
 
         @media (max-width: 480px) {
             header h1 {
-                font-size: 1.15rem;
-            }
-
-            .grid-siswa {
-                grid-template-columns: repeat(2, 1fr) !important;
-                /* For very small screens */
-            }
-
-            #menuTugasSiswa .kartu-soal {
-                flex: 0 0 100%;
-                max-width: 100%;
+                font-size: 1.5rem !important;
             }
         }
 
@@ -1413,19 +1019,9 @@
         /* Fix overlapping items in grid */
         .grid-siswa {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 25px;
             padding: 20px 0;
-        }
-
-        @media (max-width: 768px) {
-            .grid-siswa {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 15px !important;
-            }
-            .panel {
-                padding-top: 130px;
-            }
         }
 
         input,
