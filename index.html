@@ -566,7 +566,7 @@
         @media (max-width: 600px) {
             /* === GLOBAL SCALING === */
             :root {
-                font-size: 12px; /* Perkecil ukuran dasar agar muat di HP */
+                font-size: 13px; /* Sedikit diperbesar agar lebih jelas di HP */
             }
 
             .container {
@@ -580,52 +580,54 @@
                 padding: 15px !important;
                 margin: 0 !important;
                 border-radius: 15px !important;
-                overflow-x: auto !important; /* Allow horizontal scroll for large desktop-style layouts */
+                overflow-x: hidden !important; /* Mencegah geser horisontal pada container utama */
             }
 
             /* === HEADER === */
             header h1 {
-                font-size: 2.5rem !important; /* Increased from 1.8rem */
-                letter-spacing: -1.5px;
+                font-size: 3.2rem !important; /* Perbesar tulisan RUANG BELAJAR di header */
+                letter-spacing: -2px;
             }
 
             .ef-game-title {
-                font-size: 3.8rem !important; /* Increased from 3.2rem */
+                font-size: 4.2rem !important; /* Perbesar judul di opening */
             }
 
             /* === STUDENT GRID - FIXED 3 COLUMNS LIKE LAPTOP === */
             .grid-siswa {
                 grid-template-columns: repeat(3, 1fr) !important; /* TETAP 3 KOLOM SEPERTI LAPTOP */
-                gap: 12px !important;
+                gap: 10px !important;
                 padding: 15px 0 !important;
             }
 
             .card-siswa {
-                padding: 20px 8px !important; /* Increased from 12px 5px */
+                padding: 15px 5px !important; 
                 min-height: auto !important;
             }
 
             .card-siswa .avatar-frame {
-                width: 65px !important; /* Increased from 50px */
-                height: 65px !important; /* Increased from 50px */
+                width: 60px !important; 
+                height: 60px !important; 
             }
 
             .card-siswa .avatar-3d {
-                width: 50px !important; /* Increased from 40px */
-                height: 50px !important; /* Increased from 40px */
+                width: 45px !important; 
+                height: 45px !important; 
             }
 
             .card-siswa .nama {
-                font-size: 0.8rem !important; /* Increased from 0.65rem */
+                font-size: 0.85rem !important; 
                 margin-top: 8px !important;
+                -webkit-line-clamp: 2;
+                height: 2.4em;
             }
 
             .card-siswa .kelas, .card-siswa .absen {
-                font-size: 0.6rem !important; /* Increased from 0.5rem */
+                font-size: 0.65rem !important; 
             }
 
             .kit-label {
-                font-size: 0.5rem !important; /* Increased from 0.45rem */
+                font-size: 0.55rem !important; 
                 padding: 2px 6px !important;
             }
 
@@ -646,12 +648,12 @@
             }
 
             .guru-profile h3 {
-                font-size: 1rem !important;
+                font-size: 1.1rem !important;
                 margin: 0 !important;
             }
 
             .guru-profile p {
-                font-size: 0.7rem !important;
+                font-size: 0.75rem !important;
             }
 
             /* === TASK CARDS - IDENTICAL TO LAPTOP === */
@@ -669,16 +671,16 @@
             }
 
             .ks-info h3 {
-                font-size: 0.9rem !important;
+                font-size: 1rem !important;
             }
 
             .ks-info p {
-                font-size: 0.7rem !important;
+                font-size: 0.8rem !important;
             }
 
             .kartu-soal .btn {
                 padding: 8px 12px !important;
-                font-size: 0.7rem !important;
+                font-size: 0.75rem !important;
                 width: auto !important;
             }
 
@@ -703,18 +705,24 @@
             }
 
             .menu-guru-card h3 {
-                font-size: 0.85rem !important;
+                font-size: 0.9rem !important;
             }
 
             .menu-guru-card p {
-                display: none; /* Sembunyikan deskripsi di HP agar muat 3 kolom */
+                display: block !important; /* TAMPILKAN deskripsi di HP sesuai permintaan "jangan ada yang dihilangkan" */
+                font-size: 0.6rem !important;
             }
 
-            /* === FORM GRIDS - IDENTICAL TO LAPTOP === */
+            /* === FORM GRIDS - OPTIMIZED FOR NO HORIZONTAL SCROLL === */
             .grid-form-siswa {
-                display: grid !important;
-                grid-template-columns: 40px 1.5fr 1fr 60px 60px 40px 40px !important;
-                min-width: 600px; /* Force scroll horizontally instead of squishing */
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 10px !important;
+                min-width: 0 !important; /* Hilangkan paksaan lebar */
+            }
+            
+            .grid-form-siswa > div {
+                width: 100% !important;
             }
 
             .grid-parameter {
@@ -755,11 +763,37 @@
                 height: 20px !important;
                 font-size: 0.7rem !important;
             }
+
+            /* Opening Splash Adjustment for Mobile */
+            #welcomeSplash {
+                inset: 5% !important; /* Jangan memenuhi seluruh layar */
+                width: 90% !important;
+                height: 90% !important;
+                border-radius: 25px !important;
+                border: 1px solid var(--ef-cyan) !important;
+                box-shadow: 0 0 40px rgba(0,0,0,0.8) !important;
+            }
+
+            .ef-game-title {
+                font-size: 3.2rem !important;
+                letter-spacing: -1.5px !important;
+            }
+
+            .ef-game-sub {
+                font-size: 0.65rem !important;
+                letter-spacing: 4px !important;
+                margin-bottom: 30px !important;
+            }
+
+            .ef-game-loader {
+                width: 85% !important;
+                bottom: 12% !important;
+            }
         }
 
         @media (max-width: 480px) {
             header h1 {
-                font-size: 1.5rem !important;
+                font-size: 2.8rem !important; /* Tetap besar di layar lebih kecil */
             }
         }
 
@@ -1096,7 +1130,7 @@
 
         @media (max-width: 768px) {
             body.show-header .panel {
-                padding-top: 110px;
+                padding-top: 130px; /* Diperbesar agar tidak tertutup header yang lebih besar */
             }
         }
 
@@ -1433,6 +1467,7 @@
             justify-content: center;
             flex-direction: column;
             overflow: hidden;
+            padding: 20px; /* Tambahkan padding agar tidak mentok ke pinggir */
         }
 
         .ef-stadium-overlay {
@@ -1464,6 +1499,8 @@
             opacity: 0;
             transform: translateY(30px);
             animation: efTitleIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
+            max-width: 90%; /* Batasi lebar box judul agar tidak terlalu lebar di HP */
+            margin: 0 auto;
         }
 
         @keyframes efTitleIn {
@@ -1471,11 +1508,11 @@
         }
 
         .ef-game-title {
-            font-size: clamp(4rem, 15vw, 8rem);
+            font-size: clamp(3rem, 12vw, 8rem); /* Sesuaikan ukuran font clamp */
             font-weight: 950;
             font-style: italic;
-            line-height: 0.75;
-            letter-spacing: -4px;
+            line-height: 0.85; /* Sesuaikan line-height */
+            letter-spacing: -2px; /* Sesuaikan letter-spacing */
             text-transform: uppercase;
             color: #fff;
             margin-bottom: 25px;
