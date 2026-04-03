@@ -264,12 +264,19 @@
         }
 
         .avatar-3d {
-            width: 70px; /* Increased from 55px */
-            height: 70px; /* Increased from 55px */
+            width: 85px !important; 
+            height: 85px !important; 
             object-fit: contain;
             filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
             z-index: 3;
             transition: 0.3s;
+        }
+
+        @media (max-width: 600px) {
+            .card-siswa .avatar-3d {
+                width: 60px !important; 
+                height: 60px !important; 
+            }
         }
 
         .fallback-emoji {
@@ -606,13 +613,13 @@
             }
 
             .card-siswa .avatar-frame {
-                width: 60px !important; 
-                height: 60px !important; 
+                width: 75px !important; 
+                height: 75px !important; 
             }
 
             .card-siswa .avatar-3d {
-                width: 45px !important; 
-                height: 45px !important; 
+                width: 65px !important; 
+                height: 65px !important; 
             }
 
             .card-siswa .nama {
@@ -1460,35 +1467,36 @@
         #welcomeSplash {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at center, #0a1428 0%, #050811 100%);
+            background: #000;
             z-index: 10000;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
             overflow: hidden;
-            padding: 20px; /* Tambahkan padding agar tidak mentok ke pinggir */
         }
 
         .ef-stadium-overlay {
             position: absolute;
             inset: 0;
-            background: 
-                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-            opacity: 0.5;
+            background: url('https://www.konami.com/efootball/s/img/common/bg_pattern.png');
+            background-size: 200px;
+            opacity: 0.15;
             z-index: 1;
+            animation: bgMove 20s linear infinite;
+        }
+
+        @keyframes bgMove {
+            from { background-position: 0 0; }
+            to { background-position: 200px 200px; }
         }
 
         .ef-stadium-glow {
             position: absolute;
-            bottom: -20%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 150%;
-            height: 100%;
-            background: radial-gradient(ellipse at bottom, rgba(0, 240, 255, 0.15) 0%, transparent 70%);
+            inset: 0;
+            background: 
+                radial-gradient(circle at 50% -20%, rgba(0, 240, 255, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at 50% 120%, rgba(210, 255, 0, 0.1) 0%, transparent 60%);
             z-index: 2;
         }
 
@@ -1497,53 +1505,53 @@
             z-index: 10;
             text-align: center;
             opacity: 0;
-            transform: translateY(30px);
-            animation: efTitleIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
-            max-width: 90%; /* Batasi lebar box judul agar tidak terlalu lebar di HP */
-            margin: 0 auto;
+            transform: scale(1.1);
+            animation: efTitle2025 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
         }
 
-        @keyframes efTitleIn {
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes efTitle2025 {
+            to { opacity: 1; transform: scale(1); }
         }
 
         .ef-game-title {
-            font-size: clamp(3rem, 12vw, 8rem); /* Sesuaikan ukuran font clamp */
+            font-size: clamp(3rem, 12vw, 8rem);
             font-weight: 950;
             font-style: italic;
-            line-height: 0.85; /* Sesuaikan line-height */
-            letter-spacing: -2px; /* Sesuaikan letter-spacing */
+            line-height: 0.8;
+            letter-spacing: -3px;
             text-transform: uppercase;
             color: #fff;
-            margin-bottom: 25px;
-            filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.4));
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.6));
+            position: relative;
         }
 
         .ef-game-title span {
             display: block;
-            font-size: 0.85em;
-            letter-spacing: 4px;
-            background: linear-gradient(to right, var(--ef-cyan), var(--ef-neon-lime));
+            font-size: 0.75em;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #fff 30%, var(--ef-cyan) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .ef-game-sub {
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             font-weight: 900;
-            letter-spacing: 12px;
+            letter-spacing: 6px;
             color: var(--ef-neon-lime);
             text-transform: uppercase;
-            opacity: 0.8;
+            opacity: 0.9;
             margin-bottom: 60px;
+            text-shadow: 0 0 10px rgba(210, 255, 0, 0.5);
         }
 
         .ef-game-loader {
             position: absolute;
             bottom: 15%;
             width: 80%;
-            max-width: 400px;
+            max-width: 450px;
             z-index: 10;
         }
 
@@ -1552,19 +1560,19 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             font-weight: 950;
-            letter-spacing: 4px;
-            color: var(--ef-cyan);
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.5);
             text-transform: uppercase;
-            font-style: italic;
         }
 
         .ef-loader-bar-pro {
             height: 2px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
             position: relative;
             overflow: hidden;
+            border-radius: 1px;
         }
 
         .ef-loader-progress-pro {
@@ -1573,55 +1581,47 @@
             left: 0;
             height: 100%;
             width: 100%;
-            background: linear-gradient(to right, var(--ef-cyan), var(--ef-neon-lime));
+            background: linear-gradient(to right, #00f0ff, #d2ff00, #ff007a);
+            background-size: 200% 100%;
             transform: scaleX(0);
             transform-origin: left;
-            animation: efProLoad 2s cubic-bezier(0.65, 0, 0.35, 1) 0.8s forwards;
-            box-shadow: 0 0 15px var(--ef-cyan);
+            animation: 
+                efProLoad 1.0s cubic-bezier(0.65, 0, 0.35, 1) 0.3s forwards,
+                efGradientMove 3s linear infinite;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+        }
+
+        @keyframes efGradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
         }
 
         @keyframes efProLoad {
             0% { transform: scaleX(0); }
-            40% { transform: scaleX(0.4); }
-            70% { transform: scaleX(0.85); }
+            30% { transform: scaleX(0.3); }
+            60% { transform: scaleX(0.7); }
             100% { transform: scaleX(1); }
-        }
-
-        @keyframes efLoad {
-            0% { transform: scaleX(0.2); opacity: 0.5; }
-            100% { transform: scaleX(1); opacity: 1; }
         }
 
         .ef-scanline-v2 {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.2) 50%);
-            background-size: 100% 4px;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
             pointer-events: none;
-            z-index: 5;
-            opacity: 0.3;
+            z-index: 100;
+            opacity: 0.4;
         }
-
-        /* Update original welcomeSplash HTML to use new classes */
 
         /* ── Exit Fade ── */
         #welcomeSplash.fade-out {
             pointer-events: none;
-            animation: efExit 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            will-change: opacity, transform;
+            animation: efExit 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         @keyframes efExit {
-            0% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            100% {
-                opacity: 0;
-                transform: scale(1.1);
-                /* Removed heavy filters for smoother mobile performance */
-            }
+            0% { opacity: 1; transform: scale(1); filter: blur(0); }
+            100% { opacity: 0; transform: scale(1.05); filter: blur(10px); }
         }
 
         @keyframes fadeIn {
@@ -1732,12 +1732,10 @@
                 <!-- GURU PROFILE COMPACT -->
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; border-bottom: 1px solid rgba(0, 240, 255, 0.1); padding-bottom: 15px; position: relative;">
                     <div style="display: flex; align-items: center; gap: 20px;">
-                        <div class="avatar-frame" style="width: 70px; height: 70px; margin: 0;">
-                            <div class="halo"></div>
-                            <img src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Man/3D/man_3d.png" class="avatar-3d" 
-                                 onerror="this.src='https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Man/3D/3d.png'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='block';}"
-                                 style="width: 100%; height: 100%; object-fit: contain; position: relative; z-index: 3;">
-                            <div class="fallback-emoji" style="display:none; font-size: 2.5rem; z-index: 3;">👨‍🏫</div>
+                        <div class="avatar-frame" style="width: 70px; height: 70px; margin: 0; border: 2px solid var(--ef-cyan); background: rgba(0, 240, 255, 0.05); border-radius: 50%; overflow: hidden; display: flex; align-items: flex-end; justify-content: center;">
+                            <div class="halo" style="border-radius: 50%;"></div>
+                            <img src="https://img.icons8.com/ios-filled/200/ffffff/user.png" class="avatar-3d" 
+                                 style="width: 110%; height: 110%; object-fit: contain; position: relative; z-index: 3; filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); transform: translateY(10%);">
                         </div>
                         <div class="guru-info">
                             <h3 id="display_nama_guru" style="font-size: 1.3rem; font-style: italic; letter-spacing: -0.5px; color: var(--ef-white); margin: 0;">Aditya W. Wardana, S.Pd</h3>
@@ -1745,11 +1743,11 @@
                         </div>
                     </div>
                     
-                    <button onclick="aksesDashboardGuru()" style="background: var(--ef-neon-yellow); color: var(--ef-obsidian); border: none; padding: 12px 25px; border-radius: 12px; font-size: 0.85rem; font-weight: 950; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; gap: 10px; transition: 0.3s; box-shadow: 0 0 20px rgba(210, 255, 0, 0.3); font-style: italic;" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 30px rgba(210, 255, 0, 0.5)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 0 20px rgba(210, 255, 0, 0.3)';">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                    <button onclick="aksesDashboardGuru()" style="background: var(--ef-neon-yellow); color: var(--ef-obsidian); border: none; padding: 8px 15px; border-radius: 8px; font-size: 0.75rem; font-weight: 950; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 0 15px rgba(210, 255, 0, 0.2); font-style: italic;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
                         </svg>
-                        MASUK SISTEM KONTROL
+                        LOG IN GURU
                     </button>
 
                     <div style="position: absolute; right: 0; top: -10px; font-size: 0.55rem; color: var(--ef-cyan); opacity: 0.5; font-weight: 900; letter-spacing: 1px;">SISTEM ONLINE v2.6</div>
@@ -1944,54 +1942,55 @@
     </div>
 
     <!-- PDF PREVIEW REMOVED AS PER USER REQUEST -->
-    <div id="panelMenuTugas" class="panel" style="display: none;">
+    <div id="panelMenuTugas" class="panel" style="display: none; background: var(--ef-obsidian);">
         <div class="panel-content">
-            <div class="glass-container">
-                <div style="text-align: center; margin-bottom: 40px; border-bottom: 1px solid var(--ef-glass-border); padding-bottom: 30px;">
-                    <h2 style="font-size: 2.2rem; font-weight: 900; color: var(--ef-white); text-transform: uppercase; font-style: italic; letter-spacing: -1px;">KELOLA <span style="color: var(--ef-neon-yellow);">TUGAS</span></h2>
-                    <p style="color: var(--ef-cyan); font-weight: 800; text-transform: uppercase; letter-spacing: 3px; font-size: 0.75rem; margin-top: 5px;">Konfigurasi tugas dan naskah soal</p>
-                </div>
-
-                <div id="wadahSlotTugas" class="mission-grid">
-                    <!-- Slot 1 -->
-                    <div class="kartu-soal mission-slot">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-                            <div>
-                                <span style="background: var(--ef-neon-yellow); color: var(--ef-deep-blue); padding: 4px 12px; font-size: 0.7rem; font-weight: 900; font-style: italic;">SLOT 01</span>
-                                <h3 id="labelJudulSlot1" style="font-size: 1.3rem; margin-top: 15px;">KOSONG</h3>
-                            </div>
-                            <div style="text-align: right;">
-                                <p id="labelWaktuSlot1" style="color: var(--ef-cyan); font-size: 0.8rem; font-weight: 800;">DURASI: --</p>
-                                <p id="labelLimitSlot1" style="color: var(--ef-magenta); font-size: 0.7rem; font-weight: 800; margin-top: 5px;">--</p>
-                            </div>
-                        </div>
-                        <div style="display: flex; gap: 12px; width: 100%;">
-                            <button class="btn btn-blue" style="flex: 2;" onclick="bukaBuatTugas('tugas1')">ATUR TUGAS</button>
-                            <button class="btn btn-red" style="flex: 1;" onclick="nonaktifkanTugas('tugas1')">HAPUS</button>
-                        </div>
-                    </div>
-
-                    <!-- Slot 2 -->
-                    <div class="kartu-soal mission-slot">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-                            <div>
-                                <span style="background: var(--ef-neon-yellow); color: var(--ef-deep-blue); padding: 4px 12px; font-size: 0.7rem; font-weight: 900; font-style: italic;">SLOT 02</span>
-                                <h3 id="labelJudulSlot2" style="font-size: 1.3rem; margin-top: 15px;">KOSONG</h3>
-                            </div>
-                            <div style="text-align: right;">
-                                <p id="labelWaktuSlot2" style="color: var(--ef-cyan); font-size: 0.8rem; font-weight: 800;">DURASI: --</p>
-                                <p id="labelLimitSlot2" style="color: var(--ef-magenta); font-size: 0.7rem; font-weight: 800; margin-top: 5px;">--</p>
-                            </div>
-                        </div>
-                        <div style="display: flex; gap: 12px; width: 100%;">
-                            <button class="btn btn-blue" style="flex: 2;" onclick="bukaBuatTugas('tugas2')">ATUR TUGAS</button>
-                            <button class="btn btn-red" style="flex: 1;" onclick="nonaktifkanTugas('tugas2')">HAPUS</button>
-                        </div>
-                    </div>
-                </div>
-
-                <button class="btn" style="width: 100%; margin-top: 40px; padding: 18px; border-color: var(--ef-cyan); color: var(--ef-cyan);" onclick="openView('panelGuru')">KEMBALI KE PANEL GURU</button>
+            <!-- Header Setema eFootball -->
+            <div style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 40px; position: relative; padding-left: 20px; border-left: 6px solid var(--ef-cyan);">
+                <h2 style="font-size: 3rem; font-weight: 950; color: white; letter-spacing: -2px; margin: 0; text-transform: uppercase; font-style: italic; line-height: 0.9;">
+                    KELOLA <span style="color: var(--ef-cyan);">TUGAS</span></h2>
+                <p style="color: var(--ef-neon-lime); font-weight: 900; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 4px; margin-top: 10px; font-style: italic;">
+                    KONFIGURASI DATA & NASKAH SOAL</p>
             </div>
+
+            <div id="wadahSlotTugas" class="mission-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <!-- Slot 1 -->
+                <div class="menu-guru-card" style="background: var(--ef-navy); padding: 30px; clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%); border: 2px solid rgba(0, 240, 255, 0.1); position: relative; overflow: hidden;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; margin-bottom: 20px;">
+                        <div>
+                            <span style="background: var(--ef-cyan); color: var(--ef-deep-blue); padding: 4px 12px; font-size: 0.7rem; font-weight: 900; font-style: italic;">SLOT 01</span>
+                            <h3 id="labelJudulSlot1" style="font-size: 1.15rem; color: white; font-weight: 900; margin-top: 8px; font-style: italic; text-transform: uppercase;">KOSONG</h3>
+                        </div>
+                        <div style="text-align: right;">
+                            <p id="labelWaktuSlot1" style="color: var(--ef-cyan); font-size: 0.75rem; font-weight: 900; font-style: italic;">DURASI: --</p>
+                            <p id="labelLimitSlot1" style="color: var(--ef-magenta); font-size: 0.65rem; font-weight: 900; margin-top: 4px;">--</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; width: 100%; margin-top: auto;">
+                        <button class="btn btn-blue" style="flex: 2; font-style: italic; background: var(--ef-cyan); color: var(--ef-deep-blue); padding: 10px 15px; font-size: 0.8rem;" onclick="bukaBuatTugas('tugas1')">ATUR TUGAS</button>
+                        <button class="btn btn-red" style="flex: 1; font-style: italic; padding: 10px 15px; font-size: 0.8rem;" onclick="nonaktifkanTugas('tugas1')">HAPUS</button>
+                    </div>
+                </div>
+
+                <!-- Slot 2 -->
+                <div class="menu-guru-card" style="background: var(--ef-navy); padding: 30px; clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%); border: 2px solid rgba(0, 240, 255, 0.1); position: relative; overflow: hidden;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; margin-bottom: 20px;">
+                        <div>
+                            <span style="background: var(--ef-cyan); color: var(--ef-deep-blue); padding: 4px 12px; font-size: 0.7rem; font-weight: 900; font-style: italic;">SLOT 02</span>
+                            <h3 id="labelJudulSlot2" style="font-size: 1.15rem; color: white; font-weight: 900; margin-top: 8px; font-style: italic; text-transform: uppercase;">KOSONG</h3>
+                        </div>
+                        <div style="text-align: right;">
+                            <p id="labelWaktuSlot2" style="color: var(--ef-cyan); font-size: 0.75rem; font-weight: 900; font-style: italic;">DURASI: --</p>
+                            <p id="labelLimitSlot2" style="color: var(--ef-magenta); font-size: 0.65rem; font-weight: 900; margin-top: 4px;">--</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; width: 100%; margin-top: auto;">
+                        <button class="btn btn-blue" style="flex: 2; font-style: italic; background: var(--ef-cyan); color: var(--ef-deep-blue); padding: 10px 15px; font-size: 0.8rem;" onclick="bukaBuatTugas('tugas2')">ATUR TUGAS</button>
+                        <button class="btn btn-red" style="flex: 1; font-style: italic; padding: 10px 15px; font-size: 0.8rem;" onclick="nonaktifkanTugas('tugas2')">HAPUS</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn" style="width: 100%; margin-top: 40px; padding: 18px; border-color: var(--ef-cyan); color: var(--ef-cyan); font-style: italic; font-weight: 900;" onclick="openView('panelGuru')">KEMBALI KE PANEL GURU</button>
         </div>
     </div>
 
@@ -2243,16 +2242,17 @@
             SISWA.forEach((s, i) => {
                 const noAbsen = s.a || (i + 1).toString().padStart(2, '0');
                 
-                // Realistic 3D Avatar Selection (Microsoft Fluent Style)
+                // Realistic Avatar Selection (Indonesian Student Style)
                 let avatarUrl = "";
                 // Priority: s.jk (manual), s.i (default emoji), then fallback by absen number
-                const isGirl = (s.jk === 'P' || s.i === '👧' || (!s.jk && !s.i && parseInt(noAbsen) % 2 === 0));
+                const isGirl = (s.jk === 'P' || s.i === '👧' || (!s.jk && !s.i && parseInt(noAbsen) % 3 === 0));
                 
                 if (isGirl) {
-                    // Try JSDelivr with correct filename pattern
-                    avatarUrl = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Girl/3D/girl_3d.png";
+                    // Silhouette Siswa Perempuan memakai Toga
+                    avatarUrl = "https://img.icons8.com/ios-filled/200/ffffff/student-female.png";
                 } else {
-                    avatarUrl = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Boy/3D/boy_3d.png";
+                    // Silhouette Siswa Laki-laki memakai Toga
+                    avatarUrl = "https://img.icons8.com/ios-filled/200/ffffff/student-male.png";
                 }
 
                 const d = document.createElement('div');
@@ -2263,9 +2263,7 @@
                     <div class="avatar-frame">
                         <div class="halo"></div>
                         <img src="${avatarUrl}" class="avatar-3d" 
-                             onerror="this.src='https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/${isGirl?'Girl':'Boy'}/3D/3d.png'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='block';}"
-                             style="width: 100%; height: 100%; object-fit: contain; position: relative; z-index: 3;">
-                        <div class="fallback-emoji" style="display:none; font-size: 2.5rem; z-index: 3;">${isGirl ? '👧' : '👦'}</div>
+                             style="width: 100%; height: 100%; object-fit: contain; position: relative; z-index: 3; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));">
                         <div class="kit-label">${s.pg || "SISWA"}</div>
                     </div>
                     <p class="nama">${s.n}</p>
@@ -2408,7 +2406,7 @@
         }
 
         window.onload = () => {
-            // PRO STYLE OPENING DURATION: 2 SECONDS
+            // PRO STYLE OPENING DURATION: 2 SECONDS TOTAL
             const splash = document.getElementById('welcomeSplash');
             if (splash) {
                 setTimeout(() => {
@@ -2416,8 +2414,8 @@
                     setTimeout(() => {
                         splash.remove();
                         openView('panelUtama');
-                    }, 600);
-                }, 2000); // 2 seconds delay
+                    }, 800); // 0.8s fade out
+                }, 1200); // 1.2s visible
             } else {
                 openView('panelUtama');
             }
@@ -2495,9 +2493,36 @@
             SISWA.forEach((s, i) => {
                 const card = document.getElementById(`card-siswa-${i}`);
                 if (!card) return;
+                
+                // Hapus badge lama
                 const existing = card.querySelector('.badge-selesai-semua');
                 if (existing) existing.remove();
+                const existingTrophy = card.querySelector('.gold-trophy');
+                if (existingTrophy) existingTrophy.remove();
+
+                // Cek apakah ada tugas yang mendapatkan nilai 100
+                const hasPerfectScore = rekapGlobal.some(r => 
+                    r.nama === s.n && 
+                    tugasAktifSistem.some(t => (t.judul || "").trim().toLowerCase() === (r.materi || "").trim().toLowerCase()) &&
+                    r.nilai == 100
+                );
+
+                if (hasPerfectScore) {
+                    const trophy = document.createElement('div');
+                    trophy.className = 'gold-trophy';
+                    trophy.style = "position: absolute; top: -10px; left: -10px; font-size: 2rem; z-index: 10; filter: drop-shadow(0 0 10px gold); animation: trophyBounce 2s infinite;";
+                    trophy.innerHTML = "🏆";
+                    card.appendChild(trophy);
+                }
             });
+        }
+
+        // Add trophy animation to style if not exists
+        if (!document.getElementById('trophy-style')) {
+            const s = document.createElement('style');
+            s.id = 'trophy-style';
+            s.innerHTML = `@keyframes trophyBounce { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-10px) rotate(10deg); } }`;
+            document.head.appendChild(s);
         }
 
         function updateDashboardTugas() {
