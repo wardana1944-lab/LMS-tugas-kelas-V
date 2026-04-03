@@ -749,6 +749,38 @@
                 gap: 10px !important;
             }
 
+            /* === KELOLA TUGAS PANEL - MOBILE FIX === */
+            #panelMenuTugas .panel-content {
+                padding: 20px 15px !important;
+            }
+
+            #panelMenuTugas h2 {
+                font-size: 2.2rem !important;
+            }
+
+            #wadahSlotTugas {
+                grid-template-columns: 1fr !important; /* Force single column on mobile */
+                gap: 15px !important;
+            }
+
+            #wadahSlotTugas .menu-guru-card {
+                padding: 20px !important; /* Reduce padding */
+                clip-path: polygon(3% 0%, 100% 0%, 97% 100%, 0% 100%) !important; /* Less aggressive clip */
+            }
+
+            #wadahSlotTugas .menu-guru-card > div:first-child {
+                flex-direction: column !important; /* Stack title and duration */
+                gap: 10px !important;
+                align-items: flex-start !important;
+            }
+
+            #wadahSlotTugas .menu-guru-card > div:first-child > div:last-child {
+                text-align: left !important;
+                width: 100% !important;
+                border-top: 1px solid rgba(0, 240, 255, 0.1);
+                padding-top: 10px;
+            }
+
             /* Quiz Layout - Identical */
             #gridNomorCBT {
                 gap: 5px !important;
@@ -1942,7 +1974,7 @@
     </div>
 
     <!-- PDF PREVIEW REMOVED AS PER USER REQUEST -->
-    <div id="panelMenuTugas" class="panel" style="display: none; background: var(--ef-obsidian);">
+    <div id="panelMenuTugas" class="panel" style="display: none; background: var(--ef-obsidian); overflow-y: auto;">
         <div class="panel-content">
             <!-- Header Setema eFootball -->
             <div style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 40px; position: relative; padding-left: 20px; border-left: 6px solid var(--ef-cyan);">
