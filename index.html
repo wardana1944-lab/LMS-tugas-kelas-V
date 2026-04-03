@@ -520,10 +520,11 @@
             border: 2px solid var(--ef-cyan);
             border-radius: 30px;
             padding: 40px;
-            width: 90%;
+            width: 95%;
             max-width: 400px;
             text-align: center;
             box-shadow: 0 0 50px rgba(0, 240, 255, 0.3);
+            margin: auto;
         }
 
         /* Stats Grid */
@@ -632,9 +633,9 @@
 
             /* STUDENT GRID - MOBILE OPTIMIZED */
             .grid-siswa {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 15px !important;
-                padding: 10px;
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+                gap: 20px !important;
+                padding: 15px;
             }
 
             .card-siswa {
@@ -648,26 +649,62 @@
             }
 
             .card-siswa .avatar-frame {
-                width: 75px !important;
-                height: 75px !important;
+                width: 70px !important;
+                height: 70px !important;
             }
 
             .card-siswa .avatar-3d {
-                width: 75px !important;
-                height: 75px !important;
+                width: 55px !important;
+                height: 55px !important;
             }
 
             /* === PANELS GENERAL === */
             .panel {
-                padding-top: 130px;
-                padding-bottom: 60px;
+                padding-top: 100px !important;
+                padding-bottom: 40px !important;
+                width: 100% !important;
+                left: 0 !important;
+                overflow-x: hidden !important;
             }
 
             .glass-container {
-                padding: 25px 15px !important;
-                border-radius: 28px !important;
-                width: 94% !important;
-                margin-bottom: 25px !important;
+                padding: 20px 12px !important;
+                border-radius: 20px !important;
+                width: 96% !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+                margin-bottom: 20px !important;
+                overflow-x: hidden !important;
+            }
+
+            .soal-box {
+                padding: 15px 10px !important;
+                margin-bottom: 20px !important;
+                border-width: 1.5px !important;
+            }
+
+            .editor {
+                min-height: 80px !important;
+                padding: 10px !important;
+                font-size: 0.9rem !important;
+                word-break: break-word !important;
+                overflow-wrap: break-word !important;
+            }
+
+            .soal-box input,
+            .soal-box select {
+                padding: 10px !important;
+                font-size: 0.85rem !important;
+            }
+
+            .toolbar {
+                padding: 5px !important;
+                gap: 5px !important;
+            }
+
+            .btn-tool {
+                width: 30px !important;
+                height: 30px !important;
             }
 
             /* Fix Task Cards on Mobile */
@@ -938,6 +975,7 @@
             /* === ALERT BOX === */
             .alert-box {
                 padding: 30px 20px !important;
+                width: 90% !important;
                 max-width: 320px !important;
                 border-radius: 30px !important;
             }
