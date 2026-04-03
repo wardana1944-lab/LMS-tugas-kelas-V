@@ -211,7 +211,8 @@
         /* Student Grid & Card eSports Style */
         .grid-siswa {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            /* Default 3 kolom kesamping seperti laptop */
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             padding: 15px 0;
         }
@@ -559,58 +560,196 @@
 
         /* RESPONSIVE MOBILE STYLES - IDENTICAL TO LAPTOP LAYOUT */
         @media (max-width: 600px) {
-            /* === HEADER === */
-            header h1 {
-                font-size: 2rem !important;
+            /* === GLOBAL SCALING === */
+            :root {
+                font-size: 12px; /* Perkecil ukuran dasar agar muat di HP */
             }
 
-            .ef-game-title {
-                font-size: 3.5rem !important;
+            .container {
+                padding: 0 10px;
+                width: 100% !important;
+                max-width: 100% !important;
             }
 
-            /* === GLOBAL CONTAINER === */
             .glass-container {
-                width: 98% !important;
-                padding: 20px !important;
+                width: 100% !important;
+                padding: 15px !important;
+                margin: 0 !important;
+                border-radius: 15px !important;
                 overflow-x: auto !important; /* Allow horizontal scroll for large desktop-style layouts */
             }
 
-            /* Ensure elements don't wrap or stack if they don't on laptop */
-            .guru-profile, .kartu-soal, .grid-aksi-tugas {
-                flex-direction: row !important;
-                flex-wrap: nowrap !important;
+            /* === HEADER === */
+            header h1 {
+                font-size: 1.8rem !important;
+                letter-spacing: -1px;
             }
 
-            /* Student Grid - Keep desktop columns if possible or use a smaller min-width */
+            .ef-game-title {
+                font-size: 3.2rem !important;
+            }
+
+            /* === STUDENT GRID - FIXED 3 COLUMNS LIKE LAPTOP === */
             .grid-siswa {
-                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+                grid-template-columns: repeat(3, 1fr) !important; /* TETAP 3 KOLOM SEPERTI LAPTOP */
+                gap: 10px !important;
+                padding: 10px 0 !important;
             }
 
-            /* Form Grids - Keep desktop columns exactly */
+            .card-siswa {
+                padding: 12px 5px !important;
+                min-height: auto !important;
+            }
+
+            .card-siswa .avatar-frame {
+                width: 50px !important;
+                height: 50px !important;
+            }
+
+            .card-siswa .avatar-3d {
+                width: 40px !important;
+                height: 40px !important;
+            }
+
+            .card-siswa .nama {
+                font-size: 0.65rem !important;
+                margin-top: 5px !important;
+            }
+
+            .card-siswa .kelas, .card-siswa .absen {
+                font-size: 0.5rem !important;
+            }
+
+            .kit-label {
+                font-size: 0.45rem !important;
+                padding: 1px 4px !important;
+            }
+
+            /* === GURU PROFILE - IDENTICAL TO LAPTOP === */
+            .guru-profile {
+                flex-direction: row !important; /* TETAP HORISONTAL SEPERTI LAPTOP */
+                flex-wrap: nowrap !important;
+                padding: 12px !important;
+                gap: 12px !important;
+                text-align: left !important;
+                border-radius: 15px !important;
+            }
+
+            .guru-profile .avatar-frame {
+                width: 50px !important;
+                height: 50px !important;
+                margin: 0 !important;
+            }
+
+            .guru-profile h3 {
+                font-size: 1rem !important;
+                margin: 0 !important;
+            }
+
+            .guru-profile p {
+                font-size: 0.7rem !important;
+            }
+
+            /* === TASK CARDS - IDENTICAL TO LAPTOP === */
+            .kartu-soal {
+                flex-direction: row !important; /* TETAP HORISONTAL SEPERTI LAPTOP */
+                flex-wrap: nowrap !important;
+                align-items: center !important;
+                padding: 15px !important;
+                gap: 10px !important;
+                min-height: 80px !important;
+            }
+
+            .ks-info {
+                flex: 1;
+            }
+
+            .ks-info h3 {
+                font-size: 0.9rem !important;
+            }
+
+            .ks-info p {
+                font-size: 0.7rem !important;
+            }
+
+            .kartu-soal .btn {
+                padding: 8px 12px !important;
+                font-size: 0.7rem !important;
+                width: auto !important;
+            }
+
+            /* === GURU MENU GRID - IDENTICAL TO LAPTOP === */
+            .guru-menu-grid {
+                grid-template-columns: repeat(3, 1fr) !important; /* TETAP 3 KOLOM SEPERTI LAPTOP */
+                gap: 10px !important;
+            }
+
+            .menu-guru-card {
+                padding: 12px !important;
+                flex-direction: column !important;
+                text-align: center;
+                gap: 8px !important;
+                border-radius: 15px !important;
+            }
+
+            .menu-guru-card > div:first-child {
+                width: 35px !important;
+                height: 35px !important;
+                margin: 0 auto !important;
+            }
+
+            .menu-guru-card h3 {
+                font-size: 0.85rem !important;
+            }
+
+            .menu-guru-card p {
+                display: none; /* Sembunyikan deskripsi di HP agar muat 3 kolom */
+            }
+
+            /* === FORM GRIDS - IDENTICAL TO LAPTOP === */
             .grid-form-siswa {
                 display: grid !important;
-                grid-template-columns: 60px 2fr 1.2fr 80px 80px 50px 50px !important;
-                min-width: 800px; /* Force desktop width to prevent squishing */
+                grid-template-columns: 40px 1.5fr 1fr 60px 60px 40px 40px !important;
+                min-width: 600px; /* Force scroll horizontally instead of squishing */
             }
 
             .grid-parameter {
                 display: grid !important;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+                grid-template-columns: repeat(3, 1fr) !important; /* TETAP 3 KOLOM SEPERTI LAPTOP */
+                gap: 10px !important;
             }
 
             .grid-tambah-soal, .grid-aksi-pusat {
                 display: grid !important;
                 grid-template-columns: 1fr 1fr !important;
+                gap: 10px !important;
             }
 
-            /* Table - No squishing */
-            table {
-                min-width: 800px !important;
+            .grid-aksi-tugas {
+                flex-direction: row !important;
+                gap: 10px !important;
             }
 
-            /* Buttons - Keep desktop size */
-            .btn {
-                white-space: nowrap !important;
+            /* Quiz Layout - Identical */
+            #gridNomorCBT {
+                gap: 5px !important;
+            }
+
+            #gridNomorCBT > div {
+                width: 25px !important;
+                height: 25px !important;
+                font-size: 0.7rem !important;
+            }
+
+            .opt-box {
+                padding: 10px !important;
+                gap: 10px !important;
+            }
+
+            .opt-box > div {
+                width: 20px !important;
+                height: 20px !important;
+                font-size: 0.7rem !important;
             }
         }
 
