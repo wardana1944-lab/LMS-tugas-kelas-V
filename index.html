@@ -764,21 +764,40 @@
             }
 
             #wadahSlotTugas .menu-guru-card {
-                padding: 20px !important; /* Reduce padding */
-                clip-path: polygon(3% 0%, 100% 0%, 97% 100%, 0% 100%) !important; /* Less aggressive clip */
+                padding: 25px 20px !important; /* Better padding */
+                clip-path: none !important; /* Remove clip-path on mobile to avoid overlapping issues */
+                border-radius: 15px !important;
+                border: 1px solid rgba(0, 240, 255, 0.2) !important;
+                min-height: auto !important;
             }
 
             #wadahSlotTugas .menu-guru-card > div:first-child {
                 flex-direction: column !important; /* Stack title and duration */
-                gap: 10px !important;
+                gap: 12px !important;
                 align-items: flex-start !important;
+                margin-bottom: 20px !important;
             }
 
             #wadahSlotTugas .menu-guru-card > div:first-child > div:last-child {
                 text-align: left !important;
                 width: 100% !important;
                 border-top: 1px solid rgba(0, 240, 255, 0.1);
-                padding-top: 10px;
+                padding-top: 12px;
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            #wadahSlotTugas .menu-guru-card > div:last-child {
+                display: flex !important;
+                flex-direction: row !important; /* Keep buttons row but tidy */
+                gap: 10px !important;
+                margin-top: 10px !important;
+            }
+
+            #wadahSlotTugas .menu-guru-card .btn {
+                padding: 12px 10px !important;
+                font-size: 0.75rem !important;
             }
 
             /* Quiz Layout - Identical */
@@ -803,14 +822,14 @@
                 font-size: 0.7rem !important;
             }
 
-            /* Opening Splash Adjustment for Mobile */
+            /* Opening Splash Adjustment for Mobile - FULL SCREEN LIKE LAPTOP */
             #welcomeSplash {
-                inset: 5% !important; /* Jangan memenuhi seluruh layar */
-                width: 90% !important;
-                height: 90% !important;
-                border-radius: 25px !important;
-                border: 1px solid var(--ef-cyan) !important;
-                box-shadow: 0 0 40px rgba(0,0,0,0.8) !important;
+                inset: 0 !important; 
+                width: 100% !important;
+                height: 100% !important;
+                border-radius: 0 !important;
+                border: none !important;
+                box-shadow: none !important;
             }
 
             .ef-game-title {
