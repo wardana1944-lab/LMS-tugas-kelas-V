@@ -186,13 +186,13 @@
         header * { pointer-events: auto; }
 
         header h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 950;
             font-style: italic;
             text-transform: uppercase;
             letter-spacing: -3px;
             color: #ffffff;
-            text-shadow: 0 0 30px rgba(0,240,255,0.6);
+            text-shadow: 0 0 40px rgba(0,240,255,0.7);
             cursor: pointer;
             transition: 0.3s;
             display: inline-block;
@@ -221,25 +221,26 @@
             background: rgba(15, 25, 45, 0.85);
             border: 2px solid rgba(0, 240, 255, 0.1);
             border-radius: 20px;
-            padding: 20px 10px;
+            padding: 30px 15px; /* Increased padding */
             text-align: center;
             cursor: pointer;
             position: relative;
             overflow: visible;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
         }
 
         .card-siswa:hover {
             border-color: var(--ef-cyan);
             background: rgba(15, 25, 45, 0.98);
             z-index: 10;
+            transform: translateY(-5px);
         }
 
         /* Avatar with Glowing Halo */
         .avatar-frame {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto 10px;
+            width: 90px; /* Increased from 70px */
+            height: 90px; /* Increased from 70px */
+            margin: 0 auto 15px;
             position: relative;
             display: flex;
             align-items: center;
@@ -251,20 +252,20 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            border: 1.5px solid var(--ef-cyan);
+            border: 2px solid var(--ef-cyan);
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--ef-cyan);
+            box-shadow: 0 0 15px var(--ef-cyan);
             animation: haloPulse 2s infinite alternate;
         }
 
         @keyframes haloPulse {
             from { transform: scale(0.95); opacity: 0.4; }
-            to { transform: scale(1.05); opacity: 0.8; }
+            to { transform: scale(1.1); opacity: 0.9; }
         }
 
         .avatar-3d {
-            width: 55px;
-            height: 55px;
+            width: 70px; /* Increased from 55px */
+            height: 70px; /* Increased from 55px */
             object-fit: contain;
             filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
             z-index: 3;
@@ -272,7 +273,7 @@
         }
 
         .fallback-emoji {
-            font-size: 2.8rem;
+            font-size: 3.5rem; /* Increased from 2.8rem */
             filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
             z-index: 3;
             display: flex;
@@ -281,44 +282,47 @@
         }
 
         .card-siswa:hover .avatar-3d {
-            transform: scale(1.1);
+            transform: scale(1.15);
         }
 
         /* eSports Kit Look */
         .kit-label {
             position: absolute;
-            bottom: -5px;
+            bottom: -8px;
             left: 50%;
             transform: translateX(-50%);
             background: var(--ef-neon-yellow);
             color: var(--ef-deep-blue);
-            font-weight: 900;
-            font-size: 0.55rem;
-            padding: 2px 8px;
-            border-radius: 4px;
+            font-weight: 950;
+            font-size: 0.65rem; /* Slightly larger */
+            padding: 3px 10px;
+            border-radius: 5px;
             text-transform: uppercase;
             font-style: italic;
             white-space: nowrap;
-            box-shadow: 0 3px 6px rgba(210, 255, 0, 0.3);
+            box-shadow: 0 4px 8px rgba(210, 255, 0, 0.4);
             letter-spacing: 0.5px;
-            max-width: 90%;
+            max-width: 95%;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .card-siswa .nama {
-            font-size: 0.85rem;
-            font-weight: 900;
+            font-size: 1.1rem; /* Increased from 0.85rem */
+            font-weight: 950;
             color: #ffffff;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-top: 10px;
+            margin-top: 15px;
             font-style: italic;
-            white-space: nowrap;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Limit to 2 lines */
+            -webkit-box-orient: vertical;
             overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
-            display: block;
+            line-height: 1.2;
+            height: 2.4em; /* Ensure consistent height for 2 lines */
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            word-break: break-word;
         }
 
         .card-siswa .absen {
@@ -581,48 +585,48 @@
 
             /* === HEADER === */
             header h1 {
-                font-size: 1.8rem !important;
-                letter-spacing: -1px;
+                font-size: 2.5rem !important; /* Increased from 1.8rem */
+                letter-spacing: -1.5px;
             }
 
             .ef-game-title {
-                font-size: 3.2rem !important;
+                font-size: 3.8rem !important; /* Increased from 3.2rem */
             }
 
             /* === STUDENT GRID - FIXED 3 COLUMNS LIKE LAPTOP === */
             .grid-siswa {
                 grid-template-columns: repeat(3, 1fr) !important; /* TETAP 3 KOLOM SEPERTI LAPTOP */
-                gap: 10px !important;
-                padding: 10px 0 !important;
+                gap: 12px !important;
+                padding: 15px 0 !important;
             }
 
             .card-siswa {
-                padding: 12px 5px !important;
+                padding: 20px 8px !important; /* Increased from 12px 5px */
                 min-height: auto !important;
             }
 
             .card-siswa .avatar-frame {
-                width: 50px !important;
-                height: 50px !important;
+                width: 65px !important; /* Increased from 50px */
+                height: 65px !important; /* Increased from 50px */
             }
 
             .card-siswa .avatar-3d {
-                width: 40px !important;
-                height: 40px !important;
+                width: 50px !important; /* Increased from 40px */
+                height: 50px !important; /* Increased from 40px */
             }
 
             .card-siswa .nama {
-                font-size: 0.65rem !important;
-                margin-top: 5px !important;
+                font-size: 0.8rem !important; /* Increased from 0.65rem */
+                margin-top: 8px !important;
             }
 
             .card-siswa .kelas, .card-siswa .absen {
-                font-size: 0.5rem !important;
+                font-size: 0.6rem !important; /* Increased from 0.5rem */
             }
 
             .kit-label {
-                font-size: 0.45rem !important;
-                padding: 1px 4px !important;
+                font-size: 0.5rem !important; /* Increased from 0.45rem */
+                padding: 2px 6px !important;
             }
 
             /* === GURU PROFILE - IDENTICAL TO LAPTOP === */
