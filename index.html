@@ -1413,6 +1413,7 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
             transition: 0.3s;
             backdrop-filter: blur(10px);
+            overflow: hidden;
         }
 
         .soal-box:hover {
@@ -1469,6 +1470,20 @@
             color: #FFFFFF !important;
             font-size: 1rem;
             line-height: 1.5;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-x: hidden;
+            width: 100%;
+            display: block;
+        }
+
+        .editor img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 5px 0;
+            display: block;
         }
 
         .editor:focus {
@@ -1489,11 +1504,52 @@
             transition: 0.2s;
         }
 
-        .soal-box input:focus,
-        .soal-box select:focus {
-            border-color: var(--ef-neon-yellow) !important;
-            background: rgba(255, 255, 255, 0.1) !important;
-            outline: none;
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1.5px solid rgba(0, 240, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            transition: 0.2s;
+        }
+
+        .option-group:focus-within {
+            border-color: var(--ef-cyan);
+            background: rgba(0, 240, 255, 0.05);
+        }
+
+        .option-group span {
+            font-weight: 900;
+            color: var(--ef-cyan);
+            width: 25px;
+            text-align: center;
+        }
+
+        .option-group input {
+            background: transparent !important;
+            border: none !important;
+            padding: 5px 0 !important;
+            margin: 0 !important;
+            width: 100%;
+        }
+        
+        .option-group input:focus {
+            box-shadow: none !important;
+        }
+
+        .q-kunci {
+            width: 100%;
+            margin-top: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1.5px solid rgba(0, 240, 255, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 800;
+            cursor: pointer;
         }
 
         .btn-hapus-soal {
@@ -3211,32 +3267,32 @@
             let html = `<button class="btn-hapus-soal" onclick="hapusSoal(this)">HAPUS</button><b class="label-nomor">Soal No ${no}</b>
     <div class="toolbar"><button class="btn-tool" onclick="formatDoc('bold')">B</button><button class="btn-tool" onclick="formatDoc('italic')">I</button><label class="btn-tool" style="font-size:0.7rem; display:flex; align-items:center; justify-content:center;">🖼️<input type="file" hidden onchange="insertImage(this, 'prev-${no}')" accept="image/*"></label></div>
     <div class="editor" id="ed-${no}" contenteditable="true">${data.tanya || ''}</div>
-    <img id="prev-${no}" src="${data.img || ''}" class="img-preview" style="display:${data.img ? 'block' : 'none'}; max-width:100%; border-radius:8px; margin-bottom:10px;">`;
+    <img id="prev-${no}" src="${data.img || ''}" class="img-preview" style="display:${data.img ? 'block' : 'none'}; max-width:100%; border-radius:8px; margin-bottom:15px;">`;
             if (jenis === 'PG') {
                 const o = data.opsi || ["", "", "", ""];
-                html += `<div style="display:flex; flex-direction:column; gap:12px;">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <span style="font-weight:900; color:var(--ef-cyan); width:20px;">A</span>
+                html += `<div style="display:flex; flex-direction:column; gap:5px;">
+                    <div class="option-group">
+                        <span>A</span>
                         <input class="oa" placeholder="Opsi A" value="${o[0]}">
                     </div>
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <span style="font-weight:900; color:var(--ef-cyan); width:20px;">B</span>
+                    <div class="option-group">
+                        <span>B</span>
                         <input class="ob" placeholder="Opsi B" value="${o[1]}">
                     </div>
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <span style="font-weight:900; color:var(--ef-cyan); width:20px;">C</span>
+                    <div class="option-group">
+                        <span>C</span>
                         <input class="oc" placeholder="Opsi C" value="${o[2]}">
                     </div>
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <span style="font-weight:900; color:var(--ef-cyan); width:20px;">D</span>
+                    <div class="option-group">
+                        <span>D</span>
                         <input class="od" placeholder="Opsi D" value="${o[3]}">
                     </div>
                 </div>
-        <select class="q-kunci" style="margin-top:15px;">
-            <option value="A" ${data.kunci === 'A' ? 'selected' : ''}>Kunci: A</option>
-            <option value="B" ${data.kunci === 'B' ? 'selected' : ''}>Kunci: B</option>
-            <option value="C" ${data.kunci === 'C' ? 'selected' : ''}>Kunci: C</option>
-            <option value="D" ${data.kunci === 'D' ? 'selected' : ''}>Kunci: D</option>
+        <select class="q-kunci">
+            <option value="A" ${data.kunci === 'A' ? 'selected' : ''}>Kunci Jawaban: A</option>
+            <option value="B" ${data.kunci === 'B' ? 'selected' : ''}>Kunci Jawaban: B</option>
+            <option value="C" ${data.kunci === 'C' ? 'selected' : ''}>Kunci Jawaban: C</option>
+            <option value="D" ${data.kunci === 'D' ? 'selected' : ''}>Kunci Jawaban: D</option>
         </select>`;
             }
             div.innerHTML = html; wadah.appendChild(div);
