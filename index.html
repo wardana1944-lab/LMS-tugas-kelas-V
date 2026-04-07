@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,800;0,900;1,800;1,900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,800;0,900;1,800;1,900&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Open+Sans:wght@400;600;700&display=swap"
         rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="icon.png.ico?v=2">
     <link rel="apple-touch-icon" href="icon.png.ico?v=2">
@@ -887,14 +887,15 @@
             }
 
             #wadahSlotTugas {
-                display: flex !important;
-                flex-direction: column !important; /* FORCE VERTICAL STACK */
-                gap: 20px !important;
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important; /* TETAP 2 KOLOM KESAMPING */
+                gap: 12px !important;
                 width: 100% !important;
+                justify-content: center !important;
             }
 
             #wadahSlotTugas .menu-guru-card {
-                padding: 25px 15px !important; 
+                padding: 15px 10px !important; 
                 clip-path: none !important; 
                 border-radius: 12px !important;
                 border: 1px solid rgba(0, 240, 255, 0.2) !important;
@@ -902,6 +903,7 @@
                 min-height: auto !important;
                 display: flex !important;
                 flex-direction: column !important;
+                max-width: none !important; /* Hilangkan max-width agar pas di 2 kolom */
             }
 
             #wadahSlotTugas .menu-guru-card > div:first-child {
@@ -1488,6 +1490,8 @@
             overflow-x: hidden;
             width: 100%;
             display: block;
+            font-family: 'Open Sans', sans-serif !important;
+            font-weight: 400 !important;
         }
 
         .editor img {
@@ -1512,8 +1516,9 @@
             padding: 12px 15px !important;
             width: 100%;
             font-size: 0.95rem;
-            font-weight: 700;
+            font-weight: 400 !important; /* Normal weight */
             transition: 0.2s;
+            font-family: 'Open Sans', sans-serif !important;
         }
 
         .option-group {
@@ -1546,6 +1551,7 @@
             padding: 5px 0 !important;
             margin: 0 !important;
             width: 100%;
+            font-weight: 400 !important; /* Normal weight */
         }
         
         .option-group input:focus {
@@ -1562,6 +1568,10 @@
             color: white;
             font-weight: 800;
             cursor: pointer;
+        }
+        .q-kunci option {
+            color: black !important;
+            background: white !important;
         }
 
         .btn-hapus-soal {
@@ -2867,7 +2877,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; margin-bottom: 15px;">
                         <div style="flex: 1; min-width: 0;">
                             <span style="background: ${statusColor}; color: var(--ef-deep-blue); padding: 3px 10px; font-size: 0.65rem; font-weight: 900; font-style: italic; display: inline-block;">${statusText}</span>
-                            <h3 style="font-size: 1.1rem; color: white; font-weight: 900; margin-top: 8px; font-style: italic; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.judul}</h3>
+                            <h3 style="font-size: 1.1rem; color: white; font-weight: 900; margin-top: 8px; font-style: italic; text-transform: uppercase; white-space: normal; overflow-wrap: break-word;">${t.judul}</h3>
                         </div>
                         <div style="text-align: right; margin-left: 10px;">
                             <p style="color: var(--ef-cyan); font-size: 0.7rem; font-weight: 900; font-style: italic;">${t.durasi} MIN</p>
