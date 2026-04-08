@@ -3637,6 +3637,9 @@
                         const isExpired = now > endTime;
                         const sudah = rekapGlobal.some(r => r.nama === curUser && (r.materi || "").trim().toLowerCase() === (t.judul || "").trim().toLowerCase());
 
+                        // Tugas sudah berakhir — tidak ditampilkan ke siswa
+                        if (isExpired) return;
+
                         const card = document.createElement('div');
                         card.className = `kartu-soal${sudah || isExpired || isNotStarted ? ' sudah' : ''}`;
                         
