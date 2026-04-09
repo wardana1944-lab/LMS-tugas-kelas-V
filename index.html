@@ -3305,7 +3305,12 @@
 
         function updateFilterRekap() {
             const semuaJudul = new Set();
+            // Ambil dari rekapGlobal
             rekapGlobal.forEach(r => { if (r.materi) semuaJudul.add(r.materi); });
+            // Tambahkan juga dari dataTugas yang sudah ada (meski belum ada rekap)
+            if (typeof dataTugas === 'object') {
+                Object.values(dataTugas).forEach(t => { if (t && t.judul) semuaJudul.add(t.judul); });
+            }
             const sel = document.getElementById('filterTugas');
             if (sel) {
                 const currVal = sel.value;
@@ -3316,7 +3321,10 @@
                     opt.textContent = j;
                     sel.appendChild(opt);
                 });
-                sel.value = currVal;
+                // Pertahankan pilihan sebelumnya jika masih ada
+                if (currVal && [...semuaJudul].includes(currVal)) {
+                    sel.value = currVal;
+                }
                 if (typeof filterRekap === "function") filterRekap();
             }
         }
@@ -4061,8 +4069,14 @@
             if (id === 'panelRekap') {
                 const filterEl = document.getElementById('filterTugas');
                 if (filterEl) {
-                    filterEl.value = "";
-                    if (typeof filterRekap === "function") filterRekap();
+                    // Isi ulang dropdown dari data terbaru dulu
+                    if (typeof updateFilterRekap === "function") updateFilterRekap();
+                    // Jika dropdown masih kosong (data belum ada), coba lagi setelah delay
+                    if (filterEl.options.length <= 1) {
+                        setTimeout(() => {
+                            if (typeof updateFilterRekap === "function") updateFilterRekap();
+                        }, 800);
+                    }
                 }
             }
             
