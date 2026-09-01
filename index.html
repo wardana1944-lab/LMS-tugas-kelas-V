@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="id">
 
 <head>
@@ -10,6 +10,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,800;0,900;1,800;1,900&family=Teko:wght@700&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Open+Sans:wght@400;600;700&display=swap"
@@ -2523,9 +2524,11 @@
 
                 <div id="wadahInput" style="margin-bottom: 40px;"></div>
 
-                <div class="grid-tambah-soal" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
-                    <button class="btn" style="border-style: dashed; padding: 20px; border-color: var(--ef-cyan); color: var(--ef-cyan);" onclick="tambahSoal('PG')">➕ TAMBAH PILIHAN GANDA</button>
-                    <button class="btn" style="border-style: dashed; padding: 20px; border-color: var(--ef-neon-yellow); color: var(--ef-neon-yellow);" onclick="tambahSoal('URAIAN')">➕ TAMBAH SOAL URAIAN</button>
+                <div class="grid-tambah-soal" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px;">
+                    <button class="btn" style="border-style: dashed; padding: 20px; border-color: var(--ef-cyan); color: var(--ef-cyan);" onclick="tambahSoal('PG')">➕ PG SEDERHANA</button>
+                    <button class="btn" style="border-style: dashed; padding: 20px; border-color: #ff8a00; color: #ff8a00;" onclick="tambahSoal('MCMA')">➕ PG KOMPLEKS (MCMA) - JAWABAN BISA LEBIH DARI SATU</button>
+                    <button class="btn" style="border-style: dashed; padding: 20px; border-color: #c084fc; color: #c084fc;" onclick="tambahSoal('KATEGORI')">➕ PG KOMPLEKS KATEGORI</button>
+                    <button class="btn" style="border-style: dashed; padding: 20px; border-color: var(--ef-neon-yellow); color: var(--ef-neon-yellow);" onclick="tambahSoal('URAIAN')">➕ ISIAN / URAIAN</button>
                 </div>
                 
                 <div class="grid-aksi-tugas" style="display: flex; gap: 15px; margin-top: 40px;">
@@ -3497,7 +3500,7 @@
         function tambahSoal(jenis) {
             const wadah = document.getElementById('wadahInput');
             const no = wadah.children.length + 1;
-            buatElemenSoal(no, jenis, { tanya: "", img: "", opsi: ["", "", "", ""], kunci: "A" });
+            buatElemenSoal(no, jenis, { tanya: "", img: "", opsi: ["", "", "", ""], kunci: jenis === 'MCMA' ? ["A"] : "A", pernyataan: [{ teks: "", kunci: "BENAR" }] });
         }
 
         function tambahSoalManual(data) {
@@ -3514,8 +3517,9 @@
     <div class="toolbar"><button class="btn-tool" onclick="formatDoc('bold')">B</button><button class="btn-tool" onclick="formatDoc('italic')">I</button><label class="btn-tool" style="font-size:0.7rem; display:flex; align-items:center; justify-content:center;">🖼️<input type="file" hidden onchange="insertImage(this, 'prev-${no}')" accept="image/*"></label></div>
     <div class="editor" id="ed-${no}" contenteditable="true">${data.tanya || ''}</div>
     <img id="prev-${no}" src="${data.img || ''}" class="img-preview" style="display:${data.img ? 'block' : 'none'}; max-width:100%; border-radius:8px; margin-bottom:15px;">`;
-            if (jenis === 'PG') {
+            if (jenis === 'PG' || jenis === 'MCMA') {
                 const o = data.opsi || ["", "", "", ""];
+                const kunciMCMA = Array.isArray(data.kunci) ? data.kunci : [data.kunci || "A"];
                 html += `<div style="display:flex; flex-direction:column; gap:5px;">
                     <div class="option-group">
                         <span>A</span>
@@ -3534,14 +3538,27 @@
                         <input class="od" placeholder="Opsi D" value="${o[3]}">
                     </div>
                 </div>
-        <select class="q-kunci">
-            <option value="A" ${data.kunci === 'A' ? 'selected' : ''}>Kunci Jawaban: A</option>
-            <option value="B" ${data.kunci === 'B' ? 'selected' : ''}>Kunci Jawaban: B</option>
-            <option value="C" ${data.kunci === 'C' ? 'selected' : ''}>Kunci Jawaban: C</option>
-            <option value="D" ${data.kunci === 'D' ? 'selected' : ''}>Kunci Jawaban: D</option>
-        </select>`;
+        <div class="kunci-wrap" style="display:flex; flex-direction:column; gap:8px; margin-top:10px;">
+            <strong style="color:var(--ef-neon-yellow);">${jenis === 'MCMA' ? 'Pilih semua kunci jawaban:' : 'Kunci jawaban:'}</strong>
+            <div style="display:flex; gap:15px; flex-wrap:wrap;">
+                ${['A','B','C','D'].map(huruf => jenis === 'MCMA' ? `<label><input type="checkbox" class="q-kunci-mcma" value="${huruf}" ${kunciMCMA.includes(huruf) ? 'checked' : ''}> ${huruf}</label>` : '').join('')}
+            </div>
+            ${jenis === 'PG' ? `<select class="q-kunci"><option value="A" ${data.kunci === 'A' ? 'selected' : ''}>Kunci Jawaban: A</option><option value="B" ${data.kunci === 'B' ? 'selected' : ''}>Kunci Jawaban: B</option><option value="C" ${data.kunci === 'C' ? 'selected' : ''}>Kunci Jawaban: C</option><option value="D" ${data.kunci === 'D' ? 'selected' : ''}>Kunci Jawaban: D</option></select>` : ''}
+        </div>`;
+            } else if (jenis === 'KATEGORI') {
+                const pernyataan = data.pernyataan || [{ teks: "", kunci: "BENAR" }];
+                html += `<div class="kategori-editor"><strong style="color:#c084fc;">Pernyataan dan kunci:</strong>${pernyataan.map((p, i) => `<div class="kategori-row" style="display:flex; gap:8px; align-items:center; margin-top:8px;"><input class="kategori-teks" placeholder="Pernyataan ${i + 1}" value="${p.teks || ''}"><select class="kategori-kunci"><option value="BENAR" ${p.kunci === 'BENAR' ? 'selected' : ''}>Benar</option><option value="SALAH" ${p.kunci === 'SALAH' ? 'selected' : ''}>Salah</option></select></div>`).join('')}<button type="button" class="btn" style="margin-top:10px; padding:8px 12px;" onclick="tambahPernyataan(this)">+ Pernyataan</button></div>`;
             }
             div.innerHTML = html; wadah.appendChild(div);
+        }
+
+        function tambahPernyataan(btn) {
+            const editor = btn.parentElement;
+            const index = editor.querySelectorAll('.kategori-row').length + 1;
+            const row = document.createElement('div');
+            row.className = 'kategori-row'; row.style = 'display:flex; gap:8px; align-items:center; margin-top:8px;';
+            row.innerHTML = `<input class="kategori-teks" placeholder="Pernyataan ${index}"><select class="kategori-kunci"><option value="BENAR">Benar</option><option value="SALAH">Salah</option></select>`;
+            editor.insertBefore(row, btn);
         }
 
         function hapusSoal(btn) { if (confirm("Hapus soal ini?")) { btn.parentElement.remove(); document.querySelectorAll('#wadahInput .soal-box').forEach((box, i) => { box.querySelector('.label-nomor').innerText = `Soal No ${i + 1}`; }); } }
@@ -3557,8 +3574,12 @@
                 const jenis = box.dataset.jenis;
                 const tanya = box.querySelector('.editor').innerHTML;
                 const img = box.querySelector('.img-preview').src;
-                if (jenis === 'PG') {
-                    soalArr.push({ jenis, tanya, img: img.startsWith('data') ? img : (img || ""), opsi: [box.querySelector('.oa').value, box.querySelector('.ob').value, box.querySelector('.oc').value, box.querySelector('.od').value], kunci: box.querySelector('.q-kunci').value });
+                if (jenis === 'PG' || jenis === 'MCMA') {
+                    const kunci = jenis === 'MCMA' ? [...box.querySelectorAll('.q-kunci-mcma:checked')].map(input => input.value) : box.querySelector('.q-kunci').value;
+                    soalArr.push({ jenis, tanya, img: img.startsWith('data') ? img : (img || ""), opsi: [box.querySelector('.oa').value, box.querySelector('.ob').value, box.querySelector('.oc').value, box.querySelector('.od').value], kunci });
+                } else if (jenis === 'KATEGORI') {
+                    const pernyataan = [...box.querySelectorAll('.kategori-row')].map(row => ({ teks: row.querySelector('.kategori-teks').value, kunci: row.querySelector('.kategori-kunci').value }));
+                    soalArr.push({ jenis, tanya, img: img.startsWith('data') ? img : (img || ""), pernyataan });
                 } else { soalArr.push({ jenis, tanya, img: img.startsWith('data') ? img : (img || "") }); }
             });
 
@@ -3594,7 +3615,7 @@
                 const isSelesai = !!d;
                 const aksiButtons = d ? `
             <div style="display:flex; gap:10px; justify-content:center;">
-                <button onclick="viewPDF('${d.file}')" class="btn" style="padding: 6px 12px; font-size: 0.65rem; border-color: var(--ef-cyan); color: var(--ef-cyan);">
+                <button onclick="viewPDFByKey('${d.key}')" class="btn" style="padding: 6px 12px; font-size: 0.65rem; border-color: var(--ef-cyan); color: var(--ef-cyan);">
                     LIHAT
                 </button>
                 <button onclick="hapusRekapSiswa('${d.key}')" class="btn" style="padding: 6px 12px; font-size: 0.65rem; border-color: var(--ef-magenta); color: var(--ef-magenta);">
@@ -3699,15 +3720,16 @@
         function mulaiKerja(slot) {
             const t = dataTugas[slot]; curSlot = slot; curIdx = 0;
             currentSoalAcak = t.soal.map(s => {
-                if (s.jenis === 'PG') {
-                    const teksKunciAsli = s.opsi[s.kunci.charCodeAt(0) - 65];
+                if (s.jenis === 'PG' || s.jenis === 'MCMA') {
+                    const kunciAsli = Array.isArray(s.kunci) ? s.kunci : [s.kunci];
+                    const teksKunciAsli = kunciAsli.map(kunci => s.opsi[kunci.charCodeAt(0) - 65]);
                     let opsiObj = s.opsi.map((teks, i) => ({ teks: teks, asliIdx: i }));
                     opsiObj.sort(() => Math.random() - 0.5);
-                    const kunciBaruIdx = opsiObj.findIndex(o => o.teks === teksKunciAsli);
+                    const kunciBaru = opsiObj.filter(o => teksKunciAsli.includes(o.teks)).map(o => String.fromCharCode(65 + opsiObj.indexOf(o)));
                     return {
                         ...s,
                         opsi: opsiObj.map(o => o.teks),
-                        kunci: String.fromCharCode(65 + kunciBaruIdx)
+                        kunci: s.jenis === 'MCMA' ? kunciBaru : kunciBaru[0]
                     };
                 }
                 return s;
@@ -3730,7 +3752,7 @@
                 curAns.forEach((a, i) => {
                     const d = document.createElement('div');
                     const isAktif = curIdx === i;
-                    const isIsi = a !== "";
+                    const isIsi = Array.isArray(a) ? a.length > 0 : a !== "";
 
                     let borderColor = isAktif ? 'var(--ef-neon-yellow)' : (isIsi ? 'var(--ef-cyan)' : 'rgba(255,255,255,0.1)');
                     let bgColor = isAktif ? 'var(--ef-neon-yellow)' : (isIsi ? 'rgba(0, 240, 255, 0.1)' : 'rgba(255,255,255,0.02)');
@@ -3750,12 +3772,23 @@
                 area.style.display = 'flex';
                 area.style.flexDirection = 'column';
                 area.style.gap = '15px';
+
+                const instruksi = {
+                    PG: 'Instruksi: Pilih satu jawaban yang paling tepat.',
+                    MCMA: 'Instruksi: Pilih semua jawaban yang dianggap benar. Jawaban bisa lebih dari satu.',
+                    KATEGORI: 'Instruksi: Berikan respons untuk setiap pernyataan dengan memilih Benar atau Salah.',
+                    URAIAN: 'Instruksi: Tuliskan jawaban atau penjelasan kamu pada kolom yang tersedia.'
+                }[s.jenis] || 'Instruksi: Jawablah soal dengan teliti.';
+                const labelInstruksi = document.createElement('div');
+                labelInstruksi.innerText = instruksi;
+                labelInstruksi.style = 'padding:14px 18px; border-left:4px solid var(--ef-neon-yellow); border-radius:8px; background:rgba(210,255,0,0.08); color:var(--ef-neon-yellow); font-size:0.95rem; font-weight:800; line-height:1.5;';
+                area.appendChild(labelInstruksi);
                 
-                if (s.jenis === 'PG') {
+                if (s.jenis === 'PG' || s.jenis === 'MCMA') {
                     s.opsi.forEach((o, i) => {
                         const char = String.fromCharCode(65 + i);
                         const b = document.createElement('div');
-                        const isSelected = curAns[curIdx] === char;
+                        const isSelected = s.jenis === 'MCMA' ? (curAns[curIdx] || []).includes(char) : curAns[curIdx] === char;
                         
                         b.style = `
                             background: ${isSelected ? 'var(--ef-cyan)' : 'rgba(255,255,255,0.05)'};
@@ -3775,8 +3808,26 @@
                         `;
                         // Gunakan word-break dan font-size yang responsif
                         b.innerHTML = `<div style="width:35px; height:32px; flex-shrink: 0; background: ${isSelected ? 'var(--ef-deep-blue)' : 'var(--ef-cyan)'}; color: ${isSelected ? 'var(--ef-cyan)' : 'var(--ef-deep-blue)'}; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 1000; font-style: italic;">${char}</div> <span style="word-break: break-word; font-size: 1rem; line-height: 1.4;">${o}</span>`;
-                        b.onclick = () => { curAns[curIdx] = char; renderSoal(); };
+                        b.onclick = () => {
+                            if (s.jenis === 'MCMA') {
+                                const jawaban = Array.isArray(curAns[curIdx]) ? [...curAns[curIdx]] : [];
+                                const posisi = jawaban.indexOf(char);
+                                if (posisi >= 0) jawaban.splice(posisi, 1); else jawaban.push(char);
+                                jawaban.sort(); curAns[curIdx] = jawaban;
+                            } else curAns[curIdx] = char;
+                            renderSoal();
+                        };
                         area.appendChild(b);
+                    });
+                } else if (s.jenis === 'KATEGORI') {
+                    const jawaban = Array.isArray(curAns[curIdx]) ? curAns[curIdx] : [];
+                    (s.pernyataan || []).forEach((p, i) => {
+                        const row = document.createElement('div');
+                        row.style = 'display:flex; flex-direction:column; gap:8px; padding:15px; border:1px solid rgba(192,132,252,0.35); border-radius:12px;';
+                        const label = document.createElement('span'); label.innerHTML = `${i + 1}. ${p.teks}`; label.style = 'font-weight:700; line-height:1.4;';
+                        const select = document.createElement('select'); select.innerHTML = '<option value="">-- Pilih respons --</option><option value="BENAR">Benar</option><option value="SALAH">Salah</option>'; select.value = jawaban[i] || '';
+                        select.onchange = (e) => { const next = Array.isArray(curAns[curIdx]) ? [...curAns[curIdx]] : []; next[i] = e.target.value; curAns[curIdx] = next; updateGridColor(); };
+                        row.append(label, select); area.appendChild(row);
                     });
                 } else {
                     const tx = document.createElement('textarea'); 
@@ -3814,6 +3865,19 @@
             if (divKirim) divKirim.style.display = (curIdx === currentSoalAcak.length - 1) ? 'block' : 'none';
         }
 
+        function updateGridColor() {
+            const grid = document.getElementById('gridNomorCBT');
+            if (!grid) return;
+            [...grid.children].forEach((cell, index) => {
+                const answer = curAns[index];
+                const answered = Array.isArray(answer) ? answer.some(Boolean) : answer !== '' && answer !== undefined;
+                const active = curIdx === index;
+                cell.style.borderColor = active ? 'var(--ef-neon-yellow)' : (answered ? 'var(--ef-cyan)' : 'rgba(255,255,255,0.1)');
+                cell.style.background = active ? 'var(--ef-neon-yellow)' : (answered ? 'rgba(0, 240, 255, 0.1)' : 'rgba(255,255,255,0.02)');
+                cell.style.color = active ? 'var(--ef-deep-blue)' : 'white';
+            });
+        }
+
         function submitJawaban() {
             if (!confirm("Kirim jawaban sekarang?")) return;
             showLoader("Mengirim..."); clearInterval(timerInterval);
@@ -3825,12 +3889,18 @@
                 let status = "-";
                 const tanyaBersih = s.tanya.replace(/<[^>]*>?/gm, '').trim();
                 const jwbSiswa = curAns[i] || "-";
-                if (s.jenis === 'PG') {
+                if (s.jenis === 'PG' || s.jenis === 'MCMA') {
                     totalPG++;
-                    if (jwbSiswa === s.kunci) { status = "Benar"; benarCount++; }
+                    const jawabanSiswa = Array.isArray(jwbSiswa) ? [...jwbSiswa].sort() : jwbSiswa;
+                    const kunci = Array.isArray(s.kunci) ? [...s.kunci].sort() : s.kunci;
+                    if (JSON.stringify(jawabanSiswa) === JSON.stringify(kunci)) { status = "Benar"; benarCount++; }
                     else { status = "Salah"; }
+                } else if (s.jenis === 'KATEGORI') {
+                    totalPG++;
+                    const kunciKategori = (s.pernyataan || []).map(p => p.kunci);
+                    if (JSON.stringify(jwbSiswa) === JSON.stringify(kunciKategori)) { status = "Benar"; benarCount++; } else status = "Salah";
                 } else { status = "Uraian"; }
-                rows.push([i + 1, tanyaBersih, jwbSiswa, status]);
+                rows.push([i + 1, tanyaBersih, Array.isArray(jwbSiswa) ? jwbSiswa.join(', ') : jwbSiswa, status]);
             });
 
             const skor = totalPG > 0 ? Math.round((benarCount / totalPG) * 100) : "Uraian";
@@ -3896,33 +3966,55 @@
             doc.setFontSize(typeof skor === 'number' ? 16 : 8);
             doc.text(`${skor}`, 190, 31, { align: 'center' });
 
+            // Scale the table to the usable A4 height so every answer stays on one page.
+            const compactMode = rows.length > 16;
+            const veryCompactMode = rows.length > 30;
+            const tableFontSize = Math.max(3.2, Math.min(7.2, 232 / Math.max(rows.length, 1) - 2.4));
+            const maxLines = compactMode ? 1 : 2;
+            const cellPadding = veryCompactMode ? 1 : compactMode ? 1.2 : 1.7;
+            const compactText = (value, width) => {
+                const text = String(value || '-').replace(/\s+/g, ' ').trim();
+                const lines = doc.splitTextToSize(text, width);
+                if (lines.length <= maxLines) return lines;
+                const clipped = lines.slice(0, maxLines);
+                clipped[maxLines - 1] = clipped[maxLines - 1].replace(/\s+$/, '') + '...';
+                return clipped;
+            };
+            const displayRows = rows.map(row => [
+                row[0],
+                compactText(row[1], 112),
+                compactText(row[2], 34),
+                row[3]
+            ]);
+
             // === ANSWER TABLE ===
             doc.autoTable({
                 startY: 40,
                 head: [['No', 'Soal / Pertanyaan', 'Jawaban Siswa', 'Status']],
-                body: rows,
+                body: displayRows,
                 theme: 'plain',
                 headStyles: {
                     fillColor: priBlue,
                     textColor: [255, 255, 255],
                     fontStyle: 'bold',
-                    fontSize: 9,
-                    cellPadding: { top: 5, bottom: 5, left: 5, right: 5 },
+                    fontSize: tableFontSize,
+                    cellPadding: { top: 2.5, bottom: 2.5, left: 2.5, right: 2.5 },
                     halign: 'center'
                 },
                 bodyStyles: {
-                    fontSize: 9,
+                    fontSize: tableFontSize,
                     valign: 'top',
                     lineColor: borderGray,
-                    lineWidth: 0.3
+                    lineWidth: 0.25,
+                    cellPadding: { top: cellPadding, bottom: cellPadding, left: 2, right: 2 }
                 },
                 columnStyles: {
-                    0: { cellWidth: 12, halign: 'center', fontStyle: 'bold' },
+                    0: { cellWidth: 10, halign: 'center', fontStyle: 'bold' },
                     1: { cellWidth: 'auto' },
-                    2: { cellWidth: 30, halign: 'center', fontStyle: 'bold' },
-                    3: { cellWidth: 28, halign: 'center', fontStyle: 'bold' }
+                    2: { cellWidth: 36, halign: 'left', fontStyle: 'bold' },
+                    3: { cellWidth: 25, halign: 'center', fontStyle: 'bold' }
                 },
-                styles: { overflow: 'linebreak', cellPadding: 5 },
+                styles: { overflow: 'linebreak', cellPadding: cellPadding, lineHeight: 1.05 },
                 alternateRowStyles: { fillColor: lightGray },
                 didParseCell: function (data) {
                     if (data.section === 'body' && data.column.index === 3) {
@@ -3931,36 +4023,20 @@
                         else { data.cell.styles.textColor = [100, 110, 130]; }
                     }
                 },
-                margin: { left: 15, right: 15 },
-                pageBreak: 'auto',
-                showHead: 'everyPage'
+                margin: { left: 10, right: 10, top: 40, bottom: 17 },
+                pageBreak: 'avoid',
+                showHead: 'firstPage'
             });
 
-            // === FOOTER / SIGNATURE ===
-            const finalY = doc.lastAutoTable.finalY + 15;
-            if (finalY < 265) {
-                doc.setDrawColor(...borderGray);
-                doc.setLineWidth(0.3);
-                doc.line(15, finalY, 195, finalY);
-                doc.setFont("helvetica", "normal");
-                doc.setFontSize(8.5);
-                doc.setTextColor(130);
-                doc.text(`Dokumen dicetak otomatis oleh Sistem LMS • ${new Date().toLocaleDateString('id-ID')}`, 15, finalY + 7);
-                doc.setFont("helvetica", "normal");
-                doc.setFontSize(9);
-                doc.setTextColor(...darkText);
-                doc.text("Mengetahui,", 155, finalY + 7, { align: 'center' });
-                doc.text("Wali Kelas V", 155, finalY + 13, { align: 'center' });
-                doc.setFont("helvetica", "bold");
-                doc.text("Aditya W. Wardana, S.Pd", 155, finalY + 30, { align: 'center' });
-                doc.setLineWidth(0.5);
-                doc.setDrawColor(...darkText);
-                doc.line(130, finalY + 27, 180, finalY + 27);
-                doc.setFont("helvetica", "normal");
-                doc.setFontSize(8);
-                doc.setTextColor(130);
-                doc.text("NIP 19940319 202321 1 005", 155, finalY + 34, { align: 'center' });
-            }
+            // Keep the footer in a reserved area below the table.
+            doc.setDrawColor(...borderGray);
+            doc.setLineWidth(0.3);
+            doc.line(10, 286, 200, 286);
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(6.5);
+            doc.setTextColor(130);
+            doc.text(`Dokumen dicetak otomatis oleh Sistem LMS  •  ${new Date().toLocaleDateString('id-ID')}`, 10, 292);
+            doc.text("Wali Kelas V", 200, 292, { align: 'right' });
             const pdfB64 = doc.output('datauristring').split(',')[1];
             dbRef('rekap_v2').push({ nama: curUser, materi: t.judul, nilai: skor, file: pdfB64 }).then(() => {
                 // Update ke memori lokal secara langsung untuk responsivitas instan
@@ -3972,21 +4048,33 @@
             });
         }
 
+        function viewPDFByKey(key) {
+            const rekap = rekapGlobal.find(item => item.key === key);
+            if (!rekap || !rekap.file) {
+                return showAlert("Gagal", "File jawaban siswa tidak ditemukan.", "❌");
+            }
+            viewPDF(rekap.file, "Jawaban_" + (rekap.nama || "Siswa"));
+        }
+
         function viewPDF(b64, judul = "Lembar Dokumen") {
             try {
-                let rawB64 = b64;
-                if (b64.indexOf('base64,') !== -1) {
-                    rawB64 = b64.split('base64,')[1];
-                }
+                if (!b64 || typeof b64 !== 'string') throw new Error("Data PDF kosong atau tidak valid");
+                const rawB64 = b64.includes('base64,') ? b64.split('base64,').pop() : b64;
+                const normalizedB64 = rawB64.replace(/\s/g, '');
 
-                const bin = atob(rawB64);
+                const bin = atob(normalizedB64);
                 const arr = new Uint8Array(bin.length);
                 for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-                const blob = new Blob([arr], { type: 'application/pdf' });
-                const blobUrl = URL.createObjectURL(blob);
-
-                // Buka langsung agar viewer PDF bawaan browser bekerja maksimal
-                window.open(blobUrl, "_blank");
+                if (arr.length < 4 || String.fromCharCode(...arr.slice(0, 4)) !== '%PDF') {
+                    throw new Error("Data yang tersimpan bukan PDF yang valid");
+                }
+                const pdfDataUri = 'data:application/pdf;base64,' + normalizedB64;
+                const viewer = window.open('', '_blank');
+                if (!viewer) throw new Error("Popup PDF diblokir browser");
+                const safeTitle = String(judul || 'Lembar Dokumen').replace(/[<>"']/g, '');
+                viewer.document.open();
+                viewer.document.write(`<!doctype html><html><head><title>${safeTitle}</title><style>html,body{margin:0;background:#202124;font-family:Arial,sans-serif;color:#fff}header{position:sticky;top:0;z-index:2;padding:12px 18px;background:#111827;display:flex;justify-content:space-between;align-items:center}header strong{font-size:14px}a{color:#8be9fd;text-decoration:none;border:1px solid #38bdf8;padding:7px 12px;border-radius:5px;font-size:12px}.page{display:block;max-width:900px;width:calc(100% - 32px);margin:16px auto;box-shadow:0 2px 14px #000;background:#fff}</style></head><body><header><strong>${safeTitle}</strong><a download="${safeTitle.replace(/[^a-z0-9\-_ ]/gi, '').trim().replace(/\s+/g, '_') || 'Lembar_Dokumen'}.pdf" href="${pdfDataUri}">Unduh PDF</a></header><main id="pages"><p style="padding:20px">Memuat pratinjau...</p></main><script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"><\/script><script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const source='${pdfDataUri}';pdfjsLib.getDocument(source).promise.then(async pdf=>{const root=document.getElementById('pages');root.innerHTML='';for(let n=1;n<=pdf.numPages;n++){const page=await pdf.getPage(n);const viewport=page.getViewport({scale:1.35});const canvas=document.createElement('canvas');canvas.className='page';canvas.width=viewport.width;canvas.height=viewport.height;root.appendChild(canvas);await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise}}).catch(error=>{document.getElementById('pages').innerHTML='<p style="padding:20px;color:#fca5a5">Pratinjau gagal dimuat: '+error.message+'</p>'});<\/script></body></html>`);
+                viewer.document.close();
             } catch (err) {
                 console.error("PDF View Error:", err);
                 showAlert("Gagal", "Gagal memproses file: " + err.message, "❌");
@@ -4138,11 +4226,17 @@
                 doc.text(splitTanya, 28, y);
                 y += (splitTanya.length * 7);
 
-                if (s.jenis === 'PG' && s.opsi) {
+                if ((s.jenis === 'PG' || s.jenis === 'MCMA') && s.opsi) {
                     const abcd = ['A', 'B', 'C', 'D'];
                     s.opsi.forEach((opt, idx) => {
                         if (y > 280) { doc.addPage(); y = 20; }
                         doc.text(`${abcd[idx]}. ${opt}`, 35, y);
+                        y += 7;
+                    });
+                } else if (s.jenis === 'KATEGORI' && s.pernyataan) {
+                    s.pernyataan.forEach((p, idx) => {
+                        if (y > 280) { doc.addPage(); y = 20; }
+                        doc.text(`${idx + 1}. ${p.teks}`, 35, y);
                         y += 7;
                     });
                 }
@@ -4695,7 +4789,7 @@
                 }
 
                 doc.setFont("helvetica", "normal");
-                if (s.jenis === 'PG') {
+                if (s.jenis === 'PG' || s.jenis === 'MCMA') {
                     const labelOps = ['A', 'B', 'C', 'D'];
                     s.opsi.forEach((op, opIdx) => {
                         if (y > 270) { doc.addPage(); y = 20; }
@@ -4703,6 +4797,14 @@
                         const optText = doc.splitTextToSize(prefix + op, 170);
                         doc.text(optText, 22, y);
                         y += (optText.length * 5.5) + 2;
+                    });
+                    y += 6;
+                } else if (s.jenis === 'KATEGORI') {
+                    (s.pernyataan || []).forEach((p, pIdx) => {
+                        if (y > 270) { doc.addPage(); y = 20; }
+                        const pernyataanText = doc.splitTextToSize(`${pIdx + 1}. ${p.teks}`, 170);
+                        doc.text(pernyataanText, 22, y);
+                        y += (pernyataanText.length * 5.5) + 2;
                     });
                     y += 6;
                 } else {
