@@ -2978,6 +2978,21 @@
             document.body.appendChild(modal);
         }
 
+        function compareVersions(a, b) {
+            const normalize = (value) => String(value || '').replace(/[^0-9.]/g, '').split('.').filter(Boolean).map(n => parseInt(n, 10) || 0);
+            const aParts = normalize(a);
+            const bParts = normalize(b);
+            const maxLen = Math.max(aParts.length, bParts.length);
+
+            for (let i = 0; i < maxLen; i++) {
+                const aNum = aParts[i] || 0;
+                const bNum = bParts[i] || 0;
+                if (aNum > bNum) return 1;
+                if (aNum < bNum) return -1;
+            }
+            return 0;
+        }
+
         function checkAppUpdate() {
             const savedVersion = localStorage.getItem('appVersion') || APP_VERSION;
             db.ref('config/app_version').once('value').then((snap) => {
@@ -2986,7 +3001,7 @@
 
                 localStorage.setItem('appVersion', latestVersion);
 
-                if (latestVersion !== savedVersion && latestVersion !== APP_VERSION) {
+                if (compareVersions(latestVersion, APP_VERSION) > 0 && compareVersions(latestVersion, savedVersion) !== 0) {
                     showUpdatePopup(latestVersion);
                 }
             }).catch(() => {
@@ -3358,6 +3373,45 @@
             });
         }
 
+        function parseJudulDate(value) {
+            if (!value) return 0;
+            const text = String(value).trim();
+            const monthMap = {
+                januari: 0, jan: 0,
+                februari: 1, feb: 1,
+                maret: 2, mar: 2,
+                april: 3, apr: 3,
+                mei: 4,
+                juni: 5, jun: 5,
+                juli: 6, jul: 6,
+                agustus: 7, agu: 7, ags: 7,
+                september: 8, sep: 8, sept: 8,
+                oktober: 9, okt: 9,
+                november: 10, nov: 10,
+                desember: 11, des: 11
+            };
+
+            let match = text.match(/(\d{1,2})\s*(?:-|\/|\s+)\s*(\d{1,2})\s*(?:-|\/|\s+)\s*(\d{4})/);
+            if (match) {
+                const [, d, m, y] = match;
+                const date = new Date(Number(y), Number(m) - 1, Number(d));
+                return Number.isNaN(date.getTime()) ? 0 : date.getTime();
+            }
+
+            match = text.match(/(\d{1,2})\s+(Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember|Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Ags|Sep|Sept|Okt|Nov|Des)\s+(\d{4})/i);
+            if (match) {
+                const [, d, monthName, y] = match;
+                const month = monthMap[String(monthName).toLowerCase()];
+                if (month !== undefined) {
+                    const date = new Date(Number(y), month, Number(d));
+                    return Number.isNaN(date.getTime()) ? 0 : date.getTime();
+                }
+            }
+
+            const iso = new Date(text);
+            return Number.isNaN(iso.getTime()) ? 0 : iso.getTime();
+        }
+
         function updateFilterRekap() {
             const semuaJudul = new Set();
 
@@ -3369,7 +3423,35 @@
                 if (r && r.materi) semuaJudul.add(String(r.materi).trim());
             });
 
-            const listJudul = [...semuaJudul].filter(Boolean).sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }));
+            const getJudulTime = (judul) => {
+                let newest = 0;
+                Object.values(dataTugas || {}).forEach(t => {
+                    if (!t || !t.judul || String(t.judul).trim() !== judul) return;
+
+                    const candidates = [t.tanggalTerbit, t.activeAt, t.expiredAt, t.updatedAt, t.createdAt, t.judul];
+                    candidates.forEach((value) => {
+                        const ts = value && value !== t.judul ? new Date(value).getTime() : parseJudulDate(value);
+                        if (!Number.isNaN(ts) && ts > newest) newest = ts;
+                    });
+                });
+                rekapGlobal.forEach(r => {
+                    if (!r || !r.materi || String(r.materi).trim() !== judul) return;
+                    const candidates = [r.tanggal, r.updatedAt, r.createdAt, r.time, r.waktu, r.materi];
+                    candidates.forEach((value) => {
+                        const ts = value && value !== r.materi ? new Date(value).getTime() : parseJudulDate(value);
+                        if (!Number.isNaN(ts) && ts > newest) newest = ts;
+                    });
+                });
+                return newest || parseJudulDate(judul);
+            };
+
+            const listJudul = [...semuaJudul].filter(Boolean).sort((a, b) => {
+                const timeA = getJudulTime(a);
+                const timeB = getJudulTime(b);
+                if (timeB !== timeA) return timeB - timeA;
+                return String(a).localeCompare(String(b), 'id', { sensitivity: 'base' });
+            });
+
             const sel = document.getElementById('filterTugas');
             if (sel) {
                 const currVal = sel.value;
