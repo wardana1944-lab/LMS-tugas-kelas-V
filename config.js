@@ -1,5 +1,5 @@
 window.APP_CONFIG = {
-  APP_VERSION: "RB.2026.1",
+  APP_VERSION: "RB.2026.2",
   firebaseConfig: {
     apiKey: "AIzaSyCfzJJpq32AltXRcP0ZB6fM1mvYpJVSVl4",
     authDomain: "ruang-belajar-kelas-v.firebaseapp.com",
