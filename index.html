@@ -9,6 +9,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -1723,6 +1724,18 @@
             display: block;
             font-family: 'Open Sans', sans-serif !important;
             font-weight: 400 !important;
+        }
+
+        .editor,
+        .editor * {
+            color: #FFFFFF !important;
+            background: transparent !important;
+        }
+
+        .editor .mjx-container {
+            color: #FFFFFF !important;
+            display: inline-block;
+            vertical-align: middle;
         }
 
         .editor img {
@@ -3627,6 +3640,88 @@
             openView('panelBuat');
         }
 
+        function detectMathExpression(text) {
+            if (!text) return false;
+            const clean = String(text).replace(/<[^>]*>/g, '').trim();
+            if (!clean) return false;
+            const hasLatex = /\\(?:frac|sqrt|sum|int|cdot|times|alpha|beta|gamma|theta|pi|left|right)|\\\(|\\\[|\$\$/.test(clean);
+            const hasOperatorMath = /\d\s*[+\-*/=<>]\s*\d|\d\s*\^\s*\d|√|π|÷|×/.test(clean);
+            return hasLatex || hasOperatorMath;
+        }
+
+        function normalizeMathText(rawText) {
+            let text = String(rawText || '').replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]*>/g, '').replace(/&nbsp;/gi, ' ').trim();
+            if (!text) return '';
+            if (/^\\\(|^\\\[|^\$\$|^\$/.test(text)) return text;
+            if (!detectMathExpression(text)) return text;
+            return `\\(${text.replace(/&/g, '&amp;')}\\)`;
+        }
+
+        function renderMathInEditor(editor) {
+            if (!editor || !window.MathJax) return;
+            const text = editor.innerText || editor.textContent || '';
+            if (!detectMathExpression(text)) {
+                editor.style.color = '#FFFFFF';
+                return;
+            }
+
+            const normalized = normalizeMathText(editor.innerHTML);
+            if (normalized && normalized !== editor.innerHTML) {
+                editor.innerHTML = normalized;
+            }
+
+            if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                window.MathJax.typesetPromise([editor]).catch(() => {});
+            }
+            editor.style.color = '#FFFFFF';
+            editor.querySelectorAll('*').forEach(node => {
+                if (node instanceof HTMLElement) {
+                    node.style.color = '#FFFFFF';
+                    node.style.backgroundColor = 'transparent';
+                }
+            });
+        }
+
+        function forceEditorContrast(editor) {
+            if (!editor) return;
+            editor.style.color = '#FFFFFF';
+            editor.style.backgroundColor = 'transparent';
+            editor.querySelectorAll('*').forEach((node) => {
+                if (!(node instanceof HTMLElement)) return;
+                node.style.color = '#FFFFFF';
+                node.style.backgroundColor = 'transparent';
+                node.style.setProperty('background', 'transparent', 'important');
+            });
+            renderMathInEditor(editor);
+        }
+
+        function sanitizeEditorPaste(event) {
+            const editor = event.currentTarget || event.target;
+            const clipboard = event.clipboardData || window.clipboardData;
+            if (!clipboard) return;
+
+            const text = clipboard.getData('text/plain');
+            if (!text) return;
+
+            if (detectMathExpression(text)) {
+                event.preventDefault();
+                const safeHtml = normalizeMathText(text);
+                document.execCommand('insertHTML', false, safeHtml);
+                setTimeout(() => forceEditorContrast(editor), 0);
+                return;
+            }
+
+            event.preventDefault();
+            const safeHtml = String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\n/g, '<br>');
+
+            document.execCommand('insertHTML', false, safeHtml);
+            setTimeout(() => forceEditorContrast(editor), 0);
+        }
+
         function formatDoc(cmd) { document.execCommand(cmd, false, null); }
         function insertImage(input, previewId) {
             const file = input.files[0];
@@ -3655,8 +3750,8 @@
             const div = document.createElement('div');
             div.className = "soal-box"; div.dataset.jenis = jenis;
             let html = `<button class="btn-hapus-soal" onclick="hapusSoal(this)">HAPUS</button><b class="label-nomor">Soal No ${no}</b>
-    <div class="toolbar"><button class="btn-tool" onclick="formatDoc('bold')">B</button><button class="btn-tool" onclick="formatDoc('italic')">I</button><label class="btn-tool" style="font-size:0.7rem; display:flex; align-items:center; justify-content:center;">🖼️<input type="file" hidden onchange="insertImage(this, 'prev-${no}')" accept="image/*"></label></div>
-    <div class="editor" id="ed-${no}" contenteditable="true">${data.tanya || ''}</div>
+    <div class="toolbar"><button class="btn-tool" onclick="formatDoc('bold')">B</button><button class="btn-tool" onclick="formatDoc('italic')">I</button><button class="btn-tool" title="Masukkan rumus" onclick="event.preventDefault(); const editor = this.parentElement.parentElement.querySelector('.editor'); editor.focus(); document.execCommand('insertHTML', false, '\\(x^2 + y^2 = z^2\\)'); forceEditorContrast(editor); return false;">∑</button><label class="btn-tool" style="font-size:0.7rem; display:flex; align-items:center; justify-content:center;">🖼️<input type="file" hidden onchange="insertImage(this, 'prev-${no}')" accept="image/*"></label></div>
+    <div class="editor" id="ed-${no}" contenteditable="true" onpaste="sanitizeEditorPaste(event)" oninput="forceEditorContrast(this)">${data.tanya || ''}</div>
     <img id="prev-${no}" src="${data.img || ''}" class="img-preview" style="display:${data.img ? 'block' : 'none'}; max-width:100%; border-radius:8px; margin-bottom:15px;">`;
             if (jenis === 'PG' || jenis === 'MCMA') {
                 const o = data.opsi || ["", "", "", ""];
