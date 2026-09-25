@@ -1716,7 +1716,7 @@
         }
 
         #modalPinSiswa #labelPinSiswa {
-            color: #ffffff !important;
+            color: var(--ef-neon-yellow) !important;
             font-style: italic;
             font-size: 1.75rem;
             font-weight: 900;
@@ -1767,13 +1767,48 @@
             margin-top: 30px;
         }
 
+        #modalLogin .pin-input-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin: 12px auto 18px;
+        }
+
+        #modalLogin .pin-input-wrapper input {
+            width: min(100%, 360px);
+            height: 56px;
+            padding: 0 16px;
+            margin: 0;
+            border-radius: 14px;
+            border: 1px solid rgba(0, 240, 255, 0.35);
+            background: rgba(255, 255, 255, 0.05);
+            color: white !important;
+            text-align: center;
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: 0.55em;
+            line-height: 1;
+            box-sizing: border-box;
+            text-shadow: none;
+            -webkit-text-security: disc;
+        }
+
+        #modalLogin .pin-input-wrapper input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+            opacity: 1;
+            letter-spacing: 0.7em;
+            font-size: 1.55rem;
+            text-align: center;
+        }
+
         #modalPinSiswa .btn {
             width: 100%;
             padding: 14px 18px;
             border-radius: 0 !important;
-            border: 1px solid #7bf7b8 !important;
-            background: #7bf7b8;
-            color: #0a1c1a;
+            border: 1px solid var(--ef-cyan) !important;
+            background: var(--ef-cyan);
+            color: var(--ef-deep-blue);
             font-size: 1rem;
             font-weight: 900;
             letter-spacing: 0.08em;
@@ -1819,38 +1854,40 @@
         }
 
         .modal-btn-primary {
-            background: linear-gradient(135deg, #1C2536 0%, #161D2B 100%);
-            color: white;
+            background: linear-gradient(135deg, #8ad8ff 0%, #4cb7ff 100%);
+            color: #071521;
             padding: 16px;
             border-radius: 12px;
-            font-weight: 800;
+            font-weight: 900;
             border: none;
             letter-spacing: 1px;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 20px rgba(76, 183, 255, 0.35);
             transition: 0.3s;
         }
 
         .modal-btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(28, 37, 54, 0.4);
+            box-shadow: 0 15px 30px rgba(76, 183, 255, 0.45);
         }
 
         .modal-btn-ghost {
-            background: transparent;
-            color: #94A3B8;
+            background: linear-gradient(135deg, #ff6b6b 0%, #e53935 100%);
+            color: white;
             padding: 10px;
             border: none;
-            font-weight: 700;
+            font-weight: 800;
             font-size: 0.85rem;
             cursor: pointer;
             border-radius: 10px;
             transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(229, 57, 53, 0.25);
         }
 
         .modal-btn-ghost:hover {
             color: white;
-            background: rgba(255, 255, 255, 0.05);
+            background: linear-gradient(135deg, #ff7b7b 0%, #ef4444 100%);
+            box-shadow: 0 15px 30px rgba(229, 57, 53, 0.35);
         }
 
         /* === LAYOUT FIXES: FIXED HEADER & PANEL SCROLLING === */
@@ -2884,6 +2921,7 @@
                         <h2 style="font-size: 0.95rem; font-style: italic; color: var(--ef-white); text-transform: uppercase; letter-spacing: 1px;">Daftar Siswa</h2>
                     </div>
                     <div class="grid-siswa" id="gridSiswa"></div>
+                    <p id="statusSiswa" role="status" aria-live="polite" style="padding: 12px 0; text-align: center; color: var(--ef-text-light);" hidden></p>
                 </div>
             </div>
         </div>
@@ -3325,36 +3363,36 @@
                     <!-- Database Siswa -->
                     <div style="display: flex; flex-direction: column; gap: 20px;">
                         <h3 style="font-size: 0.9rem; color: var(--ef-cyan); text-transform: uppercase; letter-spacing: 2px; font-style: italic;">Daftar Roster Siswa</h3>
-                        <div class="grid-form-siswa" style="display: grid; grid-template-columns: 60px 2fr 1.2fr 80px 80px 50px 50px; gap: 10px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; border: 1px solid var(--ef-glass-border);">
-                            <div style="display: flex; flex-direction: column; gap: 5px;">
-                                <label style="font-size: 0.6rem; color: var(--ef-cyan); font-weight: 800;">NO</label>
-                                <input type="number" id="inpAbsenBaru" placeholder="00" style="padding: 10px 5px; text-align: center; width: 100%;">
+                        <div class="grid-form-siswa" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; align-items: end; width: 100%; min-width: 0; overflow: hidden; background: rgba(0,0,0,0.2); padding: 14px 12px; border-radius: 15px; border: 1px solid var(--ef-glass-border); box-sizing: border-box;">
+                            <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+                                <label style="font-size: 0.58rem; color: var(--ef-cyan); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;">NO</label>
+                                <input type="number" id="inpAbsenBaru" placeholder="00" style="height: 40px; padding: 8px 6px; text-align: center; width: 100%; min-width: 0; border-radius: 10px; border: 1px solid var(--ef-glass-border); background: rgba(255,255,255,0.04); color: white; font-weight: 800;">
                             </div>
-                            <div style="display: flex; flex-direction: column; gap: 5px;">
-                                <label style="font-size: 0.6rem; color: var(--ef-cyan); font-weight: 800;">NAMA LENGKAP</label>
-                                <input type="text" id="inpSiswaBaru" placeholder="Nama Lengkap..." style="padding: 10px; width: 100%;">
+                            <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+                                <label style="font-size: 0.58rem; color: var(--ef-cyan); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;">NAMA</label>
+                                <input type="text" id="inpSiswaBaru" placeholder="Nama Lengkap..." style="height: 40px; padding: 8px 10px; width: 100%; min-width: 0; border-radius: 10px; border: 1px solid var(--ef-glass-border); background: rgba(255,255,255,0.04); color: white; font-weight: 700;">
                             </div>
-                            <div style="display: flex; flex-direction: column; gap: 5px;">
-                                <label style="font-size: 0.6rem; color: var(--ef-cyan); font-weight: 800;">PANGGILAN</label>
-                                <input type="text" id="inpPanggilanBaru" placeholder="Panggilan..." style="padding: 10px; width: 100%;">
+                            <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+                                <label style="font-size: 0.58rem; color: var(--ef-cyan); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;">PANGGILAN</label>
+                                <input type="text" id="inpPanggilanBaru" placeholder="Panggilan..." style="height: 40px; padding: 8px 10px; width: 100%; min-width: 0; border-radius: 10px; border: 1px solid var(--ef-glass-border); background: rgba(255,255,255,0.04); color: white; font-weight: 700;">
                             </div>
-                            <div style="display: flex; flex-direction: column; gap: 5px;">
-                                <label style="font-size: 0.6rem; color: var(--ef-cyan); font-weight: 800;">JK</label>
-                                <select id="inpJkBaru" style="padding: 10px 5px; width: 100%; background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--ef-glass-border); border-radius: 10px;">
+                            <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+                                <label style="font-size: 0.58rem; color: var(--ef-cyan); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;">JK</label>
+                                <select id="inpJkBaru" style="height: 40px; padding: 8px 8px; width: 100%; min-width: 0; background: rgba(255,255,255,0.04); color: white; border: 1px solid var(--ef-glass-border); border-radius: 10px; font-weight: 700;">
                                     <option value="" style="background: var(--ef-obsidian);">--</option>
                                     <option value="L" style="background: var(--ef-obsidian);">L</option>
                                     <option value="P" style="background: var(--ef-obsidian);">P</option>
                                 </select>
                             </div>
-                            <div style="display: flex; flex-direction: column; gap: 5px;">
-                                <label style="font-size: 0.6rem; color: var(--ef-cyan); font-weight: 800;">PIN</label>
-                                <input type="text" id="inpPinBaru" placeholder="PIN" style="padding: 10px; text-align: center; width: 100%;">
+                            <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+                                <label style="font-size: 0.58rem; color: var(--ef-cyan); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;">PIN</label>
+                                <input type="text" id="inpPinBaru" placeholder="PIN" style="height: 40px; padding: 8px 10px; text-align: center; width: 100%; min-width: 0; border-radius: 10px; border: 1px solid var(--ef-glass-border); background: rgba(255,255,255,0.04); color: white; font-weight: 800;">
                             </div>
-                            <div style="display: flex; flex-direction: column; gap: 5px; justify-content: flex-end;">
-                                <button id="btnTambahSiswa" class="btn btn-blue" style="height: 42px; width: 100%; padding: 0; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; border-radius: 10px;" onclick="tambahSiswa()">+</button>
+                            <div style="display: flex; flex-direction: column; gap: 6px; justify-content: flex-end; min-width: 0;">
+                                <button id="btnTambahSiswa" class="btn btn-blue" style="height: 40px; width: 100%; min-width: 0; padding: 0; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 900;" onclick="tambahSiswa()">+</button>
                             </div>
-                            <div id="divBatalEdit" style="display: none; flex-direction: column; gap: 5px; justify-content: flex-end;">
-                                <button class="btn btn-red" style="height: 42px; width: 100%; padding: 0; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; border-radius: 10px;" onclick="resetFormSiswa()">✕</button>
+                            <div id="divBatalEdit" style="display: none; flex-direction: column; gap: 6px; justify-content: flex-end; min-width: 0;">
+                                <button class="btn btn-red" style="height: 40px; width: 100%; min-width: 0; padding: 0; font-size: 1rem; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 900;" onclick="resetFormSiswa()">✕</button>
                             </div>
                         </div>
 
@@ -3384,16 +3422,7 @@
         if (!firebase.apps.length && firebaseConfig.apiKey) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
-        const SISWA_DEFAULT = [
-            { n: "Alvaro Adnan Aji Pambudi", i: "👦", a: "01" }, { n: "Anantha Yudha Diztira", i: "👦", a: "02" },
-            { n: "Arifah Yhuan Nur Azizah", i: "👧", a: "03" }, { n: "Aurelia Gieni Lindria Putri", i: "👧", a: "04" },
-            { n: "Dhafitha Nizza Nur Azizah", i: "👧", a: "05" }, { n: "Dhian Rahmawati", i: "👧", a: "06" },
-            { n: "Dimas Rasyid Faristia", i: "👦", a: "07" }, { n: "Erfin Denu Setiawan", i: "👦", a: "08" },
-            { n: "Marsya Anindya Kiera", i: "👧", a: "09" }, { n: "Mikayla Ayuningtyas", i: "👧", a: "10" },
-            { n: "Muhammad Ozil Ramadhan", i: "👦", a: "11" }, { n: "Rhevan Nabil Yudanta", i: "👦", a: "12" },
-            { n: "Ridho Wicaksono", i: "👦", a: "13" }, { n: "Rizky Syam Dani", i: "👦", a: "14" },
-            { n: "Tanca Al Verosa", i: "👦", a: "15" }
-        ];
+        const SISWA_DEFAULT = [];
         let SISWA = [];
         let activeFirebaseRefs = {};
         let hasLoadedSiswaOnce = false;
@@ -3412,41 +3441,21 @@
             return String(email || '').trim().toLowerCase().replace(/[.#$[\]@]/g, '_');
         }
 
-        function getBasePathCandidates() {
-            const preferred = normalizeGuruEmail(lmsEmailGuru);
-            const candidates = [
-                `guru_data/${preferred}`,
-                'guru_data/wardana19442_gmail_com',
-                'guru_data/wardana1944_gmail_com',
-                'guru_data/wardana1944@gmail_com',
-                'guru_data/guru@sekolah_com'
-            ];
-            return [...new Set(candidates.filter(Boolean))];
+        function getCanonicalBasePath() {
+            return `guru_data/${normalizeGuruEmail(lmsEmailGuru)}`;
         }
 
-        async function resolveBasePath() {
-            const candidates = getBasePathCandidates();
-            if (!candidates.length) return '';
-
-            try {
-                const rootSnap = await db.ref('guru_data').once('value');
-                const rootData = rootSnap.val() || {};
-                for (const path of candidates) {
-                    const target = path.replace(/^guru_data\//, '');
-                    if (rootData[target]) {
-                        return path;
-                    }
-                }
-            } catch (err) {
-                console.warn('resolveBasePath failed:', err);
-            }
-
-            return candidates[0];
+        function setRosterStatus(message, isError = false) {
+            const status = document.getElementById('statusSiswa');
+            if (!status) return;
+            status.textContent = message;
+            status.style.color = isError ? 'var(--ef-magenta)' : 'var(--ef-text-light)';
+            status.hidden = !message;
         }
 
         function dbRef(path) {
             if (!BASE_PATH) {
-                BASE_PATH = getBasePathCandidates()[0];
+                BASE_PATH = getCanonicalBasePath();
             }
             return db.ref(`${BASE_PATH}/${path}`);
         }
@@ -3531,28 +3540,25 @@
             }
         }
 
-        async function initListeners() {
+        function initListeners() {
             const storedEmail = localStorage.getItem('lmsEmailGuru') || "";
             clearActiveFirebaseRefs();
             hasLoadedSiswaOnce = false;
-            SISWA = [...SISWA_DEFAULT];
+            SISWA = [];
+            setRosterStatus('Memuat daftar siswa...');
             renderGridSiswa();
 
             if (!storedEmail) {
                 hideLoader();
-                // Tidak otomatis buka pengaturan, agar siswa tidak masuk ke sana
                 return;
             }
 
             lmsEmailGuru = storedEmail;
-            BASE_PATH = await resolveBasePath();
-            if (!BASE_PATH) {
-                BASE_PATH = `guru_data/${normalizeGuruEmail(storedEmail)}`;
-            }
-
+            const initialPath = getCanonicalBasePath();
+            localStorage.removeItem('lmsBasePath');
+            BASE_PATH = initialPath;
             dataTugas = {}; rekapGlobal = [];
-            setupListenersForPath(BASE_PATH);
-
+            setupListenersForPath(initialPath);
             hideLoader();
         }
 
@@ -3569,10 +3575,9 @@
                         SISWA = [];
                         renderGridSiswa();
                         if (typeof renderTableSiswaSetting === 'function') renderTableSiswaSetting();
+                        setRosterStatus('Belum ada data siswa di database ini.');
                     } else {
-                        SISWA = [...SISWA_DEFAULT];
-                        renderGridSiswa();
-                        if (typeof renderTableSiswaSetting === 'function') renderTableSiswaSetting();
+                        setRosterStatus('Data siswa belum ditemukan. Sedang menunggu sinkronisasi...');
                     }
                     return;
                 }
@@ -3599,6 +3604,10 @@
                 SISWA.sort((a, b) => parseInt(a.a || '99') - parseInt(b.a || '99'));
                 renderGridSiswa();
                 renderTableSiswaSetting();
+                setRosterStatus('');
+            }, (err) => {
+                console.error('Gagal memuat daftar siswa:', err);
+                setRosterStatus('Daftar siswa gagal dimuat. Periksa koneksi internet lalu muat ulang halaman.', true);
             });
 
             const mergeTugas = (snap, sourceKey) => {
