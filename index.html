@@ -4578,7 +4578,6 @@
                 node.style.backgroundColor = 'transparent';
                 node.style.setProperty('background', 'transparent', 'important');
             });
-            renderMathInEditor(editor);
         }
 
         function sanitizeEditorPaste(event) {
@@ -4593,7 +4592,10 @@
                 event.preventDefault();
                 const safeHtml = normalizeMathText(text);
                 document.execCommand('insertHTML', false, safeHtml);
-                setTimeout(() => forceEditorContrast(editor), 0);
+                setTimeout(() => {
+                    forceEditorContrast(editor);
+                    renderMathInEditor(editor);
+                }, 0);
                 return;
             }
 
@@ -4636,7 +4638,7 @@
             const div = document.createElement('div');
             div.className = "soal-box"; div.dataset.jenis = jenis;
             let html = `<button class="btn-hapus-soal" onclick="hapusSoal(this)">HAPUS</button><b class="label-nomor">Soal No ${no}</b>
-    <div class="toolbar"><button class="btn-tool" onclick="formatDoc('bold')">B</button><button class="btn-tool" onclick="formatDoc('italic')">I</button><button class="btn-tool" title="Masukkan rumus" onclick="event.preventDefault(); const editor = this.parentElement.parentElement.querySelector('.editor'); editor.focus(); document.execCommand('insertHTML', false, '\\(x^2 + y^2 = z^2\\)'); forceEditorContrast(editor); return false;">∑</button><label class="btn-tool" style="font-size:0.7rem; display:flex; align-items:center; justify-content:center;">🖼️<input type="file" hidden onchange="insertImage(this, 'prev-${no}')" accept="image/*"></label></div>
+    <div class="toolbar"><button class="btn-tool" onclick="formatDoc('bold')">B</button><button class="btn-tool" onclick="formatDoc('italic')">I</button><button class="btn-tool" title="Masukkan rumus" onclick="event.preventDefault(); const editor = this.parentElement.parentElement.querySelector('.editor'); editor.focus(); document.execCommand('insertHTML', false, '\\(x^2 + y^2 = z^2\\)'); forceEditorContrast(editor); renderMathInEditor(editor); return false;">∑</button><label class="btn-tool" style="font-size:0.7rem; display:flex; align-items:center; justify-content:center;">🖼️<input type="file" hidden onchange="insertImage(this, 'prev-${no}')" accept="image/*"></label></div>
     <div class="editor" id="ed-${no}" contenteditable="true" onpaste="sanitizeEditorPaste(event)" oninput="forceEditorContrast(this)">${data.tanya || ''}</div>
     <img id="prev-${no}" src="${data.img || ''}" class="img-preview" style="display:${data.img ? 'block' : 'none'}; max-width:100%; border-radius:8px; margin-bottom:15px;">`;
             if (jenis === 'PG' || jenis === 'MCMA') {
