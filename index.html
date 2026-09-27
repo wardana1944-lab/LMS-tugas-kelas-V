@@ -9,6 +9,13 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="config.js"></script>
+    <script>
+        (() => {
+            const requestedVersion = new URLSearchParams(window.location.search).get('v');
+            const cacheKey = requestedVersion || Date.now().toString();
+            document.write('<script src="build-info.js?v=' + encodeURIComponent(cacheKey) + '"><\/script>');
+        })();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
@@ -3417,12 +3424,11 @@
     </div>
 
     <script>
-        const APP_VERSION = window.APP_CONFIG?.APP_VERSION || "v2.6.0";
+        const APP_VERSION = window.APP_BUILD_INFO?.version || window.APP_CONFIG?.APP_VERSION || "v2.6.0";
         const firebaseConfig = window.APP_CONFIG?.firebaseConfig || {};
         if (!firebase.apps.length && firebaseConfig.apiKey) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
-        const SISWA_DEFAULT = [];
         let SISWA = [];
         let activeFirebaseRefs = {};
         let hasLoadedSiswaOnce = false;
@@ -3687,10 +3693,6 @@
             });
         }
 
-        function loadPrimaryListeners() {
-            // Digantikan oleh setupListenersForPath multi-source
-        }
-
         function showUpdatePopup(latestVersion) {
             if (document.getElementById('updatePopupModal')) return;
 
@@ -3710,7 +3712,7 @@
                                 Aplikasi telah diperbarui ke versi <strong style="color: var(--ef-neon-yellow);">${latestVersion}</strong>.<br>
                                 Klik tombol di bawah untuk memperbarui tampilan dan data terbaru.
                             </p>
-                            <button onclick="localStorage.setItem('appVersion', '${latestVersion}'); window.location.reload();" style="width: 100%; background: linear-gradient(180deg, var(--ef-cyan), #1fd5ff); color: var(--ef-obsidian); border: none; border-radius: 12px; padding: 14px 18px; font-size: 0.9rem; font-weight: 950; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; box-shadow: 0 0 20px rgba(0, 240, 255, 0.25);">
+                            <button id="applyUpdateButton" type="button" style="width: 100%; background: linear-gradient(180deg, var(--ef-cyan), #1fd5ff); color: var(--ef-obsidian); border: none; border-radius: 12px; padding: 14px 18px; font-size: 0.9rem; font-weight: 950; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; box-shadow: 0 0 20px rgba(0, 240, 255, 0.25);">
                                 OKE, UPDATE
                             </button>
                         </div>
@@ -3718,6 +3720,12 @@
                 </div>
             `;
             document.body.appendChild(modal);
+            modal.querySelector('#applyUpdateButton').addEventListener('click', () => {
+                localStorage.setItem('appVersion', latestVersion);
+                const updateUrl = new URL(window.location.href);
+                updateUrl.searchParams.set('v', latestVersion);
+                window.location.replace(updateUrl.href);
+            });
         }
 
         function compareVersions(a, b) {
@@ -3737,21 +3745,42 @@
 
         function checkAppUpdate() {
             const savedVersion = localStorage.getItem('appVersion') || APP_VERSION;
-            db.ref('config/app_version').once('value').then((snap) => {
-                const latestVersion = snap.val() || APP_VERSION;
-                if (!latestVersion) return;
+            const versionUrl = new URL('version.json', window.location.href);
+            versionUrl.searchParams.set('check', Date.now().toString());
 
-                localStorage.setItem('appVersion', latestVersion);
+            fetch(versionUrl, { cache: 'no-store' })
+                .then(response => {
+                    if (!response.ok) throw new Error('Versi GitHub Pages tidak tersedia');
+                    return response.json();
+                })
+                .then(release => {
+                    const latestVersion = String(release.version || '').trim();
+                    if (!latestVersion) throw new Error('Metadata versi kosong');
 
-                if (compareVersions(latestVersion, APP_VERSION) > 0 && compareVersions(latestVersion, savedVersion) !== 0) {
-                    showUpdatePopup(latestVersion);
-                }
-            }).catch(() => {
-                localStorage.setItem('appVersion', APP_VERSION);
-            });
+                    localStorage.setItem('appVersion', latestVersion);
+                    if (latestVersion !== String(APP_VERSION)) showUpdatePopup(latestVersion);
+                })
+                .catch(() => {
+                    db.ref('config/app_version').once('value').then((snap) => {
+                        const latestVersion = snap.val() || APP_VERSION;
+                        if (!latestVersion) return;
+
+                        localStorage.setItem('appVersion', latestVersion);
+                        if (compareVersions(latestVersion, APP_VERSION) > 0 && compareVersions(latestVersion, savedVersion) !== 0) {
+                            showUpdatePopup(latestVersion);
+                        }
+                    }).catch(() => {
+                        localStorage.setItem('appVersion', APP_VERSION);
+                    });
+                });
         }
 
         window.onload = () => {
+            const openHomeAndCheckUpdates = () => {
+                openView('panelUtama');
+                checkAppUpdate();
+            };
+
             // PRO STYLE OPENING DURATION: 2 SECONDS TOTAL
             const splash = document.getElementById('welcomeSplash');
             if (splash) {
@@ -3759,15 +3788,14 @@
                     splash.classList.add('fade-out');
                     setTimeout(() => {
                         splash.style.display = 'none';
-                        openView('panelUtama');
+                        openHomeAndCheckUpdates();
                     }, 800); // 0.8s fade out
                 }, 1200); // 1.2s visible
             } else {
-                openView('panelUtama');
+                openHomeAndCheckUpdates();
             }
 
             initListeners();
-            checkAppUpdate();
 
             // Load Identity from LocalStorage
             const nmS = localStorage.getItem('lmsNamaSekolah') || window.APP_CONFIG?.defaultTeacher?.sekolah || "SEKOLAH DASAR NEGERI PENGKOL";
@@ -4094,15 +4122,6 @@
              });
          }
 
-        function nonaktifkanTugas(slot) {
-            if (!confirm("Batalkan penerbitan tugas ini? Tugas akan kembali menjadi Draft.")) return;
-            showLoader("Memproses...");
-            dbRef('tugas_multi/' + slot).update({ aktif: false }).then(() => {
-                hideLoader();
-                showAlert("Berhasil", "Tugas ditarik kembali menjadi draft.", "⚠️");
-            });
-        }
-
         function hapusTugasPermanen(slot) {
             if (!confirm("HAPUS PERMANEN tugas ini? Data nilai yang sudah masuk tidak akan terpengaruh.")) return;
             showLoader("Menghapus...");
@@ -4121,45 +4140,6 @@
                 hideLoader();
                 showAlert("Tugas Ditutup", "Tugas telah berhasil ditutup dan diarsipkan.", "✅");
             });
-        }
-
-        function parseJudulDate(value) {
-            if (!value) return 0;
-            const text = String(value).trim();
-            const monthMap = {
-                januari: 0, jan: 0,
-                februari: 1, feb: 1,
-                maret: 2, mar: 2,
-                april: 3, apr: 3,
-                mei: 4,
-                juni: 5, jun: 5,
-                juli: 6, jul: 6,
-                agustus: 7, agu: 7, ags: 7,
-                september: 8, sep: 8, sept: 8,
-                oktober: 9, okt: 9,
-                november: 10, nov: 10,
-                desember: 11, des: 11
-            };
-
-            let match = text.match(/(\d{1,2})\s*(?:-|\/|\s+)\s*(\d{1,2})\s*(?:-|\/|\s+)\s*(\d{4})/);
-            if (match) {
-                const [, d, m, y] = match;
-                const date = new Date(Number(y), Number(m) - 1, Number(d));
-                return Number.isNaN(date.getTime()) ? 0 : date.getTime();
-            }
-
-            match = text.match(/(\d{1,2})\s+(Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember|Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Ags|Sep|Sept|Okt|Nov|Des)\s+(\d{4})/i);
-            if (match) {
-                const [, d, monthName, y] = match;
-                const month = monthMap[String(monthName).toLowerCase()];
-                if (month !== undefined) {
-                    const date = new Date(Number(y), month, Number(d));
-                    return Number.isNaN(date.getTime()) ? 0 : date.getTime();
-                }
-            }
-
-            const iso = new Date(text);
-            return Number.isNaN(iso.getTime()) ? 0 : iso.getTime();
         }
 
         function getSelectedRekapJudul() {
@@ -4281,16 +4261,8 @@
             });
 
             const uniqAktif = [...new Set(groupAktif)];
-            const uniqArsip = [...new Set([...bulanArsip.values()].flatMap((entry) => entry.items))];
 
             renderDropdownOptions('filterTugasAktif', uniqAktif, '-- TUGAS AKTIF --');
-
-            const arsipEntries = [...bulanArsip.entries()]
-                .sort((a, b) => b[0].localeCompare(a[0]))
-                .flatMap(([key, value]) => {
-                    const items = [...new Set(value.items)].sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }));
-                    return items.map((judul) => `${value.label} | ${judul}`);
-                });
 
             const arsipMenu = document.getElementById('menuTugasArsip');
             if (arsipMenu) {
@@ -5359,57 +5331,6 @@
         function startTimer() { timerInterval = setInterval(() => { sisaWaktu--; let m = Math.floor(sisaWaktu / 60), s = sisaWaktu % 60; document.getElementById('displayTimer').innerText = `${m}:${s < 10 ? '0' + s : s}`; if (sisaWaktu <= 0) submitJawaban(); }, 1000); }
         function kembaliKeDaftarTugas() { if (confirm("Kembali ke daftar?")) { clearInterval(timerInterval); closeView('panelSiswa'); openView('panelPilihTugas'); } }
 
-        function cetakSoalPDF() {
-            const filter = getSelectedRekapJudul();
-            if (!filter) return showAlert("Peringatan", "Pilih judul tugas terlebih dahulu!", "⚠️");
-
-            const t = Object.values(dataTugas).find(x => (x.judul || "").trim().toLowerCase() === filter.trim().toLowerCase());
-            if (!t || !t.soal) return showAlert("Gagal", "Data soal tidak ditemukan.", "❌");
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const nmS = localStorage.getItem('lmsNamaSekolah') || "SD NEGERI PENGKOL";
-
-            // Header
-            doc.setFontSize(14); doc.setFont("helvetica", "bold");
-            doc.text(nmS.toUpperCase(), 105, 15, { align: "center" });
-            doc.setFontSize(11);
-            doc.text("TUGAS: " + t.judul.toUpperCase(), 105, 22, { align: "center" });
-            doc.line(20, 26, 190, 26);
-
-            let y = 35;
-            t.soal.forEach((s, i) => {
-                if (y > 270) { doc.addPage(); y = 20; }
-                doc.setFont("helvetica", "bold");
-                doc.text(`${i + 1}.`, 20, y);
-                
-                const tanyaText = s.tanya.replace(/<[^>]*>/g, ' ').trim();
-                const splitTanya = doc.splitTextToSize(tanyaText, 160);
-                doc.setFont("helvetica", "normal");
-                doc.text(splitTanya, 28, y);
-                y += (splitTanya.length * 7);
-
-                if ((s.jenis === 'PG' || s.jenis === 'MCMA') && s.opsi) {
-                    const abcd = ['A', 'B', 'C', 'D'];
-                    s.opsi.forEach((opt, idx) => {
-                        if (y > 280) { doc.addPage(); y = 20; }
-                        doc.text(`${abcd[idx]}. ${opt}`, 35, y);
-                        y += 7;
-                    });
-                } else if (s.jenis === 'KATEGORI' && s.pernyataan) {
-                    s.pernyataan.forEach((p, idx) => {
-                        if (y > 280) { doc.addPage(); y = 20; }
-                        doc.text(`${idx + 1}. ${p.teks}`, 35, y);
-                        y += 7;
-                    });
-                }
-                y += 5;
-            });
-
-            doc.save(`Soal_${t.judul.replace(/\s+/g, '_')}.pdf`);
-            showAlert("Berhasil", "Soal berhasil dicetak ke PDF.", "✅");
-        }
-
         function exportRekapPDF() {
             const filter = getSelectedRekapJudul();
             if (!filter) return showAlert("Peringatan", "Pilih judul tugas terlebih dahulu!", "⚠️");
@@ -5669,8 +5590,6 @@
             const nip = document.getElementById('set_nip_guru').value.trim();
             const sekolah = document.getElementById('set_sekolah').value.trim();
             const tahun = document.getElementById('set_tahun').value.trim();
-
-            const emailBerubah = false;
 
             localStorage.setItem('lmsEmailGuru', email);
             localStorage.setItem('lmsNamaGuru', nama);
@@ -5985,7 +5904,6 @@
                 }
             });
 
-            const finalY = (y > 260) ? 260 : y;
             doc.setFont("helvetica", "normal");
             doc.setFontSize(8);
             doc.setTextColor(130);
