@@ -3428,6 +3428,8 @@
         const firebaseConfig = window.APP_CONFIG?.firebaseConfig || {};
         if (!firebase.apps.length && firebaseConfig.apiKey) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
+    let pendingAppUpdateVersion = null;
+    let appUpdatePollInterval = null;
 
         let SISWA = [];
         let activeFirebaseRefs = {};
@@ -3693,7 +3695,7 @@
             });
         }
 
-        function showUpdatePopup(latestVersion) {
+        function showUpdatePopup(latestVersion, displayVersion = latestVersion) {
             if (document.getElementById('updatePopupModal')) return;
 
             const modal = document.createElement('div');
@@ -3709,7 +3711,7 @@
                             </div>
                             <h3 style="margin: 0 0 12px; font-size: 1.8rem; font-weight: 950; letter-spacing: 0.05em; color: #f2fbff; text-transform: uppercase; line-height: 1.1;">Versi Baru</h3>
                             <p style="margin: 0 0 18px; font-size: 0.92rem; line-height: 1.7; color: rgba(240, 250, 255, 0.82);">
-                                Aplikasi telah diperbarui ke versi <strong style="color: var(--ef-neon-yellow);">${latestVersion}</strong>.<br>
+                                Aplikasi telah diperbarui ke versi <strong style="color: var(--ef-neon-yellow);">${displayVersion}</strong>.<br>
                                 Klik tombol di bawah untuk memperbarui tampilan dan data terbaru.
                             </p>
                             <button id="applyUpdateButton" type="button" style="width: 100%; background: linear-gradient(180deg, var(--ef-cyan), #1fd5ff); color: var(--ef-obsidian); border: none; border-radius: 12px; padding: 14px 18px; font-size: 0.9rem; font-weight: 950; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; box-shadow: 0 0 20px rgba(0, 240, 255, 0.25);">
@@ -3743,6 +3745,20 @@
             return 0;
         }
 
+        function requestAppUpdate(version, displayVersion = version) {
+            pendingAppUpdateVersion = { version, displayVersion };
+            const examPanel = document.getElementById('panelSiswa');
+            if (!examPanel || examPanel.style.display !== 'block') {
+                showUpdatePopup(version, displayVersion);
+            }
+        }
+
+        function showPendingAppUpdate() {
+            if (pendingAppUpdateVersion) {
+                showUpdatePopup(pendingAppUpdateVersion.version, pendingAppUpdateVersion.displayVersion);
+            }
+        }
+
         function checkAppUpdate() {
             const savedVersion = localStorage.getItem('appVersion') || APP_VERSION;
             const versionUrl = new URL('version.json', window.location.href);
@@ -3756,10 +3772,11 @@
                 .then(release => {
                     const latestVersion = String(release.version || '').trim();
                     if (!latestVersion) throw new Error('Metadata versi kosong');
+                    const displayVersion = String(release.displayName || latestVersion).trim();
 
-                    const needsUpdate = latestVersion !== savedVersion;
+                    const needsUpdate = latestVersion !== savedVersion || latestVersion !== String(APP_VERSION);
                     if (needsUpdate) {
-                        showUpdatePopup(latestVersion);
+                        requestAppUpdate(latestVersion, displayVersion);
                     } else {
                         localStorage.setItem('appVersion', latestVersion);
                     }
@@ -3769,9 +3786,10 @@
                         const latestVersion = snap.val() || APP_VERSION;
                         if (!latestVersion) return;
 
-                        localStorage.setItem('appVersion', latestVersion);
-                        if (compareVersions(latestVersion, APP_VERSION) > 0 && compareVersions(latestVersion, savedVersion) !== 0) {
-                            showUpdatePopup(latestVersion);
+                        if (latestVersion !== String(APP_VERSION) && latestVersion !== savedVersion) {
+                            requestAppUpdate(latestVersion, latestVersion);
+                        } else {
+                            localStorage.setItem('appVersion', latestVersion);
                         }
                     }).catch(() => {
                         localStorage.setItem('appVersion', APP_VERSION);
@@ -3783,6 +3801,14 @@
             const openHomeAndCheckUpdates = () => {
                 openView('panelUtama');
                 checkAppUpdate();
+                if (appUpdatePollInterval === null) {
+                    appUpdatePollInterval = window.setInterval(() => {
+                        if (!document.hidden) checkAppUpdate();
+                    }, 60000);
+                    document.addEventListener('visibilitychange', () => {
+                        if (!document.hidden) checkAppUpdate();
+                    });
+                }
             };
 
             // PRO STYLE OPENING DURATION: 2 SECONDS TOTAL
@@ -5307,6 +5333,7 @@
             
             // Scroll to top when switching views
             panel.scrollTop = 0;
+            if (id !== 'panelSiswa' && !id.includes('modal')) showPendingAppUpdate();
         }
 
         function closeView(id) {
