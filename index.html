@@ -3757,8 +3757,12 @@
                     const latestVersion = String(release.version || '').trim();
                     if (!latestVersion) throw new Error('Metadata versi kosong');
 
-                    localStorage.setItem('appVersion', latestVersion);
-                    if (latestVersion !== String(APP_VERSION)) showUpdatePopup(latestVersion);
+                    const needsUpdate = latestVersion !== savedVersion;
+                    if (needsUpdate) {
+                        showUpdatePopup(latestVersion);
+                    } else {
+                        localStorage.setItem('appVersion', latestVersion);
+                    }
                 })
                 .catch(() => {
                     db.ref('config/app_version').once('value').then((snap) => {
