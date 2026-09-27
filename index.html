@@ -16,10 +16,41 @@
             document.write('<script src="build-info.js?v=' + encodeURIComponent(cacheKey) + '"><\/script>');
         })();
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        const externalScriptPromises = {};
+
+        function loadExternalScript(src, isReady) {
+            if (isReady()) return Promise.resolve();
+            if (externalScriptPromises[src]) return externalScriptPromises[src];
+
+            externalScriptPromises[src] = new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.async = true;
+                script.onload = () => isReady() ? resolve() : reject(new Error(`Library gagal dimuat: ${src}`));
+                script.onerror = () => reject(new Error(`Library gagal dimuat: ${src}`));
+                document.head.appendChild(script);
+            });
+            return externalScriptPromises[src];
+        }
+
+        function loadMathJax() {
+            return loadExternalScript(
+                'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js',
+                () => Boolean(window.MathJax && typeof window.MathJax.typesetPromise === 'function')
+            );
+        }
+
+        function loadPdfLibraries() {
+            return loadExternalScript(
+                'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+                () => Boolean(window.jspdf && window.jspdf.jsPDF)
+            ).then(() => loadExternalScript(
+                'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js',
+                () => Boolean(window.jspdf && window.jspdf.jsPDF.API && window.jspdf.jsPDF.API.autoTable)
+            ));
+        }
+    </script>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,800;0,900;1,800;1,900&family=Teko:wght@700&family=Fira+Code:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Open+Sans:wght@400;600;700&display=swap"
@@ -4545,13 +4576,15 @@
             return `\\(${text.replace(/&/g, '&amp;')}\\)`;
         }
 
-        function renderMathInEditor(editor) {
-            if (!editor || !window.MathJax) return;
+        async function renderMathInEditor(editor) {
+            if (!editor) return;
             const text = editor.innerText || editor.textContent || '';
             if (!detectMathExpression(text)) {
                 editor.style.color = '#FFFFFF';
                 return;
             }
+
+            await loadMathJax();
 
             const normalized = normalizeMathText(editor.innerHTML);
             if (normalized && normalized !== editor.innerHTML) {
@@ -5015,9 +5048,10 @@
             });
         }
 
-        function submitJawaban() {
+        async function submitJawaban() {
             if (!confirm("Kirim jawaban sekarang?")) return;
             showLoader("Mengirim..."); clearInterval(timerInterval);
+            await loadPdfLibraries();
             const t = dataTugas[curSlot];
             let totalSkorDapat = 0, totalSkorMaksimal = 0;
 
@@ -5362,9 +5396,12 @@
         function startTimer() { timerInterval = setInterval(() => { sisaWaktu--; let m = Math.floor(sisaWaktu / 60), s = sisaWaktu % 60; document.getElementById('displayTimer').innerText = `${m}:${s < 10 ? '0' + s : s}`; if (sisaWaktu <= 0) submitJawaban(); }, 1000); }
         function kembaliKeDaftarTugas() { if (confirm("Kembali ke daftar?")) { clearInterval(timerInterval); closeView('panelSiswa'); openView('panelPilihTugas'); } }
 
-        function exportRekapPDF() {
+        async function exportRekapPDF() {
             const filter = getSelectedRekapJudul();
             if (!filter) return showAlert("Peringatan", "Pilih judul tugas terlebih dahulu!", "⚠️");
+
+            showLoader("Mempersiapkan PDF...");
+            await loadPdfLibraries();
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
@@ -5833,7 +5870,7 @@
             }
         }
 
-        function cetakSoalPDF() {
+        async function cetakSoalPDF() {
             const filter = getSelectedRekapJudul();
             if (!filter) return showAlert("Peringatan", "Pilih judul tugas terlebih dahulu!", "⚠️");
 
@@ -5847,6 +5884,7 @@
             if (!t || !t.soal || t.soal.length === 0) return showAlert("Gagal", "Soal tidak ditemukan untuk materi ini.", "❌");
 
             showLoader("Mempersiapkan PDF Soal...");
+            await loadPdfLibraries();
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
