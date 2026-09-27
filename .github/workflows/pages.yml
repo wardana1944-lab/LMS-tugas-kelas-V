@@ -37,8 +37,10 @@ jobs:
             ! -name 'build-info.js' \
             ! -name 'version.json' \
             -exec cp {} _site/ \;
-          printf 'window.APP_BUILD_INFO = Object.freeze({ version: "%s" });\n' "$GITHUB_SHA" > _site/build-info.js
-          printf '{"version":"%s","commit":"%s"}\n' "$GITHUB_SHA" "$GITHUB_SHA" > _site/version.json
+          DISPLAY_VERSION="$(jq -r '.displayName // .version // "Pembaruan"' version.json)"
+          BUILD_INFO="$(jq -cn --arg version "$GITHUB_SHA" --arg displayName "$DISPLAY_VERSION" '{version: $version, displayName: $displayName}')"
+          printf 'window.APP_BUILD_INFO = Object.freeze(%s);\n' "$BUILD_INFO" > _site/build-info.js
+          jq -cn --arg version "$GITHUB_SHA" --arg displayName "$DISPLAY_VERSION" --arg commit "$GITHUB_SHA" '{version: $version, displayName: $displayName, commit: $commit}' > _site/version.json
           touch _site/.nojekyll
 
       - name: Upload Pages artifact
