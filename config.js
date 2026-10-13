@@ -1,5 +1,6 @@
 window.APP_CONFIG = {
-  APP_VERSION: "RB.2026.2",
+  APP_VERSION: "v2.6.3",
+  allowedTeacherEmails: ["wardana1944@gmail.com"],
   firebaseConfig: {
     apiKey: "AIzaSyCfzJJpq32AltXRcP0ZB6fM1mvYpJVSVl4",
     authDomain: "ruang-belajar-kelas-v.firebaseapp.com",
@@ -12,7 +13,6 @@ window.APP_CONFIG = {
   },
   defaultTeacher: {
     email: "wardana19442@gmail.com",
-    pin: "guru123",
     nama: "Aditya W. Wardana, S.Pd",
     nip: "NIP 19940319 202321 1 005",
     sekolah: "SEKOLAH DASAR NEGERI PENGKOL",

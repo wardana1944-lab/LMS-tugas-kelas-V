@@ -8,6 +8,7 @@
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="config.js"></script>
     <script>
         (() => {
@@ -63,7 +64,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="icon.png.ico?v=2">
     <meta name="theme-color" content="#050811">
     <meta name="mobile-web-app-capable" content="yes">
-    <link rel="manifest" id="appManifest" href="manifest.json?v=2.6.1">
+    <link rel="manifest" id="appManifest" href="manifest.json?v=2.6.3">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="RUANG BELAJAR">
@@ -2830,7 +2831,7 @@
         <div class="ef-game-loader">
             <div class="ef-loader-label">
                 <span>LOADING DATA...</span>
-                <span>v2.6.0</span>
+                <span>v2.6.3</span>
             </div>
             <div class="ef-loader-bar-pro">
                 <div class="ef-loader-progress-pro"></div>
@@ -2938,7 +2939,7 @@
                         LOG IN GURU
                     </button>
 
-                    <div style="position: absolute; right: 0; top: -10px; font-size: 0.55rem; color: var(--ef-cyan); opacity: 0.5; font-weight: 900; letter-spacing: 1px;">SISTEM ONLINE v2.6</div>
+                    <div style="position: absolute; right: 0; top: -10px; font-size: 0.55rem; color: var(--ef-cyan); opacity: 0.5; font-weight: 900; letter-spacing: 1px;">SISTEM ONLINE v2.6.3</div>
                 </div>
 
                 <!-- LIVE TASK LIST -->
@@ -2976,12 +2977,16 @@
                 </svg>
             </div>
             <h2>AKSES GURU</h2>
-            <p>Masukkan PIN Keamanan untuk Masuk</p>
-            <div class="pin-input-wrapper">
-                <input type="password" id="pin" placeholder="••••" maxlength="10">
+            <p>Masuk dengan email dan kata sandi akun guru.</p>
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
+                <input type="email" id="guruEmail" autocomplete="username" placeholder="Email guru"
+                    value="wardana1944@gmail.com" style="width: 100%; box-sizing: border-box;">
+                <input type="password" id="guruPassword" autocomplete="current-password" placeholder="Kata sandi"
+                    style="width: 100%; box-sizing: border-box;">
             </div>
             <div class="modal-actions">
-                <button class="modal-btn-primary" onclick="prosesLogin()">MASUK DASHBOARD</button>
+                <button class="modal-btn-primary" onclick="loginGuruEmailPassword()">MASUK DASHBOARD</button>
+                <button class="modal-btn-ghost" onclick="kirimResetPasswordGuru()">KIRIM TAUTAN RESET PASSWORD</button>
                 <button class="modal-btn-ghost" onclick="openView('panelUtama')">BATAL</button>
             </div>
         </div>
@@ -3383,18 +3388,11 @@
                             <button class="btn btn-blue" onclick="simpanPengaturanGuru()">SIMPAN PERUBAHAN</button>
                         </div>
 
-                        <!-- Ganti Password -->
+                        <!-- Teacher account -->
                         <div style="display: flex; flex-direction: column; gap: 15px; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 15px; border-left: 4px solid var(--ef-magenta);">
                             <h3 style="font-size: 0.9rem; color: var(--ef-magenta); text-transform: uppercase; letter-spacing: 2px; font-style: italic;">Keamanan Dashboard</h3>
-                            <div style="display: flex; flex-direction: column; gap: 8px;">
-                                <label style="font-size: 0.65rem; color: var(--ef-text-light); font-weight: 800;">PASSWORD GURU SAAT INI</label>
-                                <input type="password" id="old_pin_guru" placeholder="Password Lama">
-                            </div>
-                            <div style="display: flex; flex-direction: column; gap: 8px;">
-                                <label style="font-size: 0.65rem; color: var(--ef-text-light); font-weight: 800;">PASSWORD BARU</label>
-                                <input type="password" id="new_pin_guru" placeholder="Password Baru">
-                            </div>
-                            <button class="btn" style="background: var(--ef-magenta); border: none; font-size: 0.75rem; padding: 12px;" onclick="ubahPasswordGuru()">UPDATE PASSWORD</button>
+                            <p style="font-size: 0.75rem; color: var(--ef-text-light);">Login guru menggunakan email dan kata sandi Firebase. Untuk mengganti kata sandi siswa, ubah kolom PIN pada Daftar Roster Siswa.</p>
+                            <button class="btn" style="background: var(--ef-magenta); border: none; font-size: 0.75rem; padding: 12px;" onclick="keluarGuru()">KELUAR DARI AKUN GURU</button>
                         </div>
                     </div>
 
@@ -3455,16 +3453,22 @@
     </div>
 
     <script>
-        const APP_VERSION = window.APP_BUILD_INFO?.version || window.APP_CONFIG?.APP_VERSION || "v2.6.0";
+        const APP_VERSION = window.APP_BUILD_INFO?.version || window.APP_CONFIG?.APP_VERSION || "v2.6.3";
         const firebaseConfig = window.APP_CONFIG?.firebaseConfig || {};
         if (!firebase.apps.length && firebaseConfig.apiKey) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
+        const auth = firebase.auth();
+        const allowedTeacherEmails = (window.APP_CONFIG?.allowedTeacherEmails || []).map(email => String(email).trim().toLowerCase());
+        let guruAuthUser = null;
     let pendingAppUpdateVersion = null;
     let appUpdatePollInterval = null;
 
         let SISWA = [];
         let activeFirebaseRefs = {};
         let hasLoadedSiswaOnce = false;
+        let teacherTasksLoaded = false;
+        let teacherTasksLoadPromise = null;
+        const rekapFileCache = new Map();
         let lmsEmailGuru = window.APP_CONFIG?.defaultTeacher?.email || "wardana19442@gmail.com";
         localStorage.setItem('lmsEmailGuru', lmsEmailGuru);
         let BASE_PATH = "";
@@ -3499,16 +3503,61 @@
             return db.ref(`${BASE_PATH}/${path}`);
         }
 
-        let guruPin = window.APP_CONFIG?.defaultTeacher?.pin || "guru123";
+        auth.onAuthStateChanged(user => {
+            const email = String(user?.email || '').trim().toLowerCase();
+            if (user && !allowedTeacherEmails.includes(email)) {
+                auth.signOut().catch(error => console.error('Gagal mengeluarkan akun guru yang tidak diizinkan:', error));
+                guruAuthUser = null;
+                if (document.getElementById('modalLogin')?.style.display !== 'flex') {
+                    showAlert('Akun Tidak Diizinkan', `Akun ${email || 'ini'} tidak memiliki akses guru.`, '❌');
+                }
+                return;
+            }
 
-        // Sinkronisasi PIN Guru
-        dbRef('config/pin_guru').on('value', snap => {
-            if (snap.exists()) guruPin = snap.val();
+            guruAuthUser = user || null;
+            if (guruAuthUser) {
+                if (sessionStorage.getItem('lmsGuruAuthRedirectPending') === 'true' ||
+                    document.getElementById('modalLogin')?.style.display === 'flex') {
+                    sessionStorage.removeItem('lmsGuruAuthRedirectPending');
+                    openView('panelGuru');
+                }
+            }
         });
 
         let dataTugas = {}, curSlot = "", curUser = "", curIdx = 0, curAns = [], timerInterval, sisaWaktu, rekapGlobal = [], currentSoalAcak = [];
-        let dataTugasSources = { multi: {}, tugas: {}, data: {} };
+        let dataTugasSources = { multi: {}, active: {}, tugas: {}, data: {} };
         let editIndexSiswa = -1;
+
+        function refreshTugasState() {
+            dataTugas = {};
+            ['multi', 'tugas', 'data', 'active'].forEach(source => {
+                Object.keys(dataTugasSources[source] || {}).forEach(key => {
+                    dataTugas[key] = dataTugasSources[source][key];
+                });
+            });
+
+            updateDashboardTugas();
+            updateBadgeSiswa();
+            if (curUser && document.getElementById('panelPilihTugas').style.display === 'block') {
+                masukHalamanPilihTugas(curUser, false);
+            }
+        }
+
+        function loadTeacherTasksForManagement() {
+            if (teacherTasksLoaded) return Promise.resolve();
+            if (teacherTasksLoadPromise) return teacherTasksLoadPromise;
+
+            teacherTasksLoadPromise = dbRef('tugas_multi').once('value')
+                .then(snap => {
+                    dataTugasSources.multi = snap.val() || {};
+                    teacherTasksLoaded = true;
+                    refreshTugasState();
+                })
+                .finally(() => {
+                    teacherTasksLoadPromise = null;
+                });
+            return teacherTasksLoadPromise;
+        }
 
         function renderGridSiswa() {
             const g = document.getElementById('gridSiswa');
@@ -3597,6 +3646,10 @@
             localStorage.removeItem('lmsBasePath');
             BASE_PATH = initialPath;
             dataTugas = {}; rekapGlobal = [];
+            dataTugasSources = { multi: {}, active: {}, tugas: {}, data: {} };
+            teacherTasksLoaded = false;
+            teacherTasksLoadPromise = null;
+            rekapFileCache.clear();
             setupListenersForPath(initialPath);
             hideLoader();
         }
@@ -3652,24 +3705,9 @@
             const mergeTugas = (snap, sourceKey) => {
                 const val = snap.val();
                 dataTugasSources[sourceKey] = val || {};
-                
-                // Merge all sources into dataTugas
-                dataTugas = {};
-                Object.keys(dataTugasSources).forEach(src => {
-                    Object.keys(dataTugasSources[src]).forEach(k => {
-                        dataTugas[k] = dataTugasSources[src][k];
-                    });
-                });
-
-                updateDashboardTugas();
-                updateBadgeSiswa();
-
-                // Hanya perbarui layar jika siswa sedang berada di menu pilih tugas (bukan saat sedang ujian)
-                if (curUser && document.getElementById('panelPilihTugas').style.display === 'block') {
-                    masukHalamanPilihTugas(curUser, false);
-                }
+                refreshTugasState();
             };
-            getRef('tugas_multi').on('value', snap => mergeTugas(snap, 'multi'));
+            getRef('tugas_multi').orderByChild('aktif').equalTo(true).on('value', snap => mergeTugas(snap, 'active'));
             getRef('tugas').on('value', snap => mergeTugas(snap, 'tugas'));
             getRef('data_tugas').on('value', snap => mergeTugas(snap, 'data'));
 
@@ -3700,9 +3738,10 @@
                     masukHalamanPilihTugas(curUser, false);
                 }
             };
-            getRef('rekap_v2').on('value', mergeRekap);
-            getRef('rekapitulasi').on('value', mergeRekap);
-            getRef('rekap').on('value', mergeRekap);
+            getRef('rekap_v2').on('value', mergeRekap, err => {
+                console.error('Gagal memuat rekap tugas:', err);
+                showAlert('Koneksi Bermasalah', 'Data status tugas gagal dimuat. Periksa koneksi internet.', '❌');
+            });
 
             // Synchronize Identity from Firebase
             getRef('identitas').on('value', (snap) => {
@@ -4177,6 +4216,10 @@
                  expiredAt: exp,
                  activeAt: new Date().toISOString() // Set waktu aktif sekarang otomatis saat terbit
              }).then(() => {
+                 if (dataTugasSources.multi[slot]) {
+                     Object.assign(dataTugasSources.multi[slot], { aktif: true, expiredAt: exp, activeAt: new Date().toISOString() });
+                     refreshTugasState();
+                 }
                  hideLoader();
                  openView('panelMenuTugas');
                  showAlert("Berhasil", "Tugas berhasil diterbitkan dan siap dikerjakan!", "🚀");
@@ -4188,6 +4231,8 @@
             showLoader("Menghapus...");
             dbRef('tugas_multi/' + slot).remove().then(() => {
                 delete dataTugas[slot];
+                delete dataTugasSources.multi[slot];
+                delete dataTugasSources.active[slot];
                 updateDashboardTugas();
                 hideLoader();
                 showAlert("Terhapus", "Tugas telah dihapus secara permanen.", "🗑️");
@@ -4198,6 +4243,11 @@
             if (!confirm("TUTUP TUGAS INI?\nTugas tidak akan muncul lagi di halaman kelola tugas dan siswa, namun data nilai tetap tersimpan.")) return;
             showLoader("Menutup Tugas...");
             dbRef('tugas_multi/' + slot).update({ tutup: true, aktif: false }).then(() => {
+                if (dataTugasSources.multi[slot]) {
+                    Object.assign(dataTugasSources.multi[slot], { tutup: true, aktif: false });
+                }
+                delete dataTugasSources.active[slot];
+                refreshTugasState();
                 hideLoader();
                 showAlert("Tugas Ditutup", "Tugas telah berhasil ditutup dan diarsipkan.", "✅");
             });
@@ -4498,36 +4548,73 @@
             pendingConfirmAction = null;
         }
 
-        function prosesLogin() {
-            const inputPin = document.getElementById('pin').value;
-            if (inputPin === guruPin) {
-                sessionStorage.setItem('lmsGuruAuth', 'true');
+        async function loginGuruEmailPassword() {
+            const email = String(document.getElementById('guruEmail')?.value || '').trim().toLowerCase();
+            const password = String(document.getElementById('guruPassword')?.value || '');
+            if (!email || !password) {
+                showAlert('Data Belum Lengkap', 'Masukkan email dan kata sandi guru.', '⚠️');
+                return;
+            }
+            if (!allowedTeacherEmails.includes(email)) {
+                showAlert('Akun Tidak Diizinkan', `Email ${email} tidak memiliki akses guru.`, '❌');
+                return;
+            }
+
+            showLoader('Memverifikasi akun guru...');
+            try {
+                const result = await auth.signInWithEmailAndPassword(email, password);
+                guruAuthUser = result.user;
+                document.getElementById('guruPassword').value = '';
                 closeView('modalLogin');
                 openView('panelGuru');
-                document.getElementById('pin').value = "";
-            } else { 
-                showAlert("Gagal", "PIN yang anda masukkan salah!", "❌"); 
+            } catch (error) {
+                console.error('Login email guru gagal:', error);
+                const messages = {
+                    'auth/invalid-email': 'Format email tidak valid.',
+                    'auth/user-disabled': 'Akun guru dinonaktifkan.',
+                    'auth/user-not-found': 'Akun belum terdaftar di Firebase Authentication.',
+                    'auth/wrong-password': 'Kata sandi salah.',
+                    'auth/invalid-credential': 'Email atau kata sandi salah.',
+                    'auth/too-many-requests': 'Terlalu banyak percobaan. Coba lagi nanti.',
+                    'auth/operation-not-allowed': 'Login email/password belum diaktifkan di Firebase Authentication.'
+                };
+                showAlert('Login Gagal', messages[error.code] || error.message || 'Tidak dapat memverifikasi akun guru.', '❌');
+            } finally {
+                hideLoader();
             }
         }
 
-        function ubahPasswordGuru() {
-            const oldPin = document.getElementById('old_pin_guru').value;
-            const newPin = document.getElementById('new_pin_guru').value;
+        async function kirimResetPasswordGuru() {
+            const email = String(document.getElementById('guruEmail')?.value || '').trim().toLowerCase();
+            if (!allowedTeacherEmails.includes(email)) {
+                showAlert('Email Tidak Diizinkan', 'Tautan reset hanya dapat dikirim ke email guru yang terdaftar.', '❌');
+                return;
+            }
 
-            if (!oldPin || !newPin) return showAlert("Gagal", "Lengkapi semua kolom password!", "⚠️");
-            if (oldPin !== guruPin) return showAlert("Gagal", "Password lama salah!", "❌");
-            if (newPin.length < 4) return showAlert("Gagal", "Password baru minimal 4 karakter!", "⚠️");
+            showLoader('Mengirim tautan reset password...');
+            try {
+                await auth.sendPasswordResetEmail(email);
+                showAlert('Email Terkirim', `Tautan reset password telah dikirim ke ${email}. Periksa juga folder spam.`, '✅');
+            } catch (error) {
+                console.error('Pengiriman reset password guru gagal:', error);
+                const message = error.code === 'auth/user-not-found'
+                    ? 'Akun email/password belum dibuat di Firebase Authentication. Minta admin membuat akun terlebih dahulu.'
+                    : error.message || 'Tautan reset password gagal dikirim.';
+                showAlert('Gagal Mengirim Tautan', message, '❌');
+            } finally {
+                hideLoader();
+            }
+        }
 
-            showLoader("Mengupdate PIN...");
-            dbRef('config/pin_guru').set(newPin).then(() => {
-                hideLoader();
-                document.getElementById('old_pin_guru').value = "";
-                document.getElementById('new_pin_guru').value = "";
-                showAlert("Berhasil", "Password guru telah diperbarui!", "✅");
-            }).catch(err => {
-                hideLoader();
-                showAlert("Gagal", "Terjadi kesalahan saat menyimpan PIN baru.", "❌");
-            });
+        async function keluarGuru() {
+            try {
+                await auth.signOut();
+                guruAuthUser = null;
+                openView('panelUtama');
+            } catch (error) {
+                console.error('Gagal keluar dari akun guru:', error);
+                showAlert('Gagal Keluar', error.message || 'Akun guru gagal dikeluarkan.', '❌');
+            }
         }
 
 
@@ -4759,6 +4846,9 @@
             };
 
             dbRef('tugas_multi/' + curSlot).set(payload).then(() => {
+                dataTugasSources.multi[curSlot] = payload;
+                dataTugas[curSlot] = payload;
+                updateDashboardTugas();
                 hideLoader();
                 showAlert("Berhasil Disimpan", "Tugas '" + jdl + "' telah berhasil disimpan sebagai Draft. Silakan terbitkan di menu Kelola Tugas.");
                 openView('panelMenuTugas');
@@ -4865,7 +4955,7 @@
 
                         if (sudah) {
                             const rekap = rekapGlobal.find(r => r.nama === curUser && (r.materi || "").trim().toLowerCase() === (t.judul || "").trim().toLowerCase());
-                            if (rekap) card.onclick = () => viewPDF(rekap.file, t.judul);
+                            if (rekap) card.onclick = () => viewPDFByKey(rekap.key, t.judul);
                         } else if (isExpired) {
                             card.onclick = () => showAlert("Terkunci", "Waktu pengerjaan tugas ini sudah berakhir.", "🔒");
                         } else if (isNotStarted) {
@@ -5233,25 +5323,50 @@
             doc.text(`Dokumen dicetak otomatis oleh Sistem LMS  •  ${new Date().toLocaleDateString('id-ID')}`, 10, 292);
             doc.text("Wali Kelas V", 200, 292, { align: 'right' });
             const pdfB64 = doc.output('datauristring').split(',')[1];
-            dbRef('rekap_v2').push({ nama: curUser, materi: t.judul, nilai: skor, file: pdfB64 }).then(() => {
+            const reportRef = dbRef('rekap_v2').push();
+            const report = { nama: curUser, materi: t.judul, nilai: skor };
+            const updates = {};
+            updates[`${BASE_PATH}/rekap_v2/${reportRef.key}`] = report;
+            updates[`${BASE_PATH}/rekap_files/${reportRef.key}`] = pdfB64;
+            db.ref().update(updates).then(() => {
                 // Update ke memori lokal secara langsung untuk responsivitas instan
-                rekapGlobal.push({ nama: curUser, materi: t.judul, nilai: skor, file: pdfB64 });
+                rekapGlobal.push({ ...report, key: reportRef.key });
                 hideLoader();
                 showAlert("Tugas Berhasil Terkirim!", "Jawaban kamu telah masuk ke sistem. Hubungi guru jika ada kendala.", "🚀", skor);
                 closeView('panelSiswa');
                 setTimeout(() => masukHalamanPilihTugas(curUser, false), 100);
+            }).catch(error => {
+                console.error('Gagal menyimpan jawaban tugas:', error);
+                hideLoader();
+                showAlert("Gagal Mengirim", "Jawaban belum tersimpan. Periksa koneksi internet lalu coba kirim ulang.", "❌");
             });
         }
 
-        function viewPDFByKey(key) {
+        async function viewPDFByKey(key, title) {
             const rekap = rekapGlobal.find(item => item.key === key);
-            if (!rekap || !rekap.file) {
+            if (!rekap) {
                 return showAlert("Gagal", "File jawaban siswa tidak ditemukan.", "❌");
             }
-            viewPDF(rekap.file, "Jawaban_" + (rekap.nama || "Siswa"));
+
+            const viewer = window.open('', '_blank');
+            if (!viewer) return showAlert("Gagal", "Popup PDF diblokir browser.", "❌");
+            try {
+                let file = rekap.file || rekapFileCache.get(key);
+                if (!file) {
+                    const snap = await dbRef('rekap_files/' + key).once('value');
+                    file = snap.val();
+                    if (!file) throw new Error('File PDF tidak ditemukan di Firebase.');
+                    rekapFileCache.set(key, file);
+                }
+                viewPDF(file, title || ("Jawaban_" + (rekap.nama || "Siswa")), viewer);
+            } catch (error) {
+                console.error('Gagal memuat file rekap:', error);
+                viewer.close();
+                showAlert("Gagal Memuat PDF", "File jawaban gagal dimuat: " + error.message, "❌");
+            }
         }
 
-        function viewPDF(b64, judul = "Lembar Dokumen") {
+        function viewPDF(b64, judul = "Lembar Dokumen", existingViewer = null) {
             try {
                 if (!b64 || typeof b64 !== 'string') throw new Error("Data PDF kosong atau tidak valid");
                 const rawB64 = b64.includes('base64,') ? b64.split('base64,').pop() : b64;
@@ -5264,7 +5379,7 @@
                     throw new Error("Data yang tersimpan bukan PDF yang valid");
                 }
                 const pdfDataUri = 'data:application/pdf;base64,' + normalizedB64;
-                const viewer = window.open('', '_blank');
+                const viewer = existingViewer || window.open('', '_blank');
                 if (!viewer) throw new Error("Popup PDF diblokir browser");
                 const safeTitle = String(judul || 'Lembar Dokumen').replace(/[<>"']/g, '');
                 const safeFileName = safeTitle.replace(/[^a-z0-9\-_ ]/gi, '').trim().replace(/\s+/g, '_') || 'Lembar_Dokumen';
@@ -5310,7 +5425,7 @@
         function openView(id) {
             // Proteksi: Panel Guru hanya bisa dibuka jika sudah Log In
             const guruPanels = ['panelGuru', 'panelBuat', 'panelRekap', 'panelPengaturan', 'panelMenuTugas'];
-            if (guruPanels.includes(id) && sessionStorage.getItem('lmsGuruAuth') !== 'true') {
+            if (guruPanels.includes(id) && (!guruAuthUser || !allowedTeacherEmails.includes(String(guruAuthUser.email || '').toLowerCase()))) {
                 openView('modalLogin');
                 return;
             }
@@ -5355,6 +5470,12 @@
             if (id === 'panelPengaturan') {
                 bukaPengaturan();
                 renderTableSiswaSetting();
+            }
+            if (id === 'panelMenuTugas') {
+                loadTeacherTasksForManagement().catch(error => {
+                    console.error('Gagal memuat semua tugas untuk guru:', error);
+                    showAlert('Gagal Memuat Tugas', 'Daftar tugas gagal dimuat: ' + error.message, '❌');
+                });
             }
 
             // Reset Rekap selection when opening the panel
@@ -5591,6 +5712,7 @@
                     snap.forEach(childSnap => {
                         if (childSnap.val().materi === filter) {
                             updates[`${BASE_PATH}/rekap_v2/${childSnap.key}`] = null;
+                            updates[`${BASE_PATH}/rekap_files/${childSnap.key}`] = null;
                             updates[`${BASE_PATH}/rekapitulasi/${childSnap.key}`] = null;
                             updates[`${BASE_PATH}/rekap/${childSnap.key}`] = null;
                         }
@@ -5627,6 +5749,7 @@
                 const updates = {};
                 const safeEmail = lmsEmailGuru.replace(/[.#$[\]@]/g, "_");
                 updates[`guru_data/${safeEmail}/rekap_v2/${key}`] = null;
+                updates[`guru_data/${safeEmail}/rekap_files/${key}`] = null;
                 updates[`guru_data/${safeEmail}/rekapitulasi/${key}`] = null;
                 updates[`guru_data/${safeEmail}/rekap/${key}`] = null;
 
