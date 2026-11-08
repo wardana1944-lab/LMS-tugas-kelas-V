@@ -2789,6 +2789,245 @@
             from { opacity: 0; }
             to   { opacity: 1; }
         }
+
+        #modalLogin {
+            padding: 24px !important;
+            overflow-y: auto;
+            background:
+                radial-gradient(ellipse at 50% 15%, rgba(0, 240, 255, 0.12), transparent 55%),
+                rgba(5, 8, 17, 0.94) !important;
+        }
+
+        #modalLogin .modal-glass {
+            width: min(100%, 440px);
+            max-width: 440px;
+            max-height: calc(100vh - 48px);
+            max-height: calc(100dvh - 48px);
+            overflow-y: auto;
+            scrollbar-color: rgba(0, 240, 255, 0.4) transparent;
+            scrollbar-width: thin;
+            padding: clamp(26px, 5vw, 40px);
+            border: 1px solid rgba(0, 240, 255, 0.42);
+            border-radius: 24px;
+            clip-path: none;
+            background: linear-gradient(155deg, rgba(21, 32, 56, 0.98), rgba(7, 17, 32, 0.98));
+            box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55), 0 0 36px rgba(0, 240, 255, 0.12);
+            text-align: left;
+            animation: modalEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        #modalLogin .modal-icon-header {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 22px;
+            border: 1px solid rgba(0, 240, 255, 0.45);
+            border-radius: 18px;
+            clip-path: none;
+            background: linear-gradient(145deg, rgba(0, 240, 255, 0.2), rgba(0, 240, 255, 0.06));
+            color: var(--ef-cyan);
+            box-shadow: 0 0 28px rgba(0, 240, 255, 0.14);
+        }
+
+        #modalLogin .modal-icon-header svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        #modalLogin h2 {
+            margin-bottom: 8px;
+            color: #ffffff;
+            font-size: clamp(1.35rem, 5vw, 1.65rem);
+            letter-spacing: 0.08em;
+            text-align: center;
+        }
+
+        #modalLogin > .modal-glass > p {
+            margin: 0 auto 26px;
+            color: #a9bad0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        #modalLogin .login-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 0;
+        }
+
+        #modalLogin .login-field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            color: #a9bad0;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-align: left;
+            text-transform: uppercase;
+        }
+
+        #modalLogin .login-field input {
+            width: 100%;
+            min-height: 52px;
+            margin: 0;
+            padding: 0 15px;
+            border: 1px solid rgba(0, 240, 255, 0.24);
+            border-radius: 12px;
+            outline: none;
+            background: rgba(3, 10, 22, 0.72);
+            color: #ffffff !important;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: normal;
+            text-align: left;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        #modalLogin .login-field input::placeholder {
+            color: #71839b;
+            opacity: 1;
+        }
+
+        #modalLogin .login-field input:focus {
+            border-color: var(--ef-cyan);
+            background: rgba(3, 10, 22, 0.95);
+            box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1);
+        }
+
+        #modalLogin .password-input-wrap {
+            position: relative;
+        }
+
+        #modalLogin .password-input-wrap input {
+            padding-right: 54px;
+        }
+
+        #modalLogin .password-visibility-toggle {
+            position: absolute;
+            top: 50%;
+            right: 8px;
+            display: grid;
+            width: 38px;
+            height: 38px;
+            padding: 0;
+            place-items: center;
+            transform: translateY(-50%);
+            border: 0;
+            border-radius: 9px;
+            background: transparent;
+            color: #8ca1b9;
+            cursor: pointer;
+            transition: color 0.18s ease, background 0.18s ease;
+        }
+
+        #modalLogin .password-visibility-toggle:hover {
+            background: rgba(0, 240, 255, 0.08);
+            color: var(--ef-cyan);
+        }
+
+        #modalLogin .password-visibility-toggle:focus-visible {
+            outline: 2px solid var(--ef-cyan);
+            outline-offset: 1px;
+        }
+
+        #modalLogin .password-visibility-toggle svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        #modalLogin .modal-actions {
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        #modalLogin .modal-actions button {
+            min-height: 48px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.83rem;
+            letter-spacing: 0.06em;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+        }
+
+        #modalLogin .modal-btn-primary {
+            min-height: 54px;
+            background: linear-gradient(110deg, #00e5ff, #76f4ff);
+            box-shadow: 0 8px 24px rgba(0, 229, 255, 0.2);
+        }
+
+        #modalLogin .modal-btn-primary:hover {
+            box-shadow: 0 12px 30px rgba(0, 229, 255, 0.32);
+        }
+
+        #modalLogin .modal-btn-ghost {
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            background: rgba(0, 240, 255, 0.07);
+            color: #b7f9ff;
+            box-shadow: none;
+        }
+
+        #modalLogin .modal-btn-ghost:hover {
+            border-color: rgba(0, 240, 255, 0.6);
+            background: rgba(0, 240, 255, 0.13);
+            box-shadow: none;
+        }
+
+        #modalLogin .modal-actions .modal-btn-ghost:nth-child(2) {
+            min-height: 34px;
+            padding: 4px 8px;
+            border: 0;
+            background: transparent;
+            color: #8bdff0;
+            font-size: 0.7rem;
+            letter-spacing: 0.04em;
+            box-shadow: none;
+        }
+
+        #modalLogin .modal-actions .modal-btn-ghost:nth-child(2):hover {
+            background: transparent;
+            color: var(--ef-cyan);
+            text-decoration: underline;
+        }
+
+        #modalLogin .modal-btn-ghost:last-child {
+            min-height: 42px;
+            border-color: transparent;
+            background: transparent;
+            color: #9aacc2;
+        }
+
+        #modalLogin .modal-actions button:focus-visible {
+            outline: 2px solid var(--ef-neon-yellow);
+            outline-offset: 3px;
+        }
+
+        @media (max-width: 600px) {
+            #modalLogin {
+                padding: 16px !important;
+            }
+
+            #modalLogin .modal-glass {
+                width: 100%;
+                max-height: calc(100vh - 32px);
+                max-height: calc(100dvh - 32px);
+                border-radius: 20px;
+            }
+        }
+
+        #modalLogin .modal-glass::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        #modalLogin .modal-glass::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #modalLogin .modal-glass::-webkit-scrollbar-thumb {
+            border-radius: 999px;
+            background: rgba(0, 240, 255, 0.35);
+        }
     </style>
 </head>
 
@@ -2978,11 +3217,24 @@
             </div>
             <h2>AKSES GURU</h2>
             <p>Masuk dengan email dan kata sandi akun guru.</p>
-            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
-                <input type="email" id="guruEmail" autocomplete="username" placeholder="Email guru"
-                    value="wardana1944@gmail.com" style="width: 100%; box-sizing: border-box;">
-                <input type="password" id="guruPassword" autocomplete="current-password" placeholder="Kata sandi"
-                    style="width: 100%; box-sizing: border-box;">
+            <div class="login-fields">
+                <label class="login-field" for="guruEmail">Email guru
+                    <input type="email" id="guruEmail" autocomplete="username" placeholder="nama@email.com"
+                        value="wardana1944@gmail.com">
+                </label>
+                <label class="login-field" for="guruPassword">Kata sandi
+                    <span class="password-input-wrap">
+                        <input type="password" id="guruPassword" autocomplete="current-password" placeholder="Masukkan kata sandi">
+                        <button class="password-visibility-toggle" type="button" aria-label="Tampilkan kata sandi"
+                            aria-pressed="false" onclick="toggleGuruPasswordVisibility()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </span>
+                </label>
             </div>
             <div class="modal-actions">
                 <button class="modal-btn-primary" onclick="loginGuruEmailPassword()">MASUK DASHBOARD</button>
@@ -3538,6 +3790,9 @@
 
             updateDashboardTugas();
             updateBadgeSiswa();
+            if (document.getElementById('panelRekap')?.style.display === 'block') {
+                updateFilterRekap();
+            }
             if (curUser && document.getElementById('panelPilihTugas').style.display === 'block') {
                 masukHalamanPilihTugas(curUser, false);
             }
@@ -3730,7 +3985,9 @@
                 });
                 rekapGlobal = [...dedupe.values()];
 
-                updateFilterRekap();
+                if (document.getElementById('panelRekap')?.style.display === 'block') {
+                    updateFilterRekap();
+                }
                 updateBadgeSiswa();
 
                 // Hindari menarik paksa siswa jika sedang mengerjakan ujian
@@ -4267,7 +4524,10 @@
             if (backdrop) backdrop.classList.remove('visible');
         }
 
+        let customDropdownsBound = false;
         function bindCustomDropdowns() {
+            if (customDropdownsBound) return;
+
             const backdrop = document.getElementById('dropdownBackdropGlobal') || (() => {
                 const el = document.createElement('div');
                 el.id = 'dropdownBackdropGlobal';
@@ -4295,6 +4555,7 @@
                     closeAllCustomDropdowns();
                 }
             });
+            customDropdownsBound = true;
         }
 
         function renderDropdownOptions(selectId, entries, placeholder) {
@@ -4380,7 +4641,10 @@
                 arsipMenu.innerHTML = '';
                 const entries = [...bulanArsip.entries()].sort((a, b) => b[0].localeCompare(a[0]));
                 if (!entries.length) {
-                    arsipMenu.innerHTML = '<div class="dropdown-option"><span>Belum ada arsip tugas lama</span></div>';
+                    const message = !teacherTasksLoaded && teacherTasksLoadPromise
+                        ? 'Memuat arsip tugas lama...'
+                        : 'Belum ada arsip tugas lama';
+                    arsipMenu.innerHTML = `<div class="dropdown-option"><span>${message}</span></div>`;
                 } else {
                     entries.forEach(([key, value]) => {
                         const label = document.createElement('div');
@@ -4546,6 +4810,20 @@
                 modal.style.display = 'none';
             }, 220);
             pendingConfirmAction = null;
+        }
+
+        function toggleGuruPasswordVisibility() {
+            const passwordInput = document.getElementById('guruPassword');
+            const toggle = document.querySelector('#modalLogin .password-visibility-toggle');
+            if (!passwordInput || !toggle) return;
+
+            const showPassword = passwordInput.type === 'password';
+            passwordInput.type = showPassword ? 'text' : 'password';
+            toggle.setAttribute('aria-pressed', String(showPassword));
+            toggle.setAttribute('aria-label', showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
+            toggle.innerHTML = showPassword
+                ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"></path><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"></path><path d="M9.9 5.2A10.7 10.7 0 0 1 12 5c6.4 0 10 7 10 7a14.8 14.8 0 0 1-3.1 3.8"></path><path d="M6.2 6.2A15.4 15.4 0 0 0 2 12s3.6 7 10 7a10.7 10.7 0 0 0 4-.8"></path></svg>'
+                : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
         }
 
         async function loginGuruEmailPassword() {
@@ -4860,14 +5138,24 @@
             const filterArsip = document.getElementById('filterTugasArsip')?.value || '';
             const filter = window.__selectedRekapJudul || filterAktif || filterArsip;
             const tb = document.getElementById('isiRekap');
-            if (tb) tb.innerHTML = '';
 
             const actionBtns = document.getElementById('actionButtonsPusat');
             if (actionBtns) actionBtns.style.display = filter ? 'grid' : 'none';
 
-            if (!filter) return;
-            SISWA.forEach((s, idx) => {
-                const d = rekapGlobal.find(r => r.nama === s.n && (r.materi || "").trim().toLowerCase() === filter.trim().toLowerCase());
+            if (!filter) {
+                if (tb) tb.innerHTML = '';
+                return;
+            }
+            const normalizedFilter = filter.trim().toLowerCase();
+            const rekapByStudent = new Map();
+            rekapGlobal.forEach((item) => {
+                const normalizedMateri = (item.materi || "").trim().toLowerCase();
+                if (normalizedMateri !== normalizedFilter || rekapByStudent.has(item.nama)) return;
+                rekapByStudent.set(item.nama, item);
+            });
+
+            const rows = SISWA.map((s, idx) => {
+                const d = rekapByStudent.get(s.n);
                 const isSelesai = !!d;
                 const aksiButtons = d ? `
             <div style="display:flex; gap:10px; justify-content:center;">
@@ -4880,7 +5168,7 @@
             </div>
         ` : `<span style="opacity:0.3;">—</span>`;
                 
-                tb.innerHTML += `<tr>
+                return `<tr>
             <td style="text-align:center; padding: 15px;" class="rank-cell">${idx + 1}</td>
             <td style="font-weight:700; color:white; padding: 15px;">${s.n.toUpperCase()}</td>
             <td style="text-align: center; padding: 15px;">
@@ -4892,6 +5180,7 @@
             <td style="text-align: center; padding: 15px;">${aksiButtons}</td>
         </tr>`;
             });
+            if (tb) tb.innerHTML = rows.join('');
         }
 
         function masukHalamanPilihTugas(nama, saveToStorage = true) {
@@ -5480,10 +5769,16 @@
 
             // Reset Rekap selection when opening the panel
             if (id === 'panelRekap') {
-                if (typeof updateFilterRekap === "function") updateFilterRekap();
-                setTimeout(() => {
-                    if (typeof updateFilterRekap === "function") updateFilterRekap();
-                }, 800);
+                const taskLoad = loadTeacherTasksForManagement();
+                updateFilterRekap();
+                taskLoad.catch(error => {
+                    console.error('Gagal memuat tugas untuk rekap:', error);
+                    const archiveMenu = document.getElementById('menuTugasArsip');
+                    if (archiveMenu) {
+                        archiveMenu.innerHTML = '<div class="dropdown-option"><span>Arsip tugas gagal dimuat</span></div>';
+                    }
+                    showAlert('Gagal Memuat Tugas', 'Daftar tugas gagal dimuat: ' + error.message, '❌');
+                });
             }
             
             // Scroll to top when switching views
