@@ -3482,8 +3482,16 @@
                         <input type="text" id="jdlMateri" placeholder="Contoh: MATEMATIKA BAB 1">
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 8px;">
-                        <label style="color: var(--ef-cyan); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">Durasi (Menit)</label>
-                        <input type="number" id="waktuTugas" value="60">
+                        <label style="color: var(--ef-cyan); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">Batas Waktu</label>
+                        <select id="modeDurasiTugas" onchange="ubahModeDurasiTugas()" style="padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); background: rgba(10, 14, 24, 0.7); color: white; font-weight: 700;">
+                            <option value="keseluruhan">Waktu pengerjaan keseluruhan</option>
+                            <option value="per_soal">Waktu pengerjaan per soal</option>
+                            <option value="tanpa_batas">Tanpa batas waktu</option>
+                        </select>
+                    </div>
+                    <div id="waktuTugasWrap" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label id="labelWaktuTugas" style="color: var(--ef-cyan); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">Durasi Keseluruhan (Menit)</label>
+                        <input type="number" id="waktuTugas" value="60" min="1" step="1">
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 8px;">
                         <label style="color: var(--ef-cyan); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">Mode Urutan Soal</label>
@@ -3546,7 +3554,7 @@
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px;">
                     <button class="btn btn-outline" style="padding: 20px; border-color: var(--ef-cyan); color: var(--ef-cyan);" onclick="pindahSoal(-1)">SEBELUMNYA</button>
-                    <button class="btn btn-blue" style="padding: 20px;" onclick="pindahSoal(1)">BERIKUTNYA</button>
+                    <button id="btnSoalSelanjutnya" class="btn btn-blue" style="padding: 20px;" onclick="pindahSoal(1)">BERIKUTNYA</button>
                 </div>
 
                 <div id="divKirim" style="display: none; margin-top: 30px;">
@@ -3573,7 +3581,7 @@
                                 <span class="dropdown-caret">▾</span>
                             </button>
                             <div class="dropdown-menu" id="menuTugasAktif"></div>
-                            <select id="filterTugasAktif" onchange="filterRekap()" style="display:none;">
+                            <select id="filterTugasAktif" onchange="pilihRekapTugas(this.value)" style="display:none;">
                                 <option value="">-- TUGAS AKTIF --</option>
                             </select>
                         </div>
@@ -3587,7 +3595,7 @@
                                 <span class="dropdown-caret">▾</span>
                             </button>
                             <div class="dropdown-menu" id="menuTugasArsip"></div>
-                            <select id="filterTugasArsip" onchange="filterRekap()" style="display:none;">
+                            <select id="filterTugasArsip" onchange="pilihRekapTugas(this.value)" style="display:none;">
                                 <option value="">-- ARSIP TUGAS LAMA --</option>
                             </select>
                         </div>
@@ -3718,6 +3726,12 @@
         let SISWA = [];
         let activeFirebaseRefs = {};
         let hasLoadedSiswaOnce = false;
+        let rekapLoaded = false;
+        let rekapLoadedTitle = '';
+        let rekapLoadingTitle = '';
+        let rekapLoadErrorTitle = '';
+        const rekapTugasCache = new Map();
+        const rekapTugasRequests = new Map();
         let teacherTasksLoaded = false;
         let teacherTasksLoadPromise = null;
         const rekapFileCache = new Map();
@@ -3777,6 +3791,7 @@
         });
 
         let dataTugas = {}, curSlot = "", curUser = "", curIdx = 0, curAns = [], timerInterval, sisaWaktu, rekapGlobal = [], currentSoalAcak = [];
+        let modeDurasiAktif = 'keseluruhan', durasiSoalUnitAktif = 'menit', deadlineKeseluruhan = 0, deadlineSoal = [], soalKedaluwarsa = [];
         let dataTugasSources = { multi: {}, active: {}, tugas: {}, data: {} };
         let editIndexSiswa = -1;
 
@@ -3901,6 +3916,12 @@
             localStorage.removeItem('lmsBasePath');
             BASE_PATH = initialPath;
             dataTugas = {}; rekapGlobal = [];
+            rekapLoaded = false;
+            rekapLoadedTitle = '';
+            rekapLoadingTitle = '';
+            rekapLoadErrorTitle = '';
+            rekapTugasCache.clear();
+            rekapTugasRequests.clear();
             dataTugasSources = { multi: {}, active: {}, tugas: {}, data: {} };
             teacherTasksLoaded = false;
             teacherTasksLoadPromise = null;
@@ -3976,14 +3997,8 @@
                     });
                 }
 
-                const dedupe = new Map();
-                rekapGlobal.forEach(item => {
-                    if (item && item.key) dedupe.set(item.key, item);
-                });
-                nextItems.forEach(item => {
-                    if (item && item.key) dedupe.set(item.key, item);
-                });
-                rekapGlobal = [...dedupe.values()];
+                rekapGlobal = nextItems;
+                rekapLoaded = true;
 
                 if (document.getElementById('panelRekap')?.style.display === 'block') {
                     updateFilterRekap();
@@ -3995,10 +4010,20 @@
                     masukHalamanPilihTugas(curUser, false);
                 }
             };
-            getRef('rekap_v2').on('value', mergeRekap, err => {
-                console.error('Gagal memuat rekap tugas:', err);
-                showAlert('Koneksi Bermasalah', 'Data status tugas gagal dimuat. Periksa koneksi internet.', '❌');
-            });
+            activeFirebaseRefs.loadRekap = () => {
+                if (activeFirebaseRefs.rekap) return;
+                const rekapRef = getRef('rekap_v2');
+                activeFirebaseRefs.rekap = rekapRef;
+                rekapRef.on('value', mergeRekap, err => {
+                    console.error('Gagal memuat rekap tugas:', err);
+                    rekapRef.off();
+                    delete activeFirebaseRefs.rekap;
+                    if (document.getElementById('panelRekap')?.style.display === 'block' ||
+                        document.getElementById('panelPilihTugas')?.style.display === 'block') {
+                        showAlert('Koneksi Bermasalah', 'Data status tugas gagal dimuat. Periksa koneksi internet.', '❌');
+                    }
+                });
+            };
 
             // Synchronize Identity from Firebase
             getRef('identitas').on('value', (snap) => {
@@ -4213,7 +4238,7 @@
                             <div class="ks-info">
                                 <span style="background: var(--ef-neon-yellow); color: var(--ef-deep-blue); font-size: 0.6rem; font-weight: 900; padding: 2px 8px; border-radius: 4px; font-style: italic; margin-bottom: 5px; display: inline-block;">TUGAS ${idx + 1}</span>
                                 <h3>${t.judul.toUpperCase()}</h3>
-                                <p style="font-size: 0.7rem; color: var(--ef-cyan); font-weight: 800; margin-top: 5px;">DURASI: ${t.durasi} MENIT • BERAKHIR: ${wktExp}</p>
+                                <p style="font-size: 0.7rem; color: var(--ef-cyan); font-weight: 800; margin-top: 5px;">${labelDurasiTugas(t)} • BERAKHIR: ${wktExp}</p>
                             </div>
                             <div style="font-size: 1.5rem; filter: drop-shadow(0 0 10px var(--ef-cyan));">⚡</div>
                             <div class="wave-progress">
@@ -4295,7 +4320,7 @@
                             <h3 style="font-size: 1.1rem; color: white; font-weight: 900; margin-top: 8px; font-style: italic; text-transform: uppercase; white-space: normal; overflow-wrap: break-word;">${t.judul}</h3>
                         </div>
                         <div style="text-align: right; margin-left: 10px;">
-                            <p style="color: var(--ef-cyan); font-size: 0.7rem; font-weight: 900; font-style: italic;">${t.durasi} MIN</p>
+                            <p style="color: var(--ef-cyan); font-size: 0.7rem; font-weight: 900; font-style: italic;">${labelDurasiTugas(t)}</p>
                         </div>
                     </div>
                     <div style="margin-bottom: 20px;">
@@ -4511,9 +4536,98 @@
         }
 
         function getSelectedRekapJudul() {
+            const selected = String(window.__selectedRekapJudul || '').trim();
             const aktif = document.getElementById('filterTugasAktif')?.value?.trim() || '';
             const arsip = document.getElementById('filterTugasArsip')?.value?.trim() || '';
-            return aktif || arsip || '';
+            return selected || aktif || arsip || '';
+        }
+
+        function normalizedJudulRekap(judul) {
+            return String(judul || '').trim().toLowerCase();
+        }
+
+        function gabungkanRekapTugas(judul, items) {
+            const normalizedJudul = normalizedJudulRekap(judul);
+            rekapGlobal = rekapGlobal.filter(item => normalizedJudulRekap(item.materi) !== normalizedJudul);
+            rekapGlobal.push(...items);
+        }
+
+        function loadRekapTugas(judul) {
+            const normalizedJudul = normalizedJudulRekap(judul);
+            if (!normalizedJudul) return Promise.resolve();
+
+            if (rekapTugasCache.has(normalizedJudul)) {
+                gabungkanRekapTugas(judul, rekapTugasCache.get(normalizedJudul));
+                rekapLoadedTitle = normalizedJudul;
+            } else {
+                rekapLoadedTitle = '';
+            }
+            rekapLoadErrorTitle = '';
+            rekapLoadingTitle = normalizedJudul;
+            filterRekap();
+
+            if (rekapTugasRequests.has(normalizedJudul)) {
+                return rekapTugasRequests.get(normalizedJudul);
+            }
+
+            const request = dbRef('rekap_v2')
+                .orderByChild('materi')
+                .equalTo(judul)
+                .once('value')
+                .then(snap => {
+                    const items = [];
+                    snap.forEach(childSnap => {
+                        const item = childSnap.val();
+                        if (item) items.push({ ...item, key: childSnap.key });
+                    });
+                    rekapTugasCache.set(normalizedJudul, items);
+                    gabungkanRekapTugas(judul, items);
+                    if (normalizedJudulRekap(getSelectedRekapJudul()) === normalizedJudul) {
+                        rekapLoadedTitle = normalizedJudul;
+                        rekapLoadErrorTitle = '';
+                        filterRekap();
+                        updateBadgeSiswa();
+                    }
+                })
+                .catch(error => {
+                    console.error('Gagal memuat rekap tugas terpilih:', error);
+                    if (normalizedJudulRekap(getSelectedRekapJudul()) === normalizedJudul) {
+                        rekapLoadingTitle = '';
+                        rekapLoadErrorTitle = normalizedJudul;
+                        filterRekap();
+                        showAlert('Gagal Memuat Rekap', 'Data rekap tugas gagal dimuat: ' + error.message, '❌');
+                    }
+                })
+                .finally(() => {
+                    rekapTugasRequests.delete(normalizedJudul);
+                    if (rekapLoadingTitle === normalizedJudul) rekapLoadingTitle = '';
+                });
+            rekapTugasRequests.set(normalizedJudul, request);
+            return request;
+        }
+
+        function pilihRekapTugas(judul) {
+            const aktif = document.getElementById('filterTugasAktif');
+            const arsip = document.getElementById('filterTugasArsip');
+            if (judul && aktif?.value === judul && arsip) {
+                arsip.value = '';
+                const label = arsip.closest('.futuristic-dropdown')?.querySelector('.dropdown-label');
+                if (label) label.textContent = '-- ARSIP TUGAS LAMA --';
+            } else if (judul && arsip?.value === judul && aktif) {
+                aktif.value = '';
+                const label = aktif.closest('.futuristic-dropdown')?.querySelector('.dropdown-label');
+                if (label) label.textContent = '-- TUGAS AKTIF --';
+            }
+            window.__selectedRekapJudul = judul || '';
+            if (judul) loadRekapTugas(judul);
+            else filterRekap();
+        }
+
+        function labelDurasiTugas(tugas) {
+            const mode = tugas.durasiMode || 'keseluruhan';
+            if (mode === 'tanpa_batas') return 'TANPA BATAS WAKTU';
+            if (mode === 'per_soal') return `WAKTU DIATUR PER SOAL (${tugas.durasiPerSoalUnit === 'detik' ? 'DETIK' : 'MENIT'})`;
+            return `DURASI: ${Number(tugas.durasi) || 60} MENIT`;
         }
 
         function closeAllCustomDropdowns() {
@@ -4545,6 +4659,16 @@
                     if (!isOpen) {
                         wrap.classList.add('open');
                         backdrop.classList.add('visible');
+                        if (trigger.dataset.target === 'filterTugasArsip' && !teacherTasksLoaded) {
+                            const archiveLoad = loadTeacherTasksForManagement();
+                            updateFilterRekap();
+                            archiveLoad.catch(error => {
+                                console.error('Gagal memuat arsip tugas:', error);
+                                const archiveMenu = document.getElementById('menuTugasArsip');
+                                if (archiveMenu) archiveMenu.innerHTML = '<div class="dropdown-option"><span>Arsip tugas gagal dimuat</span></div>';
+                                showAlert('Gagal Memuat Arsip', 'Daftar arsip gagal dimuat: ' + error.message, '❌');
+                            });
+                        }
                     }
                 });
             });
@@ -4589,8 +4713,7 @@
                     const label = wrap?.querySelector('.dropdown-label');
                     if (label) label.textContent = judul;
                     closeAllCustomDropdowns();
-                    window.__selectedRekapJudul = judul;
-                    if (typeof filterRekap === 'function') filterRekap();
+                    pilihRekapTugas(judul);
                 };
                 menu.appendChild(option);
             });
@@ -4641,9 +4764,11 @@
                 arsipMenu.innerHTML = '';
                 const entries = [...bulanArsip.entries()].sort((a, b) => b[0].localeCompare(a[0]));
                 if (!entries.length) {
-                    const message = !teacherTasksLoaded && teacherTasksLoadPromise
+                    const message = teacherTasksLoadPromise
                         ? 'Memuat arsip tugas lama...'
-                        : 'Belum ada arsip tugas lama';
+                        : !teacherTasksLoaded
+                            ? 'Buka menu ini untuk memuat arsip lama'
+                            : 'Belum ada arsip tugas lama';
                     arsipMenu.innerHTML = `<div class="dropdown-option"><span>${message}</span></div>`;
                 } else {
                     entries.forEach(([key, value]) => {
@@ -4663,8 +4788,7 @@
                                 const targetLabel = wrap?.querySelector('.dropdown-label');
                                 if (targetLabel) targetLabel.textContent = judul;
                                 closeAllCustomDropdowns();
-                                window.__selectedRekapJudul = judul;
-                                if (typeof filterRekap === 'function') filterRekap();
+                                pilihRekapTugas(judul);
                             };
                             arsipMenu.appendChild(option);
                         });
@@ -4909,19 +5033,40 @@
             document.getElementById('wadahInput').innerHTML = "";
             document.getElementById('jdlMateri').value = "";
             document.getElementById('waktuTugas').value = "60";
+            document.getElementById('modeDurasiTugas').value = "keseluruhan";
             document.getElementById('modeAcakSoal').value = "acak";
 
             const t = dataTugas[curSlot];
             if (t) {
                 document.getElementById('jdlMateri').value = t.judul || "";
                 document.getElementById('waktuTugas').value = t.durasi || "60";
+                document.getElementById('modeDurasiTugas').value = t.durasiMode || "keseluruhan";
                 const modeValue = t.acakSoal === false ? 'urut' : 'acak';
                 document.getElementById('modeAcakSoal').value = modeValue;
                 if (t.soal) {
-                    t.soal.forEach(s => { tambahSoalManual(s); });
+                    t.soal.forEach(s => {
+                        const soalUntukEditor = t.durasiMode === 'per_soal'
+                            ? {
+                                ...s,
+                                durasi: Math.max(1, Number(s.durasi) || 1) * (t.durasiPerSoalUnit === 'detik' ? 1 : 60)
+                            }
+                            : s;
+                        tambahSoalManual(soalUntukEditor);
+                    });
                 }
             }
+            ubahModeDurasiTugas();
             openView('panelBuat');
+        }
+
+        function ubahModeDurasiTugas() {
+            const mode = document.getElementById('modeDurasiTugas').value;
+            const durationWrap = document.getElementById('waktuTugasWrap');
+            const questionDurationWraps = document.querySelectorAll('.durasi-soal-wrap');
+            durationWrap.style.display = mode === 'keseluruhan' ? 'flex' : 'none';
+            questionDurationWraps.forEach(wrap => {
+                wrap.style.display = mode === 'per_soal' ? 'flex' : 'none';
+            });
         }
 
         function detectMathExpression(text) {
@@ -5035,7 +5180,11 @@
             let html = `<button class="btn-hapus-soal" onclick="hapusSoal(this)">HAPUS</button><b class="label-nomor">Soal No ${no}</b>
     <div class="toolbar"><button class="btn-tool" onclick="formatDoc('bold')">B</button><button class="btn-tool" onclick="formatDoc('italic')">I</button><button class="btn-tool" title="Masukkan rumus" onclick="event.preventDefault(); const editor = this.parentElement.parentElement.querySelector('.editor'); editor.focus(); document.execCommand('insertHTML', false, '\\(x^2 + y^2 = z^2\\)'); forceEditorContrast(editor); renderMathInEditor(editor); return false;">∑</button><label class="btn-tool" style="font-size:0.7rem; display:flex; align-items:center; justify-content:center;">🖼️<input type="file" hidden onchange="insertImage(this, 'prev-${no}')" accept="image/*"></label></div>
     <div class="editor" id="ed-${no}" contenteditable="true" onpaste="sanitizeEditorPaste(event)" oninput="forceEditorContrast(this)">${data.tanya || ''}</div>
-    <img id="prev-${no}" src="${data.img || ''}" class="img-preview" style="display:${data.img ? 'block' : 'none'}; max-width:100%; border-radius:8px; margin-bottom:15px;">`;
+    <img id="prev-${no}" src="${data.img || ''}" class="img-preview" style="display:${data.img ? 'block' : 'none'}; max-width:100%; border-radius:8px; margin-bottom:15px;">
+    <div class="durasi-soal-wrap" style="display:${document.getElementById('modeDurasiTugas').value === 'per_soal' ? 'flex' : 'none'}; flex-direction:column; gap:8px; margin:12px 0;">
+        <label style="color:var(--ef-cyan); font-size:0.7rem; font-weight:900; text-transform:uppercase;">Waktu Soal Ini (Detik)</label>
+        <input class="q-durasi" type="number" min="1" step="1" value="${Number(data.durasi) > 0 ? Number(data.durasi) : 60}">
+    </div>`;
             if (jenis === 'PG' || jenis === 'MCMA') {
                 const o = data.opsi || ["", "", "", ""];
                 const kunciMCMA = Array.isArray(data.kunci) ? data.kunci : [data.kunci || "A"];
@@ -5091,29 +5240,39 @@
 
         function simpanKeFirebase() {
             const jdl = document.getElementById('jdlMateri').value;
-            const durasi = document.getElementById('waktuTugas').value;
+            const modeDurasi = document.getElementById('modeDurasiTugas').value;
+            const durasi = Number(document.getElementById('waktuTugas').value);
             const acakSoal = document.getElementById('modeAcakSoal').value === 'acak';
 
             if (!jdl) return showAlert("Peringatan", "Judul materi wajib diisi!", "⚠️");
+            if (modeDurasi === 'keseluruhan' && (!Number.isInteger(durasi) || durasi < 1)) {
+                return showAlert("Peringatan", "Durasi keseluruhan minimal 1 menit.", "⚠️");
+            }
+            if (modeDurasi === 'per_soal' && [...document.querySelectorAll('#wadahInput .q-durasi')].some(input => !Number.isInteger(Number(input.value)) || Number(input.value) < 1)) {
+                return showAlert("Peringatan", "Waktu setiap soal minimal 1 detik.", "⚠️");
+            }
             showLoader("Menyimpan...");
             const soalArr = [];
             document.querySelectorAll('#wadahInput .soal-box').forEach((box) => {
                 const jenis = box.dataset.jenis;
                 const tanya = box.querySelector('.editor').innerHTML;
                 const img = box.querySelector('.img-preview').src;
+                const batasPerSoal = modeDurasi === 'per_soal' ? { durasi: Number(box.querySelector('.q-durasi').value) } : {};
                 if (jenis === 'PG' || jenis === 'MCMA') {
                     const kunci = jenis === 'MCMA' ? [...box.querySelectorAll('.q-kunci-mcma:checked')].map(input => input.value) : box.querySelector('.q-kunci').value;
-                    soalArr.push({ jenis, tanya, img: img.startsWith('data') ? img : (img || ""), opsi: [box.querySelector('.oa').value, box.querySelector('.ob').value, box.querySelector('.oc').value, box.querySelector('.od').value], kunci });
+                    soalArr.push({ jenis, tanya, img: img.startsWith('data') ? img : (img || ""), opsi: [box.querySelector('.oa').value, box.querySelector('.ob').value, box.querySelector('.oc').value, box.querySelector('.od').value], kunci, ...batasPerSoal });
                 } else if (jenis === 'KATEGORI') {
                     const pernyataan = [...box.querySelectorAll('.kategori-row')].map(row => ({ teks: row.querySelector('.kategori-teks').value, kunci: row.querySelector('.kategori-kunci').value }));
-                    soalArr.push({ jenis, tanya, img: img.startsWith('data') ? img : (img || ""), pernyataan });
-                } else { soalArr.push({ jenis, tanya, img: img.startsWith('data') ? img : (img || "") }); }
+                    soalArr.push({ jenis, tanya, img: img.startsWith('data') ? img : (img || ""), pernyataan, ...batasPerSoal });
+                } else { soalArr.push({ jenis, tanya, img: img.startsWith('data') ? img : (img || ""), ...batasPerSoal }); }
             });
 
             const existing = dataTugas[curSlot] || {};
             const payload = {
                 judul: jdl,
-                durasi: durasi,
+                durasi: modeDurasi === 'keseluruhan' ? durasi : null,
+                durasiMode: modeDurasi,
+                durasiPerSoalUnit: modeDurasi === 'per_soal' ? 'detik' : null,
                 soal: soalArr,
                 acakSoal: acakSoal,
                 aktif: existing.aktif || false, 
@@ -5130,6 +5289,10 @@
                 hideLoader();
                 showAlert("Berhasil Disimpan", "Tugas '" + jdl + "' telah berhasil disimpan sebagai Draft. Silakan terbitkan di menu Kelola Tugas.");
                 openView('panelMenuTugas');
+            }).catch(error => {
+                console.error('Gagal menyimpan tugas:', error);
+                hideLoader();
+                showAlert("Gagal Menyimpan", "Tugas gagal disimpan: " + error.message, "❌");
             });
         }
 
@@ -5138,15 +5301,28 @@
             const filterArsip = document.getElementById('filterTugasArsip')?.value || '';
             const filter = window.__selectedRekapJudul || filterAktif || filterArsip;
             const tb = document.getElementById('isiRekap');
+            const normalizedFilter = normalizedJudulRekap(filter);
+            const hasRekapTugas = Boolean(filter && rekapLoadedTitle === normalizedFilter);
 
             const actionBtns = document.getElementById('actionButtonsPusat');
             if (actionBtns) actionBtns.style.display = filter ? 'grid' : 'none';
+            const actionButtons = actionBtns?.querySelectorAll('button') || [];
+            if (actionButtons[0]) actionButtons[0].disabled = Boolean(filter && !hasRekapTugas);
+            if (actionButtons[2]) actionButtons[2].disabled = Boolean(filter && !hasRekapTugas);
 
             if (!filter) {
                 if (tb) tb.innerHTML = '';
                 return;
             }
-            const normalizedFilter = filter.trim().toLowerCase();
+            if (!hasRekapTugas) {
+                const message = rekapLoadingTitle === normalizedFilter
+                    ? 'Memuat rekap tugas terpilih...'
+                    : rekapLoadErrorTitle === normalizedFilter
+                        ? 'Rekap tugas gagal dimuat. Coba pilih tugas kembali.'
+                        : 'Pilih tugas untuk memuat rekap nilainya.';
+                if (tb) tb.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--ef-cyan);">${message}</td></tr>`;
+                return;
+            }
             const rekapByStudent = new Map();
             rekapGlobal.forEach((item) => {
                 const normalizedMateri = (item.materi || "").trim().toLowerCase();
@@ -5234,7 +5410,7 @@
                             <div class="ks-info">
                                 <span style="background: ${badgeColor}; color: var(--ef-deep-blue); font-size: 0.6rem; font-weight: 900; padding: 2px 8px; border-radius: 4px; font-style: italic; margin-bottom: 5px; display: inline-block;">TUGAS</span>
                                 <h3 style="font-size: 1rem;">${t.judul.toUpperCase()}</h3>
-                                <p style="font-size: 0.7rem; color: var(--ef-text-light); font-weight: 800; margin-top: 5px;">DURASI: ${t.durasi} MENIT</p>
+                                <p style="font-size: 0.7rem; color: var(--ef-text-light); font-weight: 800; margin-top: 5px;">${labelDurasiTugas(t)}</p>
                             </div>
                             <div style="background: ${badgeColor}; color: var(--ef-deep-blue); font-weight: 900; padding: 8px 15px; border-radius: 4px; font-size: 0.7rem; font-style: italic; box-shadow: 0 0 15px ${badgeColor}44;">${badgeText}</div>
                             <div class="wave-progress">
@@ -5263,7 +5439,11 @@
         }
 
         function mulaiKerja(slot) {
-            const t = dataTugas[slot]; curSlot = slot; curIdx = 0;
+            const t = dataTugas[slot];
+            if (!t || !Array.isArray(t.soal) || t.soal.length === 0) {
+                return showAlert("Tugas Kosong", "Tugas ini belum memiliki soal.", "⚠️");
+            }
+            curSlot = slot; curIdx = 0;
             const urutkanSoal = t.acakSoal === false ? [...t.soal] : [...t.soal].sort(() => Math.random() - 0.5);
 
             currentSoalAcak = urutkanSoal.map(s => {
@@ -5285,11 +5465,21 @@
             });
 
             curAns = new Array(currentSoalAcak.length).fill("");
-            sisaWaktu = t.durasi * 60; openView('panelSiswa'); startTimer(); renderSoal();
+            modeDurasiAktif = t.durasiMode || 'keseluruhan';
+            durasiSoalUnitAktif = t.durasiPerSoalUnit === 'detik' ? 'detik' : 'menit';
+            sisaWaktu = modeDurasiAktif === 'keseluruhan' ? (Number(t.durasi) || 60) * 60 : 0;
+            deadlineKeseluruhan = modeDurasiAktif === 'keseluruhan' ? Date.now() + sisaWaktu * 1000 : 0;
+            deadlineSoal = new Array(currentSoalAcak.length).fill(null);
+            soalKedaluwarsa = new Array(currentSoalAcak.length).fill(false);
+            openView('panelSiswa'); startTimer(); renderSoal();
         }
 
         function renderSoal() {
             const s = currentSoalAcak[curIdx];
+            if (modeDurasiAktif === 'per_soal' && deadlineSoal[curIdx] === null) {
+                const durasiSoal = Math.max(1, Number(s.durasi) || 1) * (durasiSoalUnitAktif === 'detik' ? 1 : 60);
+                deadlineSoal[curIdx] = Date.now() + durasiSoal * 1000;
+            }
             const teksSoal = document.getElementById('teksSoal');
             const imgSoalSiswa = document.getElementById('imgSoalSiswa');
             if (teksSoal) teksSoal.innerHTML = `<span style="color: var(--ef-neon-yellow); font-weight: 950; font-style: italic; margin-right: 15px; text-shadow: 0 0 10px rgba(210, 255, 0, 0.3);">[${(curIdx + 1).toString().padStart(2, '0')}]</span> ${s.tanya}`;
@@ -5317,6 +5507,19 @@
             const area = document.getElementById('areaJawaban'); 
             if (area) {
                 area.innerHTML = "";
+                if (modeDurasiAktif === 'per_soal' && soalKedaluwarsa[curIdx]) {
+                    area.innerHTML = '<div role="status" style="padding:18px;border:1px solid var(--ef-magenta);border-radius:12px;color:var(--ef-magenta);font-weight:800;"><strong>WAKTU HABIS</strong><br>Soal ini terkunci dan tidak dapat dijawab lagi.</div>';
+                    const nextButton = document.getElementById('btnSoalSelanjutnya');
+                    if (nextButton) {
+                        const soalTerakhir = curIdx === currentSoalAcak.length - 1;
+                        nextButton.textContent = 'SOAL SELANJUTNYA';
+                        nextButton.style.display = soalTerakhir ? 'none' : '';
+                    }
+                    const divKirim = document.getElementById('divKirim');
+                    if (divKirim) divKirim.style.display = curIdx === currentSoalAcak.length - 1 ? 'block' : 'none';
+                    updateTimerDisplay(0);
+                    return;
+                }
                 // Memastikan layout vertikal (kolom) agar jawaban selalu di bawah soal
                 area.style.display = 'flex';
                 area.style.flexDirection = 'column';
@@ -5412,6 +5615,12 @@
             }
             const divKirim = document.getElementById('divKirim');
             if (divKirim) divKirim.style.display = (curIdx === currentSoalAcak.length - 1) ? 'block' : 'none';
+            const nextButton = document.getElementById('btnSoalSelanjutnya');
+            if (nextButton) {
+                nextButton.textContent = 'BERIKUTNYA';
+                nextButton.style.display = '';
+            }
+            updateTimerDisplay();
         }
 
         function updateGridColor() {
@@ -5427,8 +5636,8 @@
             });
         }
 
-        async function submitJawaban() {
-            if (!confirm("Kirim jawaban sekarang?")) return;
+        async function submitJawaban(autoSubmit = false) {
+            if (!autoSubmit && !confirm("Kirim jawaban sekarang?")) return;
             showLoader("Mengirim..."); clearInterval(timerInterval);
             await loadPdfLibraries();
             const t = dataTugas[curSlot];
@@ -5718,6 +5927,10 @@
                 openView('modalLogin');
                 return;
             }
+            if (id !== 'panelPilihTugas' && !id.includes('modal') && activeFirebaseRefs.rekap) {
+                activeFirebaseRefs.rekap.off();
+                delete activeFirebaseRefs.rekap;
+            }
 
             // HEADER VISIBILITY: Only show header on panelUtama
             if (id === 'panelUtama') {
@@ -5769,16 +5982,15 @@
 
             // Reset Rekap selection when opening the panel
             if (id === 'panelRekap') {
-                const taskLoad = loadTeacherTasksForManagement();
                 updateFilterRekap();
-                taskLoad.catch(error => {
-                    console.error('Gagal memuat tugas untuk rekap:', error);
-                    const archiveMenu = document.getElementById('menuTugasArsip');
-                    if (archiveMenu) {
-                        archiveMenu.innerHTML = '<div class="dropdown-option"><span>Arsip tugas gagal dimuat</span></div>';
-                    }
-                    showAlert('Gagal Memuat Tugas', 'Daftar tugas gagal dimuat: ' + error.message, '❌');
-                });
+                const selectedTask = getSelectedRekapJudul();
+                if (selectedTask) {
+                    window.__selectedRekapJudul = selectedTask;
+                    loadRekapTugas(selectedTask);
+                }
+            }
+            if (id === 'panelPilihTugas' && activeFirebaseRefs.loadRekap) {
+                activeFirebaseRefs.loadRekap();
             }
             
             // Scroll to top when switching views
@@ -5808,15 +6020,78 @@
                 }
             }, timeout);
         }
-        function pindahSoal(n) { const max = currentSoalAcak.length; if (curIdx + n >= 0 && curIdx + n < max) { curIdx += n; renderSoal(); } }
-        function startTimer() { timerInterval = setInterval(() => { sisaWaktu--; let m = Math.floor(sisaWaktu / 60), s = sisaWaktu % 60; document.getElementById('displayTimer').innerText = `${m}:${s < 10 ? '0' + s : s}`; if (sisaWaktu <= 0) submitJawaban(); }, 1000); }
+        function pindahSoal(n) {
+            const next = curIdx + n;
+            if (next >= 0 && next < currentSoalAcak.length) {
+                curIdx = next;
+                renderSoal();
+            }
+        }
+
+        function updateTimerDisplay(seconds) {
+            const display = document.getElementById('displayTimer');
+            if (!display) return;
+            if (modeDurasiAktif === 'tanpa_batas') {
+                display.innerText = '∞';
+                return;
+            }
+
+            const remaining = seconds !== undefined
+                ? seconds
+                : modeDurasiAktif === 'per_soal'
+                    ? Math.max(0, Math.ceil(((deadlineSoal[curIdx] || Date.now()) - Date.now()) / 1000))
+                    : Math.max(0, Math.ceil((deadlineKeseluruhan - Date.now()) / 1000));
+            if (modeDurasiAktif === 'per_soal') {
+                display.innerText = `${remaining} DETIK`;
+                return;
+            }
+            const minutes = Math.floor(remaining / 60);
+            const secs = remaining % 60;
+            display.innerText = `${minutes}:${secs < 10 ? '0' + secs : secs}`;
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            if (modeDurasiAktif === 'tanpa_batas') {
+                updateTimerDisplay();
+                return;
+            }
+
+            timerInterval = setInterval(() => {
+                if (modeDurasiAktif === 'keseluruhan') {
+                    sisaWaktu = Math.max(0, Math.ceil((deadlineKeseluruhan - Date.now()) / 1000));
+                    updateTimerDisplay(sisaWaktu);
+                    if (sisaWaktu <= 0) submitJawaban(true);
+                    return;
+                }
+
+                const now = Date.now();
+                const soalAktifSebelumnyaKedaluwarsa = soalKedaluwarsa[curIdx];
+                deadlineSoal.forEach((deadline, index) => {
+                    if (deadline && now >= deadline) soalKedaluwarsa[index] = true;
+                });
+                if (soalKedaluwarsa[curIdx]) {
+                    updateTimerDisplay(0);
+                    if (!soalAktifSebelumnyaKedaluwarsa) renderSoal();
+                    return;
+                }
+                updateTimerDisplay();
+            }, 250);
+        }
         function kembaliKeDaftarTugas() { if (confirm("Kembali ke daftar?")) { clearInterval(timerInterval); closeView('panelSiswa'); openView('panelPilihTugas'); } }
+
+        function namaFilePDF(prefix, title) {
+            const safeTitle = String(title || 'Dokumen').replace(/[^a-z0-9\-_ ]/gi, '').trim().replace(/\s+/g, '_');
+            return `${prefix}_${safeTitle || 'Dokumen'}.pdf`;
+        }
 
         async function exportRekapPDF() {
             const filter = getSelectedRekapJudul();
             if (!filter) return showAlert("Peringatan", "Pilih judul tugas terlebih dahulu!", "⚠️");
+            if (rekapLoadedTitle !== normalizedJudulRekap(filter)) return showAlert("Mohon Tunggu", "Rekap tugas terpilih masih dimuat dari Firebase.", "⏳");
 
             showLoader("Mempersiapkan PDF...");
+            try {
             await loadPdfLibraries();
 
             const { jsPDF } = window.jspdf;
@@ -5881,9 +6156,19 @@
             doc.text(`${SISWA.length} Siswa`, 145, 62);
 
             // === SUMMARY ROW ===
-            const selesaiCount = SISWA.filter(s => rekapGlobal.some(r => r.nama === s.n && (r.materi || "").trim().toLowerCase() === (filter || "").trim().toLowerCase())).length;
+            const normalizedFilter = filter.trim().toLowerCase();
+            const rekapUntukTugas = new Map();
+            rekapGlobal.forEach(report => {
+                if ((report.materi || "").trim().toLowerCase() === normalizedFilter && !rekapUntukTugas.has(report.nama)) {
+                    rekapUntukTugas.set(report.nama, report);
+                }
+            });
+            const selesaiCount = SISWA.filter(s => rekapUntukTugas.has(s.n)).length;
             const belumCount = SISWA.length - selesaiCount;
-            const nilaiArr = SISWA.map(s => { const d = rekapGlobal.find(r => r.nama === s.n && (r.materi || "").trim().toLowerCase() === (filter || "").trim().toLowerCase()); return d && typeof d.nilai === 'number' ? d.nilai : null; }).filter(v => v !== null);
+            const nilaiArr = SISWA.map(s => {
+                const report = rekapUntukTugas.get(s.n);
+                return report && typeof report.nilai === 'number' ? report.nilai : null;
+            }).filter(v => v !== null);
             const rataRata = nilaiArr.length > 0 ? Math.round(nilaiArr.reduce((a, b) => a + b, 0) / nilaiArr.length) : '-';
 
             const summaryY = 73;
@@ -5908,7 +6193,7 @@
 
             // === MAIN TABLE ===
             const tableData = SISWA.map((s, i) => {
-                const d = rekapGlobal.find(r => r.nama === s.n && r.materi === filter);
+                const d = rekapUntukTugas.get(s.n);
                 const displayAbsen = s.a || (i + 1).toString().padStart(2, '0');
                 return [displayAbsen, s.n, d ? 'Selesai' : 'Belum', d ? d.nilai : '-'];
             });
@@ -5954,7 +6239,11 @@
             });
 
             // === FOOTER / SIGNATURE ===
-            const finalY = doc.lastAutoTable.finalY + 15;
+            let finalY = doc.lastAutoTable.finalY + 15;
+            if (finalY > 245) {
+                doc.addPage();
+                finalY = 30;
+            }
             if (finalY < 265) {
                 doc.setDrawColor(...borderGray);
                 doc.setLineWidth(0.3);
@@ -5980,8 +6269,13 @@
                 doc.text(nipFixed.startsWith('NIP') ? nipFixed : "NIP " + nipFixed, 155, finalY + 34, { align: 'center' });
             }
 
-            const pdfData = doc.output('datauristring');
-            viewPDF(pdfData, "Rekap_Nilai_" + filter);
+            doc.save(namaFilePDF('Rekap_Nilai', filter));
+            } catch (error) {
+                console.error('Gagal membuat PDF rekap:', error);
+                showAlert('Gagal Membuat PDF', 'Laporan rekap gagal dibuat: ' + error.message, '❌');
+            } finally {
+                hideLoader();
+            }
         }
 
         function hapusSeluruhTugas() {
@@ -6003,19 +6297,20 @@
                     updates[`${BASE_PATH}/tugas_multi/${slotDitemukan}`] = null;
                 }
 
-                dbRef('rekap_v2').once('value').then(snap => {
+                dbRef('rekap_v2').orderByChild('materi').equalTo(filter).once('value').then(snap => {
                     snap.forEach(childSnap => {
-                        if (childSnap.val().materi === filter) {
-                            updates[`${BASE_PATH}/rekap_v2/${childSnap.key}`] = null;
-                            updates[`${BASE_PATH}/rekap_files/${childSnap.key}`] = null;
-                            updates[`${BASE_PATH}/rekapitulasi/${childSnap.key}`] = null;
-                            updates[`${BASE_PATH}/rekap/${childSnap.key}`] = null;
-                        }
+                        updates[`${BASE_PATH}/rekap_v2/${childSnap.key}`] = null;
+                        updates[`${BASE_PATH}/rekap_files/${childSnap.key}`] = null;
+                        updates[`${BASE_PATH}/rekapitulasi/${childSnap.key}`] = null;
+                        updates[`${BASE_PATH}/rekap/${childSnap.key}`] = null;
                     });
 
                     return db.ref().update(updates);
                 }).then(() => {
-                    rekapGlobal = rekapGlobal.filter(r => r.materi !== filter);
+                    const normalizedFilter = normalizedJudulRekap(filter);
+                    rekapGlobal = rekapGlobal.filter(r => normalizedJudulRekap(r.materi) !== normalizedFilter);
+                    rekapTugasCache.delete(normalizedFilter);
+                    rekapLoadedTitle = '';
                     if (slotDitemukan && dataTugas[slotDitemukan]) {
                         delete dataTugas[slotDitemukan];
                         updateDashboardTugas();
@@ -6028,6 +6323,7 @@
                     const arsip = document.getElementById('filterTugasArsip');
                     if (aktif) aktif.value = "";
                     if (arsip) arsip.value = "";
+                    window.__selectedRekapJudul = '';
                     updateFilterRekap();
                     filterRekap();
                 }).catch(error => {
@@ -6050,6 +6346,9 @@
 
                 db.ref().update(updates).then(() => {
                     rekapGlobal = rekapGlobal.filter(r => r.key !== key);
+                    rekapTugasCache.forEach((items, title) => {
+                        rekapTugasCache.set(title, items.filter(item => item.key !== key));
+                    });
                     filterRekap();
                     hideLoader();
                     showAlert("Berhasil", "Jawaban siswa telah dihapus secara permanen.", "🗑️");
@@ -6302,6 +6601,7 @@
             if (!t || !t.soal || t.soal.length === 0) return showAlert("Gagal", "Soal tidak ditemukan untuk materi ini.", "❌");
 
             showLoader("Mempersiapkan PDF Soal...");
+            try {
             await loadPdfLibraries();
 
             const { jsPDF } = window.jspdf;
@@ -6334,7 +6634,13 @@
             doc.setFont("helvetica", "normal");
             doc.setFontSize(9);
             doc.setTextColor(100, 110, 130);
-            doc.text(`Waktu Mengerjakan: ${t.durasi} Menit  |  Jumlah Soal: ${t.soal.length}`, 105, 33, { align: 'center' });
+            const modeDurasi = t.durasiMode || 'keseluruhan';
+            const labelWaktu = modeDurasi === 'tanpa_batas'
+                ? 'Tanpa batas waktu'
+                : modeDurasi === 'per_soal'
+                    ? `Waktu pengerjaan diatur per soal (${t.durasiPerSoalUnit === 'detik' ? 'detik' : 'menit'})`
+                    : `${Number(t.durasi) || 60} menit`;
+            doc.text(`Waktu Mengerjakan: ${labelWaktu}  |  Jumlah Soal: ${t.soal.length}`, 105, 33, { align: 'center' });
             doc.text(`${docTitle} - Tahun Pelajaran ${academicYear}`, 105, 38, { align: 'center' });
 
             y = 55;
@@ -6344,6 +6650,10 @@
                 if (y > 270) { doc.addPage(); y = 20; }
 
                 let tanya = (i + 1) + ". " + s.tanya.replace(/<[^>]*>?/gm, '').trim();
+                if (modeDurasi === 'per_soal') {
+                    const durasiSatuan = t.durasiPerSoalUnit === 'detik' ? 'detik' : 'menit';
+                    tanya += ` (Waktu: ${Number(s.durasi) || 1} ${durasiSatuan})`;
+                }
                 doc.setFont("helvetica", "bold");
                 doc.setFontSize(10);
                 doc.setTextColor(...darkText);
@@ -6396,9 +6706,13 @@
             doc.setTextColor(130);
             doc.text(`Dicetak otomatis oleh Sistem LMS Guru`, 15, doc.internal.pageSize.getHeight() - 10);
 
-            const pdfData = doc.output('datauristring');
-            viewPDF(pdfData, "Naskah_Soal_" + t.judul);
-            hideLoader();
+            doc.save(namaFilePDF('Naskah_Soal', t.judul));
+            } catch (error) {
+                console.error('Gagal membuat PDF soal:', error);
+                showAlert('Gagal Membuat PDF', 'Naskah soal gagal dibuat: ' + error.message, '❌');
+            } finally {
+                hideLoader();
+            }
         }
     </script>
 
