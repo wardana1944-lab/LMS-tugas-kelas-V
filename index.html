@@ -3791,6 +3791,7 @@
         });
 
         let dataTugas = {}, curSlot = "", curUser = "", curIdx = 0, curAns = [], timerInterval, sisaWaktu, rekapGlobal = [], currentSoalAcak = [];
+        let submissionInProgress = false;
         let modeDurasiAktif = 'keseluruhan', durasiSoalUnitAktif = 'menit', deadlineKeseluruhan = 0, deadlineSoal = [], soalKedaluwarsa = [];
         let dataTugasSources = { multi: {}, active: {}, tugas: {}, data: {} };
         let editIndexSiswa = -1;
@@ -4544,6 +4545,29 @@
 
         function normalizedJudulRekap(judul) {
             return String(judul || '').trim().toLowerCase();
+        }
+
+        function getSubmissionStudentKey(nama) {
+            return encodeURIComponent(String(nama || '').trim().toLowerCase()).replace(/\./g, '%2E');
+        }
+
+        function getSubmissionRecordKey(slot, nama) {
+            const safeSlot = encodeURIComponent(String(slot || '')).replace(/\./g, '%2E');
+            return `pengumpulan_${safeSlot}_${getSubmissionStudentKey(nama)}`;
+        }
+
+        async function hasStudentSubmitted(judul, nama) {
+            const snap = await dbRef('rekap_v2').orderByChild('materi').equalTo(judul).once('value');
+            let submitted = false;
+            snap.forEach(childSnap => {
+                const report = childSnap.val();
+                if (report &&
+                    String(report.nama || '').trim().toLowerCase() === String(nama || '').trim().toLowerCase() &&
+                    normalizedJudulRekap(report.materi) === normalizedJudulRekap(judul)) {
+                    submitted = true;
+                }
+            });
+            return submitted;
         }
 
         function gabungkanRekapTugas(judul, items) {
@@ -5438,10 +5462,19 @@
             }
         }
 
-        function mulaiKerja(slot) {
+        async function mulaiKerja(slot) {
             const t = dataTugas[slot];
             if (!t || !Array.isArray(t.soal) || t.soal.length === 0) {
                 return showAlert("Tugas Kosong", "Tugas ini belum memiliki soal.", "⚠️");
+            }
+            try {
+                if (await hasStudentSubmitted(t.judul, curUser)) {
+                    masukHalamanPilihTugas(curUser, false);
+                    return showAlert("Sudah Dikerjakan", "Kamu sudah mengerjakan tugas ini. Hubungi guru jika perlu mengulang.", "🔒");
+                }
+            } catch (error) {
+                console.error('Gagal memeriksa status pengumpulan tugas:', error);
+                return showAlert("Koneksi Bermasalah", "Status tugas gagal diperiksa. Periksa koneksi internet lalu coba lagi.", "❌");
             }
             curSlot = slot; curIdx = 0;
             const urutkanSoal = t.acakSoal === false ? [...t.soal] : [...t.soal].sort(() => Math.random() - 0.5);
@@ -5637,10 +5670,24 @@
         }
 
         async function submitJawaban(autoSubmit = false) {
+            if (submissionInProgress) return;
             if (!autoSubmit && !confirm("Kirim jawaban sekarang?")) return;
-            showLoader("Mengirim..."); clearInterval(timerInterval);
-            await loadPdfLibraries();
             const t = dataTugas[curSlot];
+            if (!t) return showAlert("Gagal Mengirim", "Data tugas tidak ditemukan. Silakan kembali ke daftar tugas.", "❌");
+
+            submissionInProgress = true;
+            showLoader("Mengirim...");
+            clearInterval(timerInterval);
+            let submissionSaved = false;
+            let reportRef = null;
+            try {
+            if (await hasStudentSubmitted(t.judul, curUser)) {
+                hideLoader();
+                masukHalamanPilihTugas(curUser, false);
+                return showAlert("Sudah Dikerjakan", "Kamu sudah mengerjakan tugas ini. Hubungi guru jika perlu mengulang.", "🔒");
+            }
+
+            await loadPdfLibraries();
             let totalSkorDapat = 0, totalSkorMaksimal = 0;
 
             const rows = [];
@@ -5821,23 +5868,39 @@
             doc.text(`Dokumen dicetak otomatis oleh Sistem LMS  •  ${new Date().toLocaleDateString('id-ID')}`, 10, 292);
             doc.text("Wali Kelas V", 200, 292, { align: 'right' });
             const pdfB64 = doc.output('datauristring').split(',')[1];
-            const reportRef = dbRef('rekap_v2').push();
-            const report = { nama: curUser, materi: t.judul, nilai: skor };
-            const updates = {};
-            updates[`${BASE_PATH}/rekap_v2/${reportRef.key}`] = report;
-            updates[`${BASE_PATH}/rekap_files/${reportRef.key}`] = pdfB64;
-            db.ref().update(updates).then(() => {
-                // Update ke memori lokal secara langsung untuk responsivitas instan
-                rekapGlobal.push({ ...report, key: reportRef.key });
+            const report = {
+                nama: curUser,
+                materi: t.judul,
+                nilai: skor,
+                slot: curSlot
+            };
+            reportRef = dbRef('rekap_v2').child(getSubmissionRecordKey(curSlot, curUser));
+            const saveResult = await reportRef.transaction(current => current === null ? report : undefined);
+            if (!saveResult.committed) {
                 hideLoader();
-                showAlert("Tugas Berhasil Terkirim!", "Jawaban kamu telah masuk ke sistem. Hubungi guru jika ada kendala.", "🚀", skor);
-                closeView('panelSiswa');
-                setTimeout(() => masukHalamanPilihTugas(curUser, false), 100);
-            }).catch(error => {
+                masukHalamanPilihTugas(curUser, false);
+                return showAlert("Sudah Dikerjakan", "Tugas ini sudah pernah dikirim. Hubungi guru jika perlu mengulang.", "🔒");
+            }
+            submissionSaved = true;
+            await dbRef(`rekap_files/${reportRef.key}`).set(pdfB64);
+            rekapGlobal.push({ ...report, key: reportRef.key });
+            hideLoader();
+            showAlert("Tugas Berhasil Terkirim!", "Jawaban kamu telah masuk ke sistem. Hubungi guru jika ada kendala.", "🚀", skor);
+            closeView('panelSiswa');
+            setTimeout(() => masukHalamanPilihTugas(curUser, false), 100);
+            } catch (error) {
                 console.error('Gagal menyimpan jawaban tugas:', error);
                 hideLoader();
-                showAlert("Gagal Mengirim", "Jawaban belum tersimpan. Periksa koneksi internet lalu coba kirim ulang.", "❌");
-            });
+                showAlert(
+                    submissionSaved ? "Jawaban Tercatat" : "Gagal Mengirim",
+                    submissionSaved
+                        ? "Jawaban sudah tercatat, tetapi file PDF gagal disimpan. Hubungi guru untuk menghapus jawaban ini sebelum mengulang."
+                        : "Jawaban belum tersimpan. Periksa koneksi internet lalu coba kirim ulang.",
+                    submissionSaved ? "⚠️" : "❌"
+                );
+            } finally {
+                submissionInProgress = false;
+            }
         }
 
         async function viewPDFByKey(key, title) {
@@ -6338,11 +6401,11 @@
                 showLoader("Menghapus jawaban...");
                 // Hapus dari semua kemungkinan node rekap (v2, lama, legacy)
                 const updates = {};
-                const safeEmail = lmsEmailGuru.replace(/[.#$[\]@]/g, "_");
-                updates[`guru_data/${safeEmail}/rekap_v2/${key}`] = null;
-                updates[`guru_data/${safeEmail}/rekap_files/${key}`] = null;
-                updates[`guru_data/${safeEmail}/rekapitulasi/${key}`] = null;
-                updates[`guru_data/${safeEmail}/rekap/${key}`] = null;
+                const basePath = BASE_PATH || getCanonicalBasePath();
+                updates[`${basePath}/rekap_v2/${key}`] = null;
+                updates[`${basePath}/rekap_files/${key}`] = null;
+                updates[`${basePath}/rekapitulasi/${key}`] = null;
+                updates[`${basePath}/rekap/${key}`] = null;
 
                 db.ref().update(updates).then(() => {
                     rekapGlobal = rekapGlobal.filter(r => r.key !== key);
