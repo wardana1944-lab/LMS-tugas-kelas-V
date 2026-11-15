@@ -4556,20 +4556,6 @@
             return `pengumpulan_${safeSlot}_${getSubmissionStudentKey(nama)}`;
         }
 
-        async function hasStudentSubmitted(judul, nama) {
-            const snap = await dbRef('rekap_v2').orderByChild('materi').equalTo(judul).once('value');
-            let submitted = false;
-            snap.forEach(childSnap => {
-                const report = childSnap.val();
-                if (report &&
-                    String(report.nama || '').trim().toLowerCase() === String(nama || '').trim().toLowerCase() &&
-                    normalizedJudulRekap(report.materi) === normalizedJudulRekap(judul)) {
-                    submitted = true;
-                }
-            });
-            return submitted;
-        }
-
         function gabungkanRekapTugas(judul, items) {
             const normalizedJudul = normalizedJudulRekap(judul);
             rekapGlobal = rekapGlobal.filter(item => normalizedJudulRekap(item.materi) !== normalizedJudul);
@@ -5467,14 +5453,13 @@
             if (!t || !Array.isArray(t.soal) || t.soal.length === 0) {
                 return showAlert("Tugas Kosong", "Tugas ini belum memiliki soal.", "⚠️");
             }
-            try {
-                if (await hasStudentSubmitted(t.judul, curUser)) {
-                    masukHalamanPilihTugas(curUser, false);
-                    return showAlert("Sudah Dikerjakan", "Kamu sudah mengerjakan tugas ini. Hubungi guru jika perlu mengulang.", "🔒");
-                }
-            } catch (error) {
-                console.error('Gagal memeriksa status pengumpulan tugas:', error);
-                return showAlert("Koneksi Bermasalah", "Status tugas gagal diperiksa. Periksa koneksi internet lalu coba lagi.", "❌");
+            const sudahDikerjakan = rekapGlobal.some(r =>
+                r.nama === curUser &&
+                normalizedJudulRekap(r.materi) === normalizedJudulRekap(t.judul)
+            );
+            if (sudahDikerjakan) {
+                masukHalamanPilihTugas(curUser, false);
+                return showAlert("Sudah Dikerjakan", "Kamu sudah mengerjakan tugas ini. Hubungi guru jika perlu mengulang.", "🔒");
             }
             curSlot = slot; curIdx = 0;
             const urutkanSoal = t.acakSoal === false ? [...t.soal] : [...t.soal].sort(() => Math.random() - 0.5);
@@ -5681,12 +5666,6 @@
             let submissionSaved = false;
             let reportRef = null;
             try {
-            if (await hasStudentSubmitted(t.judul, curUser)) {
-                hideLoader();
-                masukHalamanPilihTugas(curUser, false);
-                return showAlert("Sudah Dikerjakan", "Kamu sudah mengerjakan tugas ini. Hubungi guru jika perlu mengulang.", "🔒");
-            }
-
             await loadPdfLibraries();
             let totalSkorDapat = 0, totalSkorMaksimal = 0;
 
