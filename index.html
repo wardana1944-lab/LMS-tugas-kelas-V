@@ -3727,7 +3727,6 @@
         let activeFirebaseRefs = {};
         let hasLoadedSiswaOnce = false;
         let rekapLoaded = false;
-        let rekapSiswa = [];
         let rekapLoadedTitle = '';
         let rekapLoadingTitle = '';
         let rekapLoadErrorTitle = '';
@@ -3917,7 +3916,8 @@
             const initialPath = getCanonicalBasePath();
             localStorage.removeItem('lmsBasePath');
             BASE_PATH = initialPath;
-            dataTugas = {}; rekapGlobal = []; rekapSiswa = []; rekapLoaded = false;
+            dataTugas = {}; rekapGlobal = [];
+            rekapLoaded = false;
             rekapLoadedTitle = '';
             rekapLoadingTitle = '';
             rekapLoadErrorTitle = '';
@@ -3985,13 +3985,8 @@
                 refreshTugasState();
             };
             getRef('tugas_multi').orderByChild('aktif').equalTo(true).on('value', snap => mergeTugas(snap, 'active'));
-            const loadLegacyTasksOnce = (node, sourceKey) => {
-                getRef(node).once('value')
-                    .then(snap => mergeTugas(snap, sourceKey))
-                    .catch(error => console.error(`Gagal memuat tugas dari ${node}:`, error));
-            };
-            loadLegacyTasksOnce('tugas', 'tugas');
-            loadLegacyTasksOnce('data_tugas', 'data');
+            getRef('tugas').on('value', snap => mergeTugas(snap, 'tugas'));
+            getRef('data_tugas').on('value', snap => mergeTugas(snap, 'data'));
 
             const mergeRekap = (snap) => {
                 const val = snap.val();
@@ -4003,20 +3998,22 @@
                     });
                 }
 
-                rekapSiswa = nextItems;
+                rekapGlobal = nextItems;
                 rekapLoaded = true;
+
+                if (document.getElementById('panelRekap')?.style.display === 'block') {
+                    updateFilterRekap();
+                }
+                updateBadgeSiswa();
 
                 // Hindari menarik paksa siswa jika sedang mengerjakan ujian
                 if (curUser && document.getElementById('panelPilihTugas').style.display === 'block') {
-                    updateBadgeSiswa();
                     masukHalamanPilihTugas(curUser, false);
                 }
             };
             activeFirebaseRefs.loadRekap = () => {
-                if (!curUser || activeFirebaseRefs.rekap) return;
-                rekapLoaded = false;
-                rekapSiswa = [];
-                const rekapRef = getRef('rekap_v2').orderByChild('nama').equalTo(curUser);
+                if (activeFirebaseRefs.rekap) return;
+                const rekapRef = getRef('rekap_v2');
                 activeFirebaseRefs.rekap = rekapRef;
                 rekapRef.on('value', mergeRekap, err => {
                     console.error('Gagal memuat rekap tugas:', err);
@@ -4264,10 +4261,7 @@
                 if (existingTrophy) existingTrophy.remove();
 
                 // Cek apakah ada tugas yang mendapatkan nilai 100
-                const rekapUntukBadge = document.getElementById('panelPilihTugas')?.style.display === 'block'
-                    ? rekapSiswa
-                    : rekapGlobal;
-                const hasPerfectScore = rekapUntukBadge.some(r => 
+                const hasPerfectScore = rekapGlobal.some(r => 
                     r.nama === s.n && 
                     tugasAktifSistem.some(t => (t.judul || "").trim().toLowerCase() === (r.materi || "").trim().toLowerCase()) &&
                     r.nilai == 100
@@ -5399,20 +5393,18 @@
                         // Cek apakah tugas sudah dimulai atau belum
                         const isNotStarted = now < startTime;
                         const isExpired = now > endTime;
-                        const sudah = rekapLoaded && rekapSiswa.some(r => r.nama === curUser && (r.materi || "").trim().toLowerCase() === (t.judul || "").trim().toLowerCase());
+                        const sudah = rekapGlobal.some(r => r.nama === curUser && (r.materi || "").trim().toLowerCase() === (t.judul || "").trim().toLowerCase());
 
                         // Tugas sudah berakhir — tidak ditampilkan ke siswa
                         if (isExpired) return;
 
                         const card = document.createElement('div');
-                        card.className = `kartu-soal${sudah || isExpired || isNotStarted || !rekapLoaded ? ' sudah' : ''}`;
+                        card.className = `kartu-soal${sudah || isExpired || isNotStarted ? ' sudah' : ''}`;
                         
-                        let badgeText = rekapLoaded ? 'MULAI KERJAKAN' : 'MEMUAT STATUS...';
+                        let badgeText = 'MULAI KERJAKAN';
                         let badgeColor = 'var(--ef-cyan)';
                         
-                        if (!rekapLoaded) {
-                            badgeColor = 'rgba(255,255,255,0.2)';
-                        } else if (sudah) { 
+                        if (sudah) { 
                             badgeText = 'SELESAI'; 
                             badgeColor = 'var(--ef-neon-yellow)'; 
                         } else if (isExpired) { 
@@ -5436,10 +5428,8 @@
                             </div>
                         `;
 
-                        if (!rekapLoaded) {
-                            card.onclick = () => showAlert("Memuat Status", "Mohon tunggu sampai status tugas selesai dimuat.", "⏳");
-                        } else if (sudah) {
-                            const rekap = rekapSiswa.find(r => r.nama === curUser && (r.materi || "").trim().toLowerCase() === (t.judul || "").trim().toLowerCase());
+                        if (sudah) {
+                            const rekap = rekapGlobal.find(r => r.nama === curUser && (r.materi || "").trim().toLowerCase() === (t.judul || "").trim().toLowerCase());
                             if (rekap) card.onclick = () => viewPDFByKey(rekap.key, t.judul);
                         } else if (isExpired) {
                             card.onclick = () => showAlert("Terkunci", "Waktu pengerjaan tugas ini sudah berakhir.", "🔒");
@@ -5459,14 +5449,11 @@
         }
 
         async function mulaiKerja(slot) {
-            if (!rekapLoaded) {
-                return showAlert("Memuat Status", "Mohon tunggu sampai status tugas selesai dimuat.", "⏳");
-            }
             const t = dataTugas[slot];
             if (!t || !Array.isArray(t.soal) || t.soal.length === 0) {
                 return showAlert("Tugas Kosong", "Tugas ini belum memiliki soal.", "⚠️");
             }
-            const sudahDikerjakan = rekapSiswa.some(r =>
+            const sudahDikerjakan = rekapGlobal.some(r =>
                 r.nama === curUser &&
                 normalizedJudulRekap(r.materi) === normalizedJudulRekap(t.judul)
             );
@@ -5875,8 +5862,7 @@
             }
             submissionSaved = true;
             await dbRef(`rekap_files/${reportRef.key}`).set(pdfB64);
-            rekapSiswa.push({ ...report, key: reportRef.key });
-            updateBadgeSiswa();
+            rekapGlobal.push({ ...report, key: reportRef.key });
             hideLoader();
             showAlert("Tugas Berhasil Terkirim!", "Jawaban kamu telah masuk ke sistem. Hubungi guru jika ada kendala.", "🚀", skor);
             closeView('panelSiswa');
@@ -5897,7 +5883,7 @@
         }
 
         async function viewPDFByKey(key, title) {
-            const rekap = rekapSiswa.find(item => item.key === key) || rekapGlobal.find(item => item.key === key);
+            const rekap = rekapGlobal.find(item => item.key === key);
             if (!rekap) {
                 return showAlert("Gagal", "File jawaban siswa tidak ditemukan.", "❌");
             }
@@ -6057,11 +6043,6 @@
         function closeView(id) {
             const panel = document.getElementById(id);
             if (!panel) return;
-
-            if (id === 'panelPilihTugas' && activeFirebaseRefs.rekap) {
-                activeFirebaseRefs.rekap.off();
-                delete activeFirebaseRefs.rekap;
-            }
 
             panel.classList.remove('entering');
             panel.classList.add('exiting');
