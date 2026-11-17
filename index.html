@@ -3730,6 +3730,7 @@
         let rekapLoadedTitle = '';
         let rekapLoadingTitle = '';
         let rekapLoadErrorTitle = '';
+        let rekapLoadPromise = null;
         const rekapTugasCache = new Map();
         const rekapTugasRequests = new Map();
         let teacherTasksLoaded = false;
@@ -3918,6 +3919,7 @@
             BASE_PATH = initialPath;
             dataTugas = {}; rekapGlobal = [];
             rekapLoaded = false;
+            rekapLoadPromise = null;
             rekapLoadedTitle = '';
             rekapLoadingTitle = '';
             rekapLoadErrorTitle = '';
@@ -3985,8 +3987,12 @@
                 refreshTugasState();
             };
             getRef('tugas_multi').orderByChild('aktif').equalTo(true).on('value', snap => mergeTugas(snap, 'active'));
-            getRef('tugas').on('value', snap => mergeTugas(snap, 'tugas'));
-            getRef('data_tugas').on('value', snap => mergeTugas(snap, 'data'));
+            getRef('tugas').once('value')
+                .then(snap => mergeTugas(snap, 'tugas'))
+                .catch(error => console.error('Gagal memuat arsip tugas:', error));
+            getRef('data_tugas').once('value')
+                .then(snap => mergeTugas(snap, 'data'))
+                .catch(error => console.error('Gagal memuat arsip data tugas:', error));
 
             const mergeRekap = (snap) => {
                 const val = snap.val();
@@ -4012,18 +4018,22 @@
                 }
             };
             activeFirebaseRefs.loadRekap = () => {
-                if (activeFirebaseRefs.rekap) return;
+                if (rekapLoaded) return Promise.resolve();
+                if (rekapLoadPromise) return rekapLoadPromise;
                 const rekapRef = getRef('rekap_v2');
-                activeFirebaseRefs.rekap = rekapRef;
-                rekapRef.on('value', mergeRekap, err => {
-                    console.error('Gagal memuat rekap tugas:', err);
-                    rekapRef.off();
-                    delete activeFirebaseRefs.rekap;
-                    if (document.getElementById('panelRekap')?.style.display === 'block' ||
-                        document.getElementById('panelPilihTugas')?.style.display === 'block') {
-                        showAlert('Koneksi Bermasalah', 'Data status tugas gagal dimuat. Periksa koneksi internet.', '❌');
-                    }
-                });
+                rekapLoadPromise = rekapRef.once('value')
+                    .then(mergeRekap)
+                    .catch(err => {
+                        console.error('Gagal memuat rekap tugas:', err);
+                        if (document.getElementById('panelRekap')?.style.display === 'block' ||
+                            document.getElementById('panelPilihTugas')?.style.display === 'block') {
+                            showAlert('Koneksi Bermasalah', 'Data status tugas gagal dimuat. Periksa koneksi internet.', '❌');
+                        }
+                    })
+                    .finally(() => {
+                        rekapLoadPromise = null;
+                    });
+                return rekapLoadPromise;
             };
 
             // Synchronize Identity from Firebase
@@ -5161,14 +5171,62 @@
         }
 
         function formatDoc(cmd) { document.execCommand(cmd, false, null); }
-        function insertImage(input, previewId) {
-            const file = input.files[0];
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                document.getElementById(previewId).src = e.target.result;
-                document.getElementById(previewId).style.display = 'block';
-            };
-            reader.readAsDataURL(file);
+        async function compressImageToDataUrl(file) {
+            const objectUrl = URL.createObjectURL(file);
+            try {
+                const image = new Image();
+                await new Promise((resolve, reject) => {
+                    image.onload = resolve;
+                    image.onerror = () => reject(new Error('Gambar tidak dapat dibuka.'));
+                    image.src = objectUrl;
+                });
+                if (!image.naturalWidth || !image.naturalHeight) {
+                    throw new Error('Ukuran gambar tidak valid.');
+                }
+
+                const maxDimension = 1280;
+                const scale = Math.min(1, maxDimension / Math.max(image.naturalWidth, image.naturalHeight));
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+                canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+                const context = canvas.getContext('2d');
+                if (!context) throw new Error('Canvas tidak tersedia untuk mengompres gambar.');
+
+                const outputType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+                if (outputType === 'image/jpeg') {
+                    context.fillStyle = '#fff';
+                    context.fillRect(0, 0, canvas.width, canvas.height);
+                }
+                context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+                const compressedBlob = await new Promise((resolve, reject) => {
+                    canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Gambar gagal dikompres.')), outputType, 0.78);
+                });
+                const selectedBlob = compressedBlob.size < file.size ? compressedBlob : file;
+                return await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = () => reject(new Error('Gambar gagal dibaca.'));
+                    reader.readAsDataURL(selectedBlob);
+                });
+            } finally {
+                URL.revokeObjectURL(objectUrl);
+            }
+        }
+
+        async function insertImage(input, previewId) {
+            const file = input.files && input.files[0];
+            if (!file) return;
+            try {
+                const dataUrl = await compressImageToDataUrl(file);
+                const preview = document.getElementById(previewId);
+                if (!preview) throw new Error('Area pratinjau gambar tidak ditemukan.');
+                preview.src = dataUrl;
+                preview.style.display = 'block';
+            } catch (error) {
+                console.error('Gagal mengompres gambar soal:', error);
+                showAlert('Gagal Memuat Gambar', 'Gambar soal gagal diproses: ' + error.message, '❌');
+            }
         }
 
         function tambahSoal(jenis) {
@@ -5969,11 +6027,6 @@
                 openView('modalLogin');
                 return;
             }
-            if (id !== 'panelPilihTugas' && !id.includes('modal') && activeFirebaseRefs.rekap) {
-                activeFirebaseRefs.rekap.off();
-                delete activeFirebaseRefs.rekap;
-            }
-
             // HEADER VISIBILITY: Only show header on panelUtama
             if (id === 'panelUtama') {
                 document.body.classList.add('show-header');
